@@ -1,0 +1,205 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+$controller_path = 'App\Http\Controllers';
+
+Route::get('/login', $controller_path . '\auth\LoginController@index')->name('auth-login');
+Route::post('/login', $controller_path . '\auth\LoginController@doLogin')->name('auth-do-login');
+Route::get('/logout', $controller_path . '\auth\LoginController@logout')->name('auth-logout');
+Route::get('/forgot-password', $controller_path . '\auth\LoginController@forgot_password')->name('auth-login-forgot_password');
+Route::post('/reset-password', $controller_path . '\auth\LoginController@reset_password')->name('auth-login-reset_password');
+
+Route::group(['middleware' => 'check.tokey'], function () use ($controller_path) {
+    Route::get('/', $controller_path . '\dashboard\DashboardController@index')->name('dashboard');
+    Route::get('/dashboard', $controller_path . '\dashboard\DashboardController@index')->name('dashboard-index');
+    Route::get('/filter-year-month/{year}/{month}', $controller_path . '\dashboard\DashboardController@filter_year_month');
+    Route::post('/change-password', $controller_path . '\auth\LoginController@change_password')->name('change-password');
+
+    // Master Data Autocomplete
+    Route::prefix('autocomplete')->group(function () use ($controller_path) {
+        Route::get('country/find_country', $controller_path . '\scm\master_data\ProductManufactureController@find_country');
+        Route::get('client/find', $controller_path . '\site_visit\master_data\ClientController@find');
+        Route::get('site/find', $controller_path . '\site_visit\master_data\SiteController@find');
+        Route::get('site/find-by-id/{id}', $controller_path . '\site_visit\master_data\SiteController@findById');
+        Route::get('site-contact/find/{id}', $controller_path . '\site_visit\master_data\SiteContactController@find');
+        Route::get('debtor/find', $controller_path . '\site_visit\master_data\DebtorController@find');
+        Route::get('get-all-debtor', $controller_path . '\site_visit\master_data\DebtorController@findAllDebtors');
+        Route::get('get-all-site-contact/find/{id}', $controller_path . '\site_visit\master_data\SiteContactController@findAllSiteContact');
+        Route::get('visit-type/find', $controller_path . '\site_visit\master_data\VisitTypeController@find');
+        Route::get('partner/find', $controller_path . '\site_visit\master_data\PartnerController@find');
+        Route::get('checklist-group/find', $controller_path . '\site_visit\master_data\ChecklistGroupController@find');
+        Route::get('job-checklist-group/find', $controller_path . '\job_order\master_data\ChecklistGroupController@find');
+        Route::get('product-type/find', $controller_path . '\job_order\master_data\ProductTypeController@find');
+        Route::get('job-type/find', $controller_path . '\job_order\master_data\JobTypeController@find');
+        Route::get('merchant/find', $controller_path . '\job_order\master_data\MerchantController@find');
+        Route::get('role/find', $controller_path . '\settings\RoleController@find');
+    });
+
+    // MASTER
+    Route::prefix('sys-monitoring')->group(function () use ($controller_path) {
+        $path_sys_monitoring = $controller_path . '\sys_monitoring';
+
+        // Master Data
+        Route::prefix('master-data')->group(function () use ($path_sys_monitoring) {
+            $path_sys_monitoring_master_data = $path_sys_monitoring . '\master_data';
+
+            // Data Caleg
+            Route::prefix('caleg')->group(function () use ($path_sys_monitoring_master_data) {
+                Route::get('/', $path_sys_monitoring_master_data . '\DataCalegController@index')->name('sys-monitoring-master-data-caleg');
+                Route::get('get', $path_sys_monitoring_master_data . '\DataCalegController@datatable');
+                Route::get('show/{id}', $path_sys_monitoring_master_data . '\DataCalegController@show');
+                Route::post('store', $path_sys_monitoring_master_data . '\DataCalegController@store');
+                Route::post('update/{id}', $path_sys_monitoring_master_data . '\DataCalegController@update');
+                Route::post('update-status', $path_sys_monitoring_master_data . '\DataCalegController@statusUpdate');
+                Route::post('delete', $path_sys_monitoring_master_data . '\DataCalegController@delete');
+            });
+
+            // Data User
+            Route::prefix('user')->group(function () use ($path_sys_monitoring_master_data) {
+                Route::get('/', $path_sys_monitoring_master_data . '\UserController@index')->name('sys-monitoring-master-data-user');
+                Route::get('get', $path_sys_monitoring_master_data . '\UserController@datatable');
+                Route::get('show/{id}', $path_sys_monitoring_master_data . '\UserController@show');
+                Route::get('uploads/{user_id}', $path_sys_monitoring_master_data . '\UserController@show_upload_user');
+                Route::post('store', $path_sys_monitoring_master_data . '\UserController@store');
+                Route::post('update/{id}', $path_sys_monitoring_master_data . '\UserController@update');
+                Route::post('update-status', $path_sys_monitoring_master_data . '\UserController@update_status');
+                Route::post('delete', $path_sys_monitoring_master_data . '\UserController@delete');
+                // user only
+                Route::post('update-user/{id}', $path_sys_monitoring_master_data . '\UserController@update_data_user');
+            });
+
+            // Data TPS
+            Route::prefix('tps')->group(function () use ($path_sys_monitoring_master_data) {
+                Route::get('/', $path_sys_monitoring_master_data . '\DataTpsController@index')->name('sys-monitoring-master-data-tps');
+                Route::get('get', $path_sys_monitoring_master_data . '\DataTpsController@datatable');
+                Route::get('show/{id}', $path_sys_monitoring_master_data . '\DataTpsController@show');
+                // menampilkan data ke select2
+                Route::get('get-provinces', $path_sys_monitoring_master_data . '\DataTpsController@getProvinces');
+                Route::get('get-regencies', $path_sys_monitoring_master_data . '\DataTpsController@getRegencies');
+                Route::get('get-districts', $path_sys_monitoring_master_data . '\DataTpsController@getDistricts');
+                Route::get('get-villages', $path_sys_monitoring_master_data . '\DataTpsController@getVillages');
+                // end menampilkan data ke select2
+                Route::post('store', $path_sys_monitoring_master_data . '\DataTpsController@store');
+                Route::post('update/{id}', $path_sys_monitoring_master_data . '\DataTpsController@update');
+                Route::post('update-status', $path_sys_monitoring_master_data . '\DataTpsController@statusUpdate');
+                Route::post('delete', $path_sys_monitoring_master_data . '\DataTpsController@delete');
+            });
+
+        });
+
+    });
+
+    // DATA PENDUKUNG
+    Route::prefix('pendukung')->group(function () use ($controller_path) {
+        $path_pendukung = $controller_path . '\pendukung';
+        // DPT
+        Route::prefix('dpt')->group(function () use ($path_pendukung) {
+            Route::get('/', $path_pendukung . '\DataDptController@index')->name('pendukung-dpt');
+            Route::get('get', $path_pendukung . '\DataDptController@datatable');
+            Route::get('show/{id}', $path_pendukung . '\DataDptController@show');
+            Route::post('store', $path_pendukung . '\DataDptController@store');
+            Route::post('update/{id}', $path_pendukung . '\DataDptController@update');
+            Route::post('update-status', $path_pendukung . '\DataDptController@statusUpdate');
+            Route::post('delete', $path_pendukung . '\DataDptController@delete');
+            Route::post('submitted', $path_pendukung . '\DataDptController@submitted');
+            Route::post('paid/{id}', $path_pendukung . '\DataDptController@paid');
+            Route::post('rejected', $path_pendukung . '\DataDptController@rejected');
+            Route::get('show-paid/{id}', $path_pendukung . '\DataDptController@show_paid');
+            Route::get('get-visit-order', $path_pendukung . '\DataDptController@visitOrderDatatable');
+        });
+
+    });
+
+    // Settings
+    Route::prefix('settings')->group(function () use ($controller_path) {
+        $path_settings = $controller_path . '\settings';
+
+        // User
+        Route::prefix('user')->group(function () use ($path_settings) {
+            Route::get('/', $path_settings . '\UserController@index')->name('settings-user');
+            Route::get('get', $path_settings . '\UserController@datatable');
+            Route::get('show/{id}', $path_settings . '\UserController@show');
+            Route::get('uploads/{user_id}', $path_settings . '\UserController@show_upload_user');
+            Route::post('store', $path_settings . '\UserController@store');
+            Route::post('update/{id}', $path_settings . '\UserController@update');
+            Route::post('update-status', $path_settings . '\UserController@update_status');
+            Route::post('delete', $path_settings . '\UserController@delete');
+            // user only
+            Route::post('update-user/{id}', $path_settings . '\UserController@update_data_user');
+        });
+    });
+
+    // Partner
+    Route::prefix('partner')->group(function () use ($controller_path) {
+        $path_partner = $controller_path . '\partner';
+
+        // Partner Dashboard
+        Route::prefix('partner-dashboard')->group(function () use ($path_partner) {
+            Route::get('/', $path_partner . '\PartnerDashboardController@index')->name('partner-dashboard');
+            Route::get('get', $path_partner . '\PartnerDashboardController@datatable');
+            Route::get('show/{id}', $path_partner . '\PartnerDashboardController@show');
+            Route::post('store', $path_partner . '\PartnerDashboardController@store');
+            Route::post('update/{id}', $path_partner . '\PartnerDashboardController@update');
+            Route::post('update-status', $path_partner . '\PartnerDashboardController@update_status');
+            Route::post('delete', $path_partner . '\PartnerDashboardController@delete');
+        });
+
+        // Partner Visit
+        Route::prefix('partner-visit')->group(function () use ($path_partner) {
+            Route::get('/', $path_partner . '\PartnerVisitController@index')->name('partner-visit');
+            Route::get('list', $path_partner . '\PartnerVisitController@getVisitOrderList');
+            Route::get('show/{id}', $path_partner . '\PartnerVisitController@show');
+            Route::post('store', $path_partner . '\PartnerVisitController@store');
+            Route::get('getVisual/{id}', $path_partner . '\PartnerVisitController@getVisual');
+            Route::post('updateVisual/{id}', $path_partner . '\PartnerVisitController@updateVisual');
+            Route::post('updateNotes/{id}', $path_partner . '\PartnerVisitController@updateNotes');
+            Route::post('update-status', $path_partner . '\PartnerVisitController@statusUpdate');
+            Route::post('delete', $path_partner . '\PartnerVisitController@delete');
+            Route::get('checklist/{id}', $path_partner . '\PartnerVisitController@getChecklists');
+            Route::post('checklist/save', $path_partner . '\PartnerVisitController@saveChecklists');
+            Route::get('email', $path_partner . '\PartnerVisitController@email');
+        });
+
+        // Partner Setting
+        Route::prefix('partner-setting')->group(function () use ($path_partner) {
+            Route::get('/', $path_partner . '\ParnerSettingController@index')->name('partner-setting');
+            Route::get('get', $path_partner . '\ParnerSettingController@datatable');
+            Route::get('show/{id}', $path_partner . '\ParnerSettingController@show');
+            Route::post('store', $path_partner . '\ParnerSettingController@store');
+            Route::post('update/{id}', $path_partner . '\ParnerSettingController@update');
+            Route::post('update-status', $path_partner . '\ParnerSettingController@statusUpdate');
+            Route::post('delete', $path_partner . '\ParnerSettingController@delete');
+        });
+    });
+
+    // Report
+    Route::prefix('report')->group(function () use ($controller_path) {
+        $path_partner = $controller_path . '\report';
+
+        // Visit Order
+        Route::prefix('report-visit-order')->group(function () use ($path_partner) {
+            Route::get('/', $path_partner . '\ReportVisitOrderController@index')->name('report-visit-order');
+            Route::get('get', $path_partner . '\ReportVisitOrderController@datatable');
+            Route::post('set-download', $path_partner . '\ReportVisitOrderController@setDownload');
+            Route::get('findClient', $path_partner . '\ReportVisitOrderController@findClient');
+            Route::get('findSite', $path_partner . '\ReportVisitOrderController@findSite');
+            Route::get('findPartner', $path_partner . '\ReportVisitOrderController@findPartner');
+            Route::get('show/{id}', $path_partner . '\ReportVisitOrderController@show');
+            Route::get('pdf/{id}', $path_partner . '\ReportVisitOrderController@pdf');
+            Route::get('excel/{id}', $path_partner . '\ReportVisitOrderController@excel');
+            Route::get('data-excel', $path_partner . '\ReportVisitOrderController@dataExcel');
+        });
+    });
+});

@@ -1,0 +1,13 @@
+#swiper-product-gallery {
+    height: 300px;
+}
+
+.swiper-slide {
+    padding: 2rem 0;
+    text-align: center;
+    font-size: 1.5rem;
+    background-color: #ecebed;
+    background-position: center;
+    background-size: cover;
+    max-width: 300px;
+}

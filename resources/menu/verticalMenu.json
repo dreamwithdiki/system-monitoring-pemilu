@@ -1,0 +1,66 @@
+{
+  "menu": [
+    {
+      "url": "/",
+      "name": "Dashboard",
+      "icon": "menu-icon tf-icons fa-solid fa-house",
+      "slug": "dashboard"
+    },
+    {
+      "menuHeader": "Monitoring"
+    },
+    {
+      "name": "Master Data",
+      "icon": "menu-icon tf-icons fa fa-server",
+      "slug": "sys-monitoring-master-data",
+      "badge": [
+        "primary",
+        "3"
+      ],
+      "submenu": [
+        {
+          "url": "/sys-monitoring/master-data/caleg",
+          "name": "Data Caleg",
+          "slug": "sys-monitoring-master-data-caleg"
+        },
+        {
+          "url": "/sys-monitoring/master-data/user",
+          "name": "Data Users",
+          "slug": "sys-monitoring-master-data-user"
+        },
+        {
+          "url": "/sys-monitoring/master-data/tps",
+          "name": "Data TPS",
+          "slug": "sys-monitoring-master-data-tps"
+        }
+      ]
+    },
+    {
+      "menuHeader": "DPT"
+    },
+    {
+      "url": "/pendukung/pedukung-dpt",
+      "name": "Data Pendukung",
+      "icon": "menu-icon tf-icons fa fa-wallet",
+      "slug": "billings-pedukung-dpt"
+    },
+    {
+      "menuHeader": "Report"
+    },
+    {
+      "url": "/report/report-visit-order",
+      "name": "Visit Order",
+      "icon": "menu-icon tf-icons fas fa-file",
+      "slug": "report-visit-order"
+    },
+    {
+      "menuHeader": "Settings"
+    },
+    {
+      "url": "/settings/user",
+      "name": "User",
+      "icon": "menu-icon tf-icons fa fa-users",
+      "slug": "settings-user"
+    }
+  ]
+}

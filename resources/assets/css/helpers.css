@@ -1,0 +1,28 @@
+/*
+* helpers.css
+* global style used in all view
+******************************************************************************/
+
+/* .add-modal-block .blockMsg {
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.edit-modal-block .blockMsg {
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.view-modal-block .blockMsg {
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+} */
+
+.modal-block-loader .blockMsg {
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}

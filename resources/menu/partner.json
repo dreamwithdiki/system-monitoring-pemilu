@@ -1,0 +1,28 @@
+{
+    "menu": [
+      {
+        "url": "/",
+        "name": "Dashboard",
+        "icon": "menu-icon tf-icons fa-solid fa-house",
+        "slug": "dashboard"
+      },
+      {
+        "menuHeader": "Partner"
+      },
+      {
+        "url": "/partner/partner-visit",
+        "name": "Partner Visit",
+        "icon": "menu-icon tf-icons fa fa-location-dot",
+        "slug": "partner-visit"
+      },
+      {
+        "menuHeader": "Settings"
+      },
+      {
+        "url": "/settings/user",
+        "name": "User Profile",
+        "icon": "menu-icon tf-icons fa fa-user",
+        "slug": "settings-user"
+      }
+    ]
+  }
