@@ -97,8 +97,23 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class, 'role_id');
     }
 
-    public function partner()
+    public function province()
     {
-        return $this->belongsTo(Partner::class, 'user_ref_id', 'partner_id');
+        return $this->belongsTo(MasterProvinces::class, 'user_province', 'id');
+    }
+
+    public function regency()
+    {
+        return $this->belongsTo(MasterRegencies::class, 'user_regency', 'id');
+    }
+
+    public function district()
+    {
+        return $this->belongsTo(MasterDistricts::class, 'user_district', 'id');
+    }
+
+    public function village()
+    {
+        return $this->belongsTo(MasterVillages::class, 'user_village', 'id');
     }
 }

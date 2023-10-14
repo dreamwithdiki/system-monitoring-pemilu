@@ -30,9 +30,37 @@ class RoleController extends Controller
   public function find(Request $request)
   {
     $search = $request->search;
-    $roles = Role::orderby('role_name', 'asc')
+    $roles = Role::orderby('role_id', 'ASC')
       ->select('role_id', 'role_name')
       ->where('role_name', 'like', '%' . $search . '%')
+      ->where(function($query){
+        if (session('role_id') == 1) {
+          $query;
+        } else if (session('role_id') == 2){
+          $query->where('role_id', '=', 3);
+        }
+      })
+      ->isActive()
+      ->get();
+
+    $response = array();
+    foreach ($roles as $role) {
+      $response[] = array(
+        "id"    => $role->role_id,
+        "text"  => $role->role_name
+      );
+    }
+
+    return response()->json($response);
+  }
+
+  public function find_saksi(Request $request)
+  {
+    $search = $request->search;
+    $roles = Role::orderby('role_id', 'ASC')
+      ->select('role_id', 'role_name')
+      ->where('role_name', 'like', '%' . $search . '%')
+      ->where('role_id', '=', 4) // cari saksi
       ->where(function($query){
         if (session('role_id') == 1) {
           $query;

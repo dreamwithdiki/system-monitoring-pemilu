@@ -29,72 +29,71 @@ Route::group(['middleware' => 'check.tokey'], function () use ($controller_path)
 
     // Master Data Autocomplete
     Route::prefix('autocomplete')->group(function () use ($controller_path) {
-        Route::get('country/find_country', $controller_path . '\scm\master_data\ProductManufactureController@find_country');
-        Route::get('client/find', $controller_path . '\site_visit\master_data\ClientController@find');
-        Route::get('site/find', $controller_path . '\site_visit\master_data\SiteController@find');
-        Route::get('site/find-by-id/{id}', $controller_path . '\site_visit\master_data\SiteController@findById');
-        Route::get('site-contact/find/{id}', $controller_path . '\site_visit\master_data\SiteContactController@find');
-        Route::get('debtor/find', $controller_path . '\site_visit\master_data\DebtorController@find');
-        Route::get('get-all-debtor', $controller_path . '\site_visit\master_data\DebtorController@findAllDebtors');
-        Route::get('get-all-site-contact/find/{id}', $controller_path . '\site_visit\master_data\SiteContactController@findAllSiteContact');
-        Route::get('visit-type/find', $controller_path . '\site_visit\master_data\VisitTypeController@find');
-        Route::get('partner/find', $controller_path . '\site_visit\master_data\PartnerController@find');
-        Route::get('checklist-group/find', $controller_path . '\site_visit\master_data\ChecklistGroupController@find');
-        Route::get('job-checklist-group/find', $controller_path . '\job_order\master_data\ChecklistGroupController@find');
-        Route::get('product-type/find', $controller_path . '\job_order\master_data\ProductTypeController@find');
-        Route::get('job-type/find', $controller_path . '\job_order\master_data\JobTypeController@find');
-        Route::get('merchant/find', $controller_path . '\job_order\master_data\MerchantController@find');
         Route::get('role/find', $controller_path . '\settings\RoleController@find');
+        Route::get('role/find-saksi', $controller_path . '\settings\RoleController@find_saksi');
     });
 
     // MASTER
-    Route::prefix('sys-monitoring')->group(function () use ($controller_path) {
-        $path_sys_monitoring = $controller_path . '\sys_monitoring';
+    Route::prefix('pemilu')->group(function () use ($controller_path) {
+        $path_pemilu = $controller_path . '\pemilu';
 
         // Master Data
-        Route::prefix('master-data')->group(function () use ($path_sys_monitoring) {
-            $path_sys_monitoring_master_data = $path_sys_monitoring . '\master_data';
+        Route::prefix('master-data')->group(function () use ($path_pemilu) {
+            $path_pemilu_master_data = $path_pemilu . '\master_data';
 
             // Data Caleg
-            Route::prefix('caleg')->group(function () use ($path_sys_monitoring_master_data) {
-                Route::get('/', $path_sys_monitoring_master_data . '\DataCalegController@index')->name('sys-monitoring-master-data-caleg');
-                Route::get('get', $path_sys_monitoring_master_data . '\DataCalegController@datatable');
-                Route::get('show/{id}', $path_sys_monitoring_master_data . '\DataCalegController@show');
-                Route::post('store', $path_sys_monitoring_master_data . '\DataCalegController@store');
-                Route::post('update/{id}', $path_sys_monitoring_master_data . '\DataCalegController@update');
-                Route::post('update-status', $path_sys_monitoring_master_data . '\DataCalegController@statusUpdate');
-                Route::post('delete', $path_sys_monitoring_master_data . '\DataCalegController@delete');
+            Route::prefix('caleg')->group(function () use ($path_pemilu_master_data) {
+                Route::get('/', $path_pemilu_master_data . '\DataCalegController@index')->name('pemilu-master-data-caleg');
+                Route::get('get', $path_pemilu_master_data . '\DataCalegController@datatable');
+                Route::get('show/{id}', $path_pemilu_master_data . '\DataCalegController@show');
+                // menampilkan data ke select2
+                Route::get('get-provinces', $path_pemilu_master_data . '\DataCalegController@getProvinces');
+                Route::get('get-regencies', $path_pemilu_master_data . '\DataCalegController@getRegencies');
+                Route::get('get-districts', $path_pemilu_master_data . '\DataCalegController@getDistricts');
+                Route::get('get-villages', $path_pemilu_master_data . '\DataCalegController@getVillages');
+                // end menampilkan data ke select2
+                Route::post('store', $path_pemilu_master_data . '\DataCalegController@store');
+                Route::post('update/{id}', $path_pemilu_master_data . '\DataCalegController@update');
+                Route::post('update-status', $path_pemilu_master_data . '\DataCalegController@statusUpdate');
+                Route::get('uploads/{caleg_id}', $path_pemilu_master_data . '\DataCalegController@show_upload_caleg');
+                Route::post('delete', $path_pemilu_master_data . '\DataCalegController@delete');
             });
 
             // Data User
-            Route::prefix('user')->group(function () use ($path_sys_monitoring_master_data) {
-                Route::get('/', $path_sys_monitoring_master_data . '\UserController@index')->name('sys-monitoring-master-data-user');
-                Route::get('get', $path_sys_monitoring_master_data . '\UserController@datatable');
-                Route::get('show/{id}', $path_sys_monitoring_master_data . '\UserController@show');
-                Route::get('uploads/{user_id}', $path_sys_monitoring_master_data . '\UserController@show_upload_user');
-                Route::post('store', $path_sys_monitoring_master_data . '\UserController@store');
-                Route::post('update/{id}', $path_sys_monitoring_master_data . '\UserController@update');
-                Route::post('update-status', $path_sys_monitoring_master_data . '\UserController@update_status');
-                Route::post('delete', $path_sys_monitoring_master_data . '\UserController@delete');
+            Route::prefix('user')->group(function () use ($path_pemilu_master_data) {
+                Route::get('/', $path_pemilu_master_data . '\UserController@index')->name('pemilu-master-data-user');
+                Route::get('get', $path_pemilu_master_data . '\UserController@datatable');
+                Route::get('show/{id}', $path_pemilu_master_data . '\UserController@show');
+                // menampilkan data ke select2
+                Route::get('get-provinces', $path_pemilu_master_data . '\UserController@getProvinces');
+                Route::get('get-regencies', $path_pemilu_master_data . '\UserController@getRegencies');
+                Route::get('get-districts', $path_pemilu_master_data . '\UserController@getDistricts');
+                Route::get('get-villages', $path_pemilu_master_data . '\UserController@getVillages');
+                // end menampilkan data ke select2
+                Route::get('uploads/{user_id}', $path_pemilu_master_data . '\UserController@show_upload_user');
+                Route::post('store', $path_pemilu_master_data . '\UserController@store');
+                Route::post('update/{id}', $path_pemilu_master_data . '\UserController@update');
+                Route::post('update-status', $path_pemilu_master_data . '\UserController@update_status');
+                Route::post('delete', $path_pemilu_master_data . '\UserController@delete');
                 // user only
-                Route::post('update-user/{id}', $path_sys_monitoring_master_data . '\UserController@update_data_user');
+                Route::post('update-user/{id}', $path_pemilu_master_data . '\UserController@update_data_user');
             });
 
             // Data TPS
-            Route::prefix('tps')->group(function () use ($path_sys_monitoring_master_data) {
-                Route::get('/', $path_sys_monitoring_master_data . '\DataTpsController@index')->name('sys-monitoring-master-data-tps');
-                Route::get('get', $path_sys_monitoring_master_data . '\DataTpsController@datatable');
-                Route::get('show/{id}', $path_sys_monitoring_master_data . '\DataTpsController@show');
+            Route::prefix('tps')->group(function () use ($path_pemilu_master_data) {
+                Route::get('/', $path_pemilu_master_data . '\DataTpsController@index')->name('pemilu-master-data-tps');
+                Route::get('get', $path_pemilu_master_data . '\DataTpsController@datatable');
+                Route::get('show/{id}', $path_pemilu_master_data . '\DataTpsController@show');
                 // menampilkan data ke select2
-                Route::get('get-provinces', $path_sys_monitoring_master_data . '\DataTpsController@getProvinces');
-                Route::get('get-regencies', $path_sys_monitoring_master_data . '\DataTpsController@getRegencies');
-                Route::get('get-districts', $path_sys_monitoring_master_data . '\DataTpsController@getDistricts');
-                Route::get('get-villages', $path_sys_monitoring_master_data . '\DataTpsController@getVillages');
+                Route::get('get-provinces', $path_pemilu_master_data . '\DataTpsController@getProvinces');
+                Route::get('get-regencies', $path_pemilu_master_data . '\DataTpsController@getRegencies');
+                Route::get('get-districts', $path_pemilu_master_data . '\DataTpsController@getDistricts');
+                Route::get('get-villages', $path_pemilu_master_data . '\DataTpsController@getVillages');
                 // end menampilkan data ke select2
-                Route::post('store', $path_sys_monitoring_master_data . '\DataTpsController@store');
-                Route::post('update/{id}', $path_sys_monitoring_master_data . '\DataTpsController@update');
-                Route::post('update-status', $path_sys_monitoring_master_data . '\DataTpsController@statusUpdate');
-                Route::post('delete', $path_sys_monitoring_master_data . '\DataTpsController@delete');
+                Route::post('store', $path_pemilu_master_data . '\DataTpsController@store');
+                Route::post('update/{id}', $path_pemilu_master_data . '\DataTpsController@update');
+                Route::post('update-status', $path_pemilu_master_data . '\DataTpsController@statusUpdate');
+                Route::post('delete', $path_pemilu_master_data . '\DataTpsController@delete');
             });
 
         });

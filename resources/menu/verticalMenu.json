@@ -12,26 +12,26 @@
     {
       "name": "Master Data",
       "icon": "menu-icon tf-icons fa fa-server",
-      "slug": "sys-monitoring-master-data",
+      "slug": "pemilu-master-data",
       "badge": [
         "primary",
         "3"
       ],
       "submenu": [
         {
-          "url": "/sys-monitoring/master-data/caleg",
+          "url": "/pemilu/master-data/caleg",
           "name": "Data Caleg",
-          "slug": "sys-monitoring-master-data-caleg"
+          "slug": "pemilu-master-data-caleg"
         },
         {
-          "url": "/sys-monitoring/master-data/user",
+          "url": "/pemilu/master-data/user",
           "name": "Data Users",
-          "slug": "sys-monitoring-master-data-user"
+          "slug": "pemilu-master-data-user"
         },
         {
-          "url": "/sys-monitoring/master-data/tps",
+          "url": "/pemilu/master-data/tps",
           "name": "Data TPS",
-          "slug": "sys-monitoring-master-data-tps"
+          "slug": "pemilu-master-data-tps"
         }
       ]
     },
