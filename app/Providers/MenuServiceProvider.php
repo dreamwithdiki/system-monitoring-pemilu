@@ -27,12 +27,14 @@ class MenuServiceProvider extends ServiceProvider
     $verticalMenuData = json_decode($verticalMenuJson);
     $horizontalMenuJson = file_get_contents(base_path('resources/menu/horizontalMenu.json'));
     $horizontalMenuData = json_decode($horizontalMenuJson);
-    $partnerMenuJson = file_get_contents(base_path('resources/menu/partner.json'));
-    $verticalMenuPartnerData = json_decode($partnerMenuJson);
-    $adminMenuJson = file_get_contents(base_path('resources/menu/admin.json'));
-    $verticalMenuAdminData = json_decode($adminMenuJson);
+    $timsesMenuJson = file_get_contents(base_path('resources/menu/timses.json'));
+    $verticalMenuTimsesData = json_decode($timsesMenuJson);
+    $timdptMenuJson = file_get_contents(base_path('resources/menu/timdpt.json'));
+    $verticalMenuTimdptData = json_decode($timdptMenuJson);
+    $saksiMenuJson = file_get_contents(base_path('resources/menu/saksi.json'));
+    $verticalMenuSaksiData = json_decode($saksiMenuJson);
 
     // Share all menuData to all the views
-    \View::share('menuData', [$verticalMenuData, $horizontalMenuData, $verticalMenuAdminData, $verticalMenuPartnerData ]); 
+    \View::share('menuData', [$verticalMenuData, $horizontalMenuData, $verticalMenuTimsesData, $verticalMenuTimdptData, $verticalMenuSaksiData ]); 
   }
 }

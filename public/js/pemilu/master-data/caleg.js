@@ -446,6 +446,20 @@ $(function () {
           }
         }
       },
+      caleg_district: {
+          validators: {
+          notEmpty: {
+              message: 'Please select district name'
+          }
+        }
+      },
+      caleg_village: {
+          validators: {
+          notEmpty: {
+              message: 'Please select village name'
+          }
+        }
+      },
       caleg_visi_misi: {
           validators: {
           notEmpty: {
@@ -559,6 +573,20 @@ $(function () {
           validators: {
           notEmpty: {
               message: 'Please select regency name'
+          }
+        }
+      },
+      caleg_district: {
+          validators: {
+          notEmpty: {
+              message: 'Please select district name'
+          }
+        }
+      },
+      caleg_village: {
+          validators: {
+          notEmpty: {
+              message: 'Please select village name'
           }
         }
       },
@@ -848,6 +876,11 @@ $(function () {
     $('#addFormLabel > p').html('Add new caleg.');
     $('#formAddCaleg').attr('data-method', 'add');
     $('#formAddCaleg').data('method', 'add');
+
+    $('#addProvince').val('').trigger('change');
+    $('#addRegency').val('').trigger('change');
+    $('#addDistrict').val('').trigger('change');
+    $('#addVillage').val('').trigger('change');
     fv.resetForm(true);
   });
 

@@ -25,20 +25,20 @@ class LoginController extends Controller
     public function doLogin(Request $request)
     {
         $this->validate($request, [
+            // 'user_email'    => 'required|email',
             'user_identity' => 'required',
             'user_password' => 'required|min:8',
         ]);
 
-        // Check if the input is a valid NIK or email
-        $field = filter_var($request->user_identity, FILTER_VALIDATE_EMAIL) ? 'user_email' : 'user_nik';
+        $check_email = User::where("user_email", $request->user_email)->first();
 
-        $user = User::where($field, $request->user_identity)->first();
-        if (!$user) {
-            return redirect("login")->withErrors(['user_login' => ['NIK atau email tidak ditemukan']]);
-        }
-        else{
+		if(!$check_email){
+            return redirect("login")->withErrors(['user_login' => ['Email tersebut tidak ditemukan']]);
+		}else{
+            $user = User::where("user_email", $request->user_email)->first();
+
             if (!$user || !Hash::check($request->user_password, $user->user_password)) {
-                return redirect("login")->withErrors(['user_login' => ['NIK, Email atau sandi yang Anda masukkan salah']]);
+                return redirect("login")->withErrors(['user_login' => ['Email atau sandi yang Anda masukkan salah']]);
             }
             else {
                 if($user->user_status != 2){
@@ -96,6 +96,12 @@ class LoginController extends Controller
                 session()->regenerate();
 
                 return redirect("/dashboard");
+                
+                // if (session('role_id') == 1 || session('role_id') == 2) {
+                //    return redirect("/"); // key
+                // } else {
+                //    return redirect("/dashboard"); // partner
+                // }
 			}
 		}
     }

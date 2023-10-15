@@ -39,10 +39,10 @@
       "menuHeader": "DPT"
     },
     {
-      "url": "/pendukung/pedukung-dpt",
+      "url": "/pendukung/dpt",
       "name": "Data Pendukung",
-      "icon": "menu-icon tf-icons fa fa-wallet",
-      "slug": "billings-pedukung-dpt"
+      "icon": "menu-icon tf-icons fa fa-address-card ",
+      "slug": "pendukung-dpt"
     },
     {
       "menuHeader": "Report"

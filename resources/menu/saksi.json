@@ -1,0 +1,47 @@
+{
+    "menu": [
+      {
+        "url": "/",
+        "name": "Dashboard",
+        "icon": "menu-icon tf-icons fa-solid fa-house",
+        "slug": "dashboard"
+      },
+      {
+        "menuHeader": "Monitoring"
+      },
+      {
+        "name": "Master Data",
+        "icon": "menu-icon tf-icons fa fa-server",
+        "slug": "pemilu-master-data",
+        "badge": [
+          "primary",
+          "3"
+        ],
+        "submenu": [
+          {
+            "url": "/pemilu/master-data/tps",
+            "name": "Data TPS",
+            "slug": "pemilu-master-data-tps"
+          }
+        ]
+      },
+      {
+        "menuHeader": "DPT"
+      },
+      {
+        "url": "/pendukung/dpt",
+        "name": "Data Pendukung",
+        "icon": "menu-icon tf-icons fa fa-address-card ",
+        "slug": "pendukung-dpt"
+      },
+      {
+        "menuHeader": "Settings"
+      },
+      {
+        "url": "/settings/user",
+        "name": "User Profile",
+        "icon": "menu-icon tf-icons fa fa-user",
+        "slug": "settings-user"
+      }
+    ]
+  }

@@ -12,7 +12,7 @@ else if($hour > 11 && $hour <= 15) {
     $result = "Selamat Siang 🥰🥰🥰";
 }
 else if($hour > 15 && $hour <= 18) {
-    $result = "Selamat Sore 😔😔😔";
+    $result = "Selamat Sore 😄😄😄";
 }
 else if($hour > 18 && $hour <= 23) {
     $result = "Selamat Malam 😴😴😴";
@@ -24,7 +24,7 @@ else {
 
 @extends('layouts/layoutMaster')
 
-@section('title', 'Dashboard - Partner')
+@section('title', 'Dashboard - Timses')
 
 @section('vendor-style')
 <link rel="stylesheet" href="{{asset('assets/vendor/libs/sweetalert2/sweetalert2.css')}}" />
@@ -52,7 +52,7 @@ else {
         <div class="col-sm-7">
           <div class="card-body">
             <h5 class="card-title text-primary">Hello {{ session('user_uniq_name') }}, {{ $result }}</h5>
-            <p class="mb-4">Welcome back to <span class="fw-bold">VisitApp</span>.</p>
+            <p class="mb-4">Welcome back to <span class="fw-bold">Monitoring</span>.</p>
           </div>
         </div>
         <div class="col-sm-5 text-center text-sm-left">
@@ -74,7 +74,7 @@ else {
           <div class="content-left">
             <span>Visit Order (Assign)</span>
             <div class="d-flex align-items-end mt-2">
-              <h4 class="mb-0 me-2">{{ $total_visit_order_assign }}</h4>
+              <h4 class="mb-0 me-2">0</h4>
             </div>
             <small>Total Visit Order Status Assign </small>
           </div>
@@ -92,7 +92,7 @@ else {
           <div class="content-left">
             <span>Visit Order (Visited)</span>
             <div class="d-flex align-items-end mt-2">
-              <h4 class="mb-0 me-2">{{ $total_visit_order_visited }}</h4>
+              <h4 class="mb-0 me-2">0</h4>
             </div>
             <small>Total Visit Order Status Visited</small>
           </div>

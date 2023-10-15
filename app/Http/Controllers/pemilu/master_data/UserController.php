@@ -31,7 +31,7 @@ class UserController extends Controller
         if(session('role_id') == 1){
           return view('content.pemilu.master-data.user');
         } else {
-          if(session('role_id') == 3) {
+          if(session('role_id') == 2 || session('role_id') == 3 || session('role_id') == 4) {
             // Membuat objek Carbon dari string tanggal dan waktu
             $created_date = Carbon::parse(session('user_created_date'));
             // Mengubah format menjadi "d F Y \j\a\m H:i:s"
@@ -175,10 +175,12 @@ class UserController extends Controller
       if ($request->hasFile('user_photo')) {
           $image = $request->file('user_photo');
 
-          // Compress the image and save it
-          $filename = Carbon::now()->format('Hisu_').'users'.($request->user_id).'.'.$image->getClientOriginalExtension();
-          $compressedImage = Image::make($image)->fit(300, 300);
-          Storage::disk('public')->put('users_uploads/'.$filename, $compressedImage->encode());
+           // Compress the image and save it
+           $filename = Carbon::now()->format('Hisu_').'users'.($request->caleg_id).'.'.$image->getClientOriginalExtension();
+           $compressedImage = Image::make($image)->resize(300, 300, function ($constraint) {
+               $constraint->aspectRatio();
+           });
+           Storage::disk('public')->put('users_uploads/'.$filename, $compressedImage->encode());
       } else {
           // If no photo is uploaded, use default.jpeg
           $filename = 'default.jpeg';
@@ -303,8 +305,10 @@ class UserController extends Controller
                 Storage::disk('public')->delete('users_uploads/' . $oldImage);
             }
             // Compress the image and save it
-            $filename = Carbon::now()->format('Hisu_').'users'.($request->user_id).'.'.$image->getClientOriginalExtension();
-            $compressedImage = Image::make($image)->fit(300, 300);
+            $filename = Carbon::now()->format('Hisu_').'users'.($request->caleg_id).'.'.$image->getClientOriginalExtension();
+            $compressedImage = Image::make($image)->resize(300, 300, function ($constraint) {
+                $constraint->aspectRatio();
+            });
             Storage::disk('public')->put('users_uploads/'.$filename, $compressedImage->encode());
 
             // Update the user_photo column only if the photo is changed

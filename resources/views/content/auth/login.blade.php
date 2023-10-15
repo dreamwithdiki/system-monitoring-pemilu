@@ -63,14 +63,24 @@ $customizerHidden = 'customizer-hide';
             @enderror
           <form id="formAuthentication" class="mb-3" action="{{ route('auth-do-login') }}" method="POST">
             @csrf
-            <div class="mb-3">
-              <label for="email" class="form-label">Email or Username</label>
-              <input type="text" class="form-control" id="email" name="user_email" placeholder="Enter your email or username" autofocus>
+            {{-- <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="text" class="form-control" id="email" name="user_email" placeholder="Enter your email" autofocus>
               @error('user_email')
                 <div class="invalid-feedback">
                     {{ $message }}
                 </div>
               @enderror
+            </div> --}}
+
+            <div class="mb-3">
+                <label for="user_identity" class="form-label">NIK or Email</label>
+                <input type="text" class="form-control" id="user_identity" name="user_identity" placeholder="Enter your NIK or email" autofocus>
+                @error('user_identity')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
             </div>
             <div class="mb-3 form-password-toggle">
               {{-- <div class="d-flex justify-content-between">

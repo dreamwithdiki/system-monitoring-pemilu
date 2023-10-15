@@ -5,10 +5,12 @@
 'use strict';
 
 $(function () {
-  var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-  var dt_ajax_table = $('.datatables-ajax');
-  var modal_add_partner = $('#modalAddPartner');
-  var modal_edit_partner = $('#modalEditPartner');
+  var CSRF_TOKEN         = $('meta[name="csrf-token"]').attr('content');
+  var dt_ajax_table      = $('.datatables-ajax');
+  var modal_add_dpt      = $('#modalAddDpt');
+  var modal_edit_dpt     = $('#modalEditDpt');
+  var ac_tps             = $('.ac_tps');
+  var ac_edit_tps        = $('.ac_edit_tps');
   var modal_class_loader = $('.modal-block-loader');
   var typingTimer;
   
@@ -18,9 +20,34 @@ $(function () {
     }
   });
 
+   // Select2 tps handler
+   if (ac_tps.length) {
+    var $this = ac_tps;
+    $this.wrap('<div class="position-relative"></div>').select2({
+      placeholder: 'Select TPS',
+      minimumInputLength: 0,
+      ajax: {
+        url: baseUrl + 'autocomplete/tps/find',
+        dataType: 'json',
+        data: function (params) {
+          return {
+            _token: CSRF_TOKEN,
+            search: params.term // search term
+          };
+        },
+        processResults: function (response) {
+          return {
+            results: response
+          };
+        },
+      },
+      dropdownParent: $this.parent()
+    });
+  }
+
   // Mengirim permintaan Ajax untuk mendapatkan data Province
   $.ajax({
-    url: baseUrl + 'site-visit/master-data/partner/get-provinces',
+    url: baseUrl + 'pendukung/dpt/get-provinces',
     type: 'GET',
     dataType: 'json',
     success: function(response) {
@@ -77,7 +104,7 @@ $(function () {
 
     // Mengirim permintaan Ajax untuk mendapatkan data Regency berdasarkan Province yang dipilih
     $.ajax({
-      url: baseUrl + 'site-visit/master-data/partner/get-regencies',
+      url: baseUrl + 'pendukung/dpt/get-regencies',
       type: 'GET',
       data: { provinceId: provinceId },
       dataType: 'json',
@@ -144,7 +171,7 @@ $(function () {
 
     // Mengirim permintaan Ajax untuk mendapatkan data District berdasarkan Regency yang dipilih
     $.ajax({
-      url: baseUrl + 'site-visit/master-data/partner/get-districts',
+      url: baseUrl + 'pendukung/dpt/get-districts',
       type: 'GET',
       data: { regencyId: regencyId },
       dataType: 'json',
@@ -205,7 +232,7 @@ $(function () {
 
     // Mengirim permintaan Ajax untuk mendapatkan data Village berdasarkan District yang dipilih
     $.ajax({
-      url: baseUrl + 'site-visit/master-data/partner/get-villages',
+      url: baseUrl + 'pendukung/dpt/get-villages',
       type: 'GET',
       data: { districtId: districtId },
       dataType: 'json',
@@ -255,9 +282,9 @@ $(function () {
       serverSide: true,
       initComplete: onInit,
       ajax: {
-        url: baseUrl + 'site-visit/master-data/partner/get',
+        url: baseUrl + 'pendukung/dpt/get',
         beforeSend: function () {
-          window.Helpers.blockUIPageLoader(baseUrl + 'site-visit/master-data/partner/get');
+          window.Helpers.blockUIPageLoader(baseUrl + 'pendukung/dpt/get');
         },
         complete: function () {
           $.unblockUI();
@@ -281,50 +308,30 @@ $(function () {
       },
       columns: [
         { data: 'no', orderable: false },
-        {
-          data: 'partner_photo',
-          render: function(data, type, row, meta) {
-            if (data !== "" && data !== null && data !== undefined) {
-              var images = '';
-              var partner_files = data.split(',');
-              for (var i = 0; i < partner_files.length; i++) {
-                var url = baseUrl + 'site-visit/master-data/partner/uploads/' + row.partner_id;
-                url = url.replace(':filename', partner_files[i]);
-                images += '<img src="' + url + '" width="50px" height="50px" class="rounded-circle" />';
+        { data: 'dpt_nik' },
+        { data: 'dpt_name' },
+        { data: 'dpt_jenkel', 
+          render: function (data, type, row, meta) {
+              if (data == 1) {
+                  return '<span class="badge bg-primary">Laki-Laki</span>';
+              } else if (data == 2) {
+                  return '<span class="badge bg-success">Perempuan</span>';
+              } else {
+                  return '<span class="badge bg-danger">Unknown</span>';
               }
-              return images;
-            } else {
-              return 'No Photo';
-            }
           },
           orderable: false
         },
-        { data: 'partner_name' },
-        {
-          data: 'partner_address',
-          orderable: false,
-          render: function(data, type, row) {
-            if (data) {
-              var expanded = row.expanded ? row.expanded : false;
-        
-              if (!expanded) {
-                var shortDesc = data.length > 30 ? data.substr(0, 30) + '...' : data;
-                var showMoreHtml = data.length > 30 ? '<a href="javascript:void(0);" class="show-more">Show More</a>' : '';
-                return '<div style="white-space: pre-wrap;" class="short-desc">' + shortDesc + '</div>' + showMoreHtml;
-              } else {
-                return '<div style="white-space: pre-wrap;" class="full-desc">' + data + '</div><a href="javascript:void(0);" class="show-less">Show Less</a>';
-              }
-            } else {
-              return '-';
-            }
-          }
-        },
-        { data: 'total_visit', orderable: false },
-        { data: 'partner_status', orderable: false }
+        { data: 'dpt_province' },
+        { data: 'dpt_regency' },
+        { data: 'dpt_district' },
+        { data: 'dpt_village' },
+        { data: 'tps_name' },
+        { data: 'dpt_status', orderable: false }
       ],
       columnDefs: [
         {
-          targets: 5,
+          targets: 9,
           searchable: false,
           orderable: false,
           render: function (data, type, row, meta) {
@@ -336,7 +343,7 @@ $(function () {
           }
         },
         {
-          targets: 6,
+          targets: 10,
           searchable: false,
           orderable: false,
           render: function (data, type, row, meta) {
@@ -344,17 +351,30 @@ $(function () {
               '<div class="d-inline-block text-nowrap">' +
                   '<button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>' +
                   '<div class="dropdown-menu">' +
-                      '<a id="dropdownMenuEdit" data-id="' + row.partner_id + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit me-1"></i> Edit</a>' +
-                      '<a id="dropdownMenuActivate" data-id="' + row.partner_id + '" data-status="2" class="dropdown-item dropdownMenuStatusUpdate" href="javascript:void(0);"><i class="bx bx-check me-1"></i> Activate</a>' +
-                      '<a id="dropdownMenuDeactivate" data-id="' + row.partner_id + '" data-status="1" class="dropdown-item dropdownMenuStatusUpdate" href="javascript:void(0);"><i class="bx bx-x me-1"></i> Deactivate</a>' +
-                      '<a id="dropdownMenuDelete" data-id="' + row.partner_id + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Delete</a>' +
+                      '<a id="dropdownMenuEdit" data-id="' + row.dpt_id + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit me-1"></i> Edit</a>' +
+                      '<a id="dropdownMenuActivate" data-id="' + row.dpt_id + '" data-status="2" class="dropdown-item dropdownMenuStatusUpdate" href="javascript:void(0);"><i class="bx bx-check me-1"></i> Activate</a>' +
+                      '<a id="dropdownMenuDeactivate" data-id="' + row.dpt_id + '" data-status="1" class="dropdown-item dropdownMenuStatusUpdate" href="javascript:void(0);"><i class="bx bx-x me-1"></i> Deactivate</a>' +
+                      '<a id="dropdownMenuDelete" data-id="' + row.dpt_id + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Delete</a>' +
                   '</div>' +
               '</div>';
           }
         }
       ],
       order: [[0, 'asc']],
-      dom: '<"row"<"col-sm-12 col-md-6"l>><"table-responsive"t><"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>'
+      dom: '<"row"<"col-sm-12 col-md-6"l>><"table-responsive"t><"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+      drawCallback: function (settings) {
+          // Cek jumlah data yang ditampilkan setelah DataTable digambar
+          var api = this.api();
+          var rowCount = api.rows().count();
+
+          if (rowCount === 0) {
+              // Sembunyikan elemen pagination jika tidak ada data
+              $('.dataTables_paginate').hide();
+          } else {
+              // Tampilkan elemen pagination jika ada data
+              $('.dataTables_paginate').show();
+          }
+      }
     });
   }
 
@@ -395,63 +415,59 @@ $(function () {
   });
   
   // Add Form
-  var add_partner_form = document.getElementById('formAddPartner');
+  var add_dpt_form = document.getElementById('formAddDpt');
 
-  // Site Form Validation
-  var fv = FormValidation.formValidation(add_partner_form, {
+  // Caleg Form Validation
+  var fv = FormValidation.formValidation(add_dpt_form, {
     fields: {
-      partner_name: {
+      dpt_nik: {
         validators: {
           notEmpty: {
-            message: 'Please enter partner name'
+            message: 'Please enter NIK'
           }
         }
       },
-      partner_nik: {
+      dpt_name: {
         validators: {
-            notEmpty: {
-              message: 'Please enter partner NIK'
-            }
-          }
-      },
-      partner_email: {
-        validators: {
-          emailAddress: {
-            message: 'Please enter valid email address'
-          },
           notEmpty: {
-            message: 'Please enter partner email'
+            message: 'Please enter name'
           }
         }
       },
-      partner_phone: {
-        validators: {
-          notEmpty: {
-            message: 'Please enter partner mobile phone'
-          },
-          regexp: {
-            message: 'Please enter a valid partner phone',
-            regexp: /^\+?[0-9]+$/,
-          }
-        }
-      },
-      partner_postal_code: {
-      },
-      partner_province: {
+      dpt_province: {
           validators: {
           notEmpty: {
               message: 'Please select province name'
           }
         }
       },
-      partner_regency: {
+      dpt_regency: {
           validators: {
           notEmpty: {
               message: 'Please select regency name'
           }
         }
       },
-      partner_desc: {
+      dpt_district: {
+          validators: {
+          notEmpty: {
+              message: 'Please select district name'
+          }
+        }
+      },
+      dpt_village: {
+          validators: {
+          notEmpty: {
+              message: 'Please select village name'
+          }
+        }
+      },
+      tps_id: {
+          validators: {
+          notEmpty: {
+              message: 'Please select TPS'
+          }
+        }
       }
     },
     plugins: {
@@ -470,20 +486,20 @@ $(function () {
       autoFocus: new FormValidation.plugins.AutoFocus()
     }
   }).on('core.form.valid', function () {
-    // Adding partner when form successfully validate
-    if ($('#formAddPartner').data('method') == 'add') {
-      var url = "site-visit/master-data/partner/store";
+    // Adding tps when form successfully validate
+    if ($('#formAddDpt').data('method') == 'add') {
+      var url = "pendukung/dpt/store";
     } else {
       var url = "";
     }
 
     $.ajax({
-      data: $('#formAddPartner').serialize(),
+      data: $('#formAddDpt').serialize(),
       url: baseUrl + url,
       type: 'POST',
       success: function success(response) {
         dt_ajax.draw();
-        modal_add_partner.modal('hide');
+        modal_add_dpt.modal('hide');
 
         if (response.status) {
           Swal.fire({
@@ -506,7 +522,7 @@ $(function () {
         }
       },
       error: function error(err) {
-        modal_add_partner.modal('hide');
+        modal_add_dpt.modal('hide');
         Swal.fire({
           title: 'Error!',
           text: 'Internal server error.',
@@ -520,73 +536,58 @@ $(function () {
   });
   // End Add Form
 
-  var editPartnerForm = document.getElementById('formEditPartner');
-  // edit partner form validation
-  var fvEdit = FormValidation.formValidation(editPartnerForm, {
-      fields: {
-        partner_code: {
+  var editDptForm = document.getElementById('formEditDpt');
+  // edit caleg form validation
+  var fvEdit = FormValidation.formValidation(editDptForm, {
+    fields: {
+      dpt_nik: {
         validators: {
           notEmpty: {
-            message: 'Please enter partner code'
+            message: 'Please enter NIK'
           }
         }
       },
-      partner_name: {
+      dpt_name: {
         validators: {
           notEmpty: {
-            message: 'Please enter partner name'
+            message: 'Please enter name'
           }
         }
       },
-      partner_nik: {
-        validators: {
-            notEmpty: {
-              message: 'Please enter partner NIK'
-            }
-          }
-      },
-      partner_email: {
-        validators: {
-          emailAddress: {
-            message: 'Please enter valid email address'
-          },
-          notEmpty: {
-            message: 'Please enter partner email'
-          }
-        }
-      },
-      partner_address: {
-        validators: {
-          notEmpty: {
-            message: 'Please enter partner address'
-          }
-        }
-      },
-      partner_postal_code: {
-      },
-      partner_province: {
+      dpt_province: {
           validators: {
           notEmpty: {
               message: 'Please select province name'
           }
         }
       },
-      partner_regency: {
+      dpt_regency: {
           validators: {
           notEmpty: {
               message: 'Please select regency name'
           }
         }
       },
-      partner_phone: {
-        validators: {
-            regexp: {
-              message: 'Please enter a valid partner phone',
-              regexp: /^\+?[0-9]+$/,
-            }
+      dpt_district: {
+          validators: {
+          notEmpty: {
+              message: 'Please select district name'
           }
+        }
       },
-      partner_desc: {
+      dpt_village: {
+          validators: {
+          notEmpty: {
+              message: 'Please select village name'
+          }
+        }
+      },
+      tps_id: {
+          validators: {
+          notEmpty: {
+              message: 'Please select TPS'
+          }
+        }
       }
     },
     plugins: {
@@ -606,22 +607,19 @@ $(function () {
     }
   }).on('core.form.valid', function () {
 
-    if ($('#formEditPartner').data('method') == 'edit') {
-      var url = "site-visit/master-data/partner/update/" + $('#formEditPartner').attr('data-id');
+    if ($('#formEditDpt').data('method') == 'edit') {
+      var url = "pendukung/dpt/update/" + $('#formEditDpt').attr('data-id');
     } else {
       var url = "";
     }
-    var form_data = new FormData(editPartnerForm); 
 
     $.ajax({
-      data: form_data,
+      data: $('#formEditDpt').serialize(),
       url: baseUrl + url,
       type: 'POST',
-      processData: false,
-      contentType: false,
       success: function success(response) {
         dt_ajax.draw();
-        modal_edit_partner.modal('hide');
+        modal_edit_dpt.modal('hide');
         if (response.status) {
           Swal.fire({
             icon: 'success',
@@ -643,7 +641,7 @@ $(function () {
         }
       },
       error: function error(err) {
-        modal_edit_partner.modal('hide');
+        modal_edit_dpt.modal('hide');
         Swal.fire({
           title: 'Error!',
           text: 'Internal server error.',
@@ -659,44 +657,43 @@ $(function () {
   
   // Edit button handler
   $(document).on('click', '#dropdownMenuEdit', function () {
-    var partner_id = $(this).data('id');
+    var dpt_id = $(this).data('id');
 
     // get data
     $.ajax({
-      url: baseUrl + "site-visit/master-data/partner/show/" + partner_id,
+      url: baseUrl + "pendukung/dpt/show/" + dpt_id,
       type: 'GET',
       beforeSend: function(data) {
         window.Helpers.blockUIModalLoader(modal_class_loader);
       },
       success: function(response) {
-        if (response.data.partner_status == 2) {
+        if (response.data.dpt_status == 2) {
           $('#editStatus').prop('checked', true);
         } else {
           $('#editStatus').prop('checked', false);
         }
 
-        $('#editCode').val(response.data.partner_code);
-        $('#editName').val(response.data.partner_name);
-        $('#editNIK').val(response.data.partner_nik);
-
-        // Display current photo
-        if (response.data.partner_photo) {
-          var photoUrl = baseUrl + 'site-visit/master-data/partner/uploads/' + partner_id + '?' + Date.now();
-          $('.current-photo').attr('src', photoUrl);
+        $('#editNik').val(response.data.dpt_nik);
+        $('#editName').val(response.data.dpt_name);
+        
+        if (response.data.dpt_jenkel == 1) {
+            $('#addParamMan').prop('checked', true);
+        } else {
+            $('#addParamWoman').prop('checked', true);
         }
-        // Set value of oldImage input
-        $('#oldImage').val(response.data.partner_photo);
 
-        $('#editEmail').val(response.data.partner_email);
-        $('#editAddress').val(response.data.partner_address);
-        $('#editPostalCode').val(response.data.partner_postal_code);
+        if (response.data.tps) {
+          var tpsLabel = response.data.tps.tps_code + " - " + response.data.tps.tps_name;
+          var option = new Option(tpsLabel, response.data.tps.tps_id, true, true);
+          $('#editTps').append(option).trigger('change');
+        }        
 
         // Kosongkan dropdown "Province" sebelum menambahkan opsi-opsi baru
         $('#editProvince').empty();
 
         // Mendapatkan data provinces
         $.ajax({
-          url: baseUrl + 'site-visit/master-data/partner/get-provinces',
+          url: baseUrl + 'pendukung/dpt/get-provinces',
           type: 'GET',
           dataType: 'json',
           success: function(provinceResponse) {
@@ -744,25 +741,23 @@ $(function () {
           $('#editVillage').append(option).trigger('change');
         }
 
-        $('#editPhone').val(response.data.partner_phone);
-        $('#editDesc').val(response.data.partner_desc);
         modal_class_loader.unblock();
       }
     });
 
-    $('#editFormLabel > p').html('Edit partner.');
-    $('#formEditPartner').attr('data-method', 'edit');
-    $('#formEditPartner').data('method', 'edit');
-    $('#formEditPartner').attr('data-id', partner_id);
-    modal_edit_partner.modal('show');
+    $('#editFormLabel > p').html('Edit DPT.');
+    $('#formEditDpt').attr('data-method', 'edit');
+    $('#formEditDpt').data('method', 'edit');
+    $('#formEditDpt').attr('data-id', dpt_id);
+    modal_edit_dpt.modal('show');
   });
   
   // Active / Deactive status button handler
   $(document).on('click', '.dropdownMenuStatusUpdate', function () {
-    var partner_id = $(this).data('id'),
-      partner_status = $(this).data('status');
+    var dpt_id = $(this).data('id'),
+      dpt_status = $(this).data('status');
 
-    if (partner_status == 2) {
+    if (dpt_status == 2) {
       var confirmText = 'Yes, active it!',
         confirmStyle = 'btn btn-success me-3';
     } else {
@@ -784,9 +779,9 @@ $(function () {
     }).then(function (result) {
       if (result.value) {
         $.ajax({
-          data: {partner_id: partner_id, partner_status: partner_status},
+          data: {dpt_id: dpt_id, dpt_status: dpt_status},
           type: 'POST',
-          url: baseUrl + 'site-visit/master-data/partner/update-status',
+          url: baseUrl + 'pendukung/dpt/update-status',
           success: function success(response) {
             dt_ajax.draw();
             Swal.fire({
@@ -815,7 +810,7 @@ $(function () {
 
   // Delete button handler
   $(document).on('click', '#dropdownMenuDelete', function () {
-    var partner_id = $(this).data('id');
+    var dpt_id = $(this).data('id');
 
     Swal.fire({
       title: 'Are you sure?',
@@ -831,9 +826,9 @@ $(function () {
     }).then(function (result) {
       if (result.value) {
         $.ajax({
-          data: {partner_id: partner_id},
+          data: {dpt_id: dpt_id},
           type: 'POST',
-          url: baseUrl + 'site-visit/master-data/partner/delete',
+          url: baseUrl + 'pendukung/dpt/delete',
           success: function success(response) {
             dt_ajax.draw();
             Swal.fire({
@@ -861,42 +856,50 @@ $(function () {
   });
   
   // Clearing form data when modal hidden
-  modal_add_partner.on('hidden.bs.modal', function () {
-    $('#addFormLabel > p').html('Add new partner.');
-    $('#formAddPartner').attr('data-method', 'add');
-    $('#formAddPartner').data('method', 'add');
+  modal_add_dpt.on('hidden.bs.modal', function () {
+    $('#addFormLabel > p').html('Add new DPT.');
+    $('#formAddDpt').attr('data-method', 'add');
+    $('#formAddDpt').data('method', 'add');
+
+    $('#addProvince').val('').trigger('change');
+    $('#addRegency').val('').trigger('change');
+    $('#addDistrict').val('').trigger('change');
+    $('#addVillage').val('').trigger('change');
     fv.resetForm(true);
   });
 
-  modal_edit_partner.on('hidden.bs.modal', function () {
-    // fvEdit.resetForm(true);
-    $('#partner_photo').val(null);
-    $('#imagePreview').empty();
-    $('#imagePreview').html('<img src="#" class="img-fluid" style="max-width: 100%; height: auto;">');
-    $('#imagePreview').css("background-image", "none");
+  modal_edit_dpt.on('hidden.bs.modal', function () {
+    fvEdit.resetForm(true);
   });
 
-  // Image Preview
-  $(function() {
-      $("#partner_photo").on("change", function()
-      {
-          var files = !!this.files ? this.files : [];
-          if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
-          
-          if (/^image/.test( files[0].type)){ // only image file
-              var reader = new FileReader(); // instance of the FileReader
-              reader.readAsDataURL(files[0]); // read the local file
-              
-              reader.onloadend = function(){ // set image data as background of div
-                  $("#imagePreview").css("background-image", "url("+this.result+")");
-              }
-          }
-      });
-  });
+  // Select2 edit tps handler
+  if (ac_edit_tps.length) {
+    var $this = ac_edit_tps;
+    $this.wrap('<div class="position-relative"></div>').select2({
+      placeholder: 'Select TPS',
+      minimumInputLength: 0,
+      ajax: {
+        url: baseUrl + 'autocomplete/tps/find',
+        dataType: 'json',
+        data: function (params) {
+          return {
+            _token: CSRF_TOKEN,
+            search: params.term // search term
+          };
+        },
+        processResults: function (response) {
+          return {
+            results: response
+          };
+        },
+      },
+      dropdownParent: $this.parent()
+    });
+  }
 
   // Mengirim permintaan Ajax untuk mendapatkan data Province
   $.ajax({
-    url: baseUrl + 'site-visit/master-data/partner/get-provinces',
+    url: baseUrl + 'pendukung/dpt/get-provinces',
     type: 'GET',
     dataType: 'json',
     success: function(response) {
@@ -953,7 +956,7 @@ $(function () {
 
     // Mengirim permintaan Ajax untuk mendapatkan data Regency berdasarkan Province yang dipilih
     $.ajax({
-      url: baseUrl + 'site-visit/master-data/partner/get-regencies',
+      url: baseUrl + 'pendukung/dpt/get-regencies',
       type: 'GET',
       data: { provinceId: provinceId },
       dataType: 'json',
@@ -1020,7 +1023,7 @@ $(function () {
 
     // Mengirim permintaan Ajax untuk mendapatkan data District berdasarkan Regency yang dipilih
     $.ajax({
-      url: baseUrl + 'site-visit/master-data/partner/get-districts',
+      url: baseUrl + 'pendukung/dpt/get-districts',
       type: 'GET',
       data: { regencyId: regencyId },
       dataType: 'json',
@@ -1081,7 +1084,7 @@ $(function () {
 
     // Mengirim permintaan Ajax untuk mendapatkan data Village berdasarkan District yang dipilih
     $.ajax({
-      url: baseUrl + 'site-visit/master-data/partner/get-villages',
+      url: baseUrl + 'pendukung/dpt/get-villages',
       type: 'GET',
       data: { districtId: districtId },
       dataType: 'json',

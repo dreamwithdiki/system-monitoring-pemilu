@@ -25,15 +25,143 @@ class DataTpsController extends Controller
      */
     public function index()
     {
-        if(session('role_id') == 1){
+        if(session('role_id') == 1 || session('role_id') == 2 || session('role_id') == 4){
             return view('content.pemilu.master-data.tps');
             } else {
             return view('content.pages.pages-misc-not-authorized');
         }
     }
 
+    public function find(Request $request)
+    {
+      $search = $request->search;
+      $data_tps = DataTps::orderby('tps_id', 'DESC')
+        ->select('tps_id', 'tps_code', 'tps_name')
+        ->where('tps_name', 'like', '%' . $search . '%')
+        ->orWhere('tps_code', 'like', '%' . $search . '%')
+        ->isActive()
+        ->get();  
+
+      $response = array();
+      foreach ($data_tps as $tps) {
+        $response[] = array(
+          "id"    => $tps->tps_id,
+          "text"  => $tps->tps_code . ' - ' . $tps->tps_name
+        );
+      }
+
+      return response()->json($response);
+    }
+
+    // public function datatable(Request $request)
+    // {
+    //     $columns = [
+    //       0 => 'tps_id',
+    //       1 => 'tps_code',
+    //       2 => 'tps_name',
+    //       3 => 'tps_address',
+    //       4 => 'tps_province',
+    //       5 => 'tps_regency',
+    //       6 => 'tps_district',
+    //       7 => 'tps_village',
+    //       8 => 'tps_saksi', // buat status 4 = saksi
+    //       9 => 'tps_suara_caleg',
+    //       9 => 'tps_suara_partai',
+    //       9 => 'tps_docs',
+    //     ];
+
+    //     $search = [];
+    //     $totalData = DataTps::with('province', 'regency', 'district', 'village', 'role')->where('tps_status', '!=', 5)->count();
+    //     $totalFiltered = $totalData;
+
+    //     if (!empty($request->input())) {
+    //         $limit = $request->input('length');
+    //         $start = $request->input('start');
+    //         $order = $columns[$request->input('order.0.column')];
+    //         $dir = $request->input('order.0.dir');
+    
+    //         if (empty($request->input('search.value'))) {
+    //           $data_tps = DataTps::where('tps_status', '!=', 5)
+    //             ->offset($start)
+    //             ->limit($limit)
+    //             ->orderBy($order, $dir)
+    //             ->get();
+    //         } else {
+    //           $search = $request->input('search.value');
+    
+    //           $data_tps = DataTps::with('province', 'regency', 'district', 'village', 'role')->where('tps_code', 'LIKE', "%{$search}%")
+    //             ->where('tps_status', '!=', 5)
+    //             ->orWhere('tps_name', 'LIKE', "%{$search}%")
+    //             ->orWhereRelation('province', 'name', 'LIKE', "%{$search}%")
+    //             ->orWhereRelation('district', 'name', 'LIKE', "%{$search}%")
+    //             ->orWhereRelation('regency', 'name', 'LIKE', "%{$search}%")
+    //             ->orWhereRelation('village', 'name', 'LIKE', "%{$search}%")
+    //             ->orWhereRelation('role', 'role_name', 'LIKE', "%{$search}%")
+    //             ->offset($start)
+    //             ->limit($limit)
+    //             ->orderBy($order, $dir)
+    //             ->get();
+    
+    //           $totalFiltered = DataTps::with('province', 'regency', 'district', 'village', 'role')->where('tps_code', 'LIKE', "%{$search}%")
+    //             ->where('tps_status', '!=', 5)
+    //             ->orWhere('tps_name', 'LIKE', "%{$search}%")
+    //             ->orWhereRelation('province', 'name', 'LIKE', "%{$search}%")
+    //             ->orWhereRelation('district', 'name', 'LIKE', "%{$search}%")
+    //             ->orWhereRelation('regency', 'name', 'LIKE', "%{$search}%")
+    //             ->orWhereRelation('village', 'name', 'LIKE', "%{$search}%")
+    //             ->orWhereRelation('role', 'role_name', 'LIKE', "%{$search}%")
+    //             ->count();
+    //         }
+    //     } else {
+    //       $start = 0;  
+    //       $data_tps = DataTps::with('province', 'regency', 'district', 'village', 'role')->where('tps_status', '!=', 5)->get();
+    //     }
+
+    //     $data = [];
+
+    //     if (!empty($data_tps)) {
+    //       $no = $start;
+    //       foreach ($data_tps as $tps) {
+    //         $nestedData['no']               = ++$no;
+    //         $nestedData['tps_id']           = Crypt::encrypt($tps->tps_id);
+    //         $nestedData['tps_code']         = $tps->tps_code;
+    //         $nestedData['tps_name']         = $tps->tps_name;
+    //         $nestedData['tps_address']      = $tps->tps_address;
+    //         $nestedData['tps_province']     = $tps->province->name;
+    //         $nestedData['tps_regency']      = $tps->regency->name;
+    //         $nestedData['tps_district']     = $tps->district->name;
+    //         $nestedData['tps_village']      = $tps->village->name;
+    //         $nestedData['role_name']        = $tps->role->role_name;
+    //         $nestedData['tps_suara_caleg']  = $tps->tps_suara_caleg;
+    //         $nestedData['tps_suara_partai'] = $tps->tps_suara_partai;
+    //         $nestedData['tps_docs']         = $tps->tps_docs;
+    //         $nestedData['tps_status']       = $tps->tps_status;
+    //         $data[] = $nestedData;
+    //       }
+    //     }
+
+    //     if ($data) {
+    //       return response()->json([
+    //         'draw' => intval($request->input('draw')),
+    //         'recordsTotal' => intval($totalData),
+    //         'recordsFiltered' => intval($totalFiltered),
+    //         'code' => 200,
+    //         'data' => $data,
+    //       ]);
+    //     } else {
+    //       return response()->json([
+    //         'message' => 'Internal Server Error',
+    //         'code' => 500,
+    //         'data' => [],
+    //       ]);
+    //     }
+    // }
+
     public function datatable(Request $request)
     {
+
+        $role_id = session('role_id');
+
         $columns = [
           0 => 'tps_id',
           1 => 'tps_code',
@@ -43,15 +171,16 @@ class DataTpsController extends Controller
           5 => 'tps_regency',
           6 => 'tps_district',
           7 => 'tps_village',
-          8 => 'role_id', // buat status 4 = saksi
+          8 => 'tps_saksi', // buat status 4 = saksi
           9 => 'tps_suara_caleg',
           9 => 'tps_suara_partai',
           9 => 'tps_docs',
         ];
 
         $search = [];
-        $totalData = DataTps::where('tps_status', '!=', 5)->count();
-        $totalFiltered = $totalData;
+        $totalData = 0;
+        $totalFiltered = 0;
+        $data_tps = [];
 
         if (!empty($request->input())) {
             $limit = $request->input('length');
@@ -60,16 +189,38 @@ class DataTpsController extends Controller
             $dir = $request->input('order.0.dir');
     
             if (empty($request->input('search.value'))) {
-              $data_tps = DataTps::where('tps_status', '!=', 5)
-                ->offset($start)
-                ->limit($limit)
-                ->orderBy($order, $dir)
-                ->get();
+               // Logika berdasarkan role_id
+               if ($role_id == 1) {
+                  // Jika role_id adalah 1, tampilkan semua data
+                  $totalData = DataTps::where('tps_status', '!=', 5)->count();
+                  $totalFiltered = $totalData;
+                  // Tambahkan logika query sesuai kebutuhan
+                  $data_tps = DataTps::with('province', 'regency', 'district', 'village', 'role')
+                      ->where('tps_status', '!=', 5)
+                      ->offset($start)
+                      ->limit($limit)
+                      ->orderBy($order, $dir)
+                      ->get();
+              } elseif ($role_id >= 2 && $role_id <= 4) {
+                  // Jika role_id adalah 2, 3, atau 4, tampilkan data yang sesuai dengan role_id
+                  $totalData = DataTps::where('tps_status', '!=', 5)
+                      ->where('role_id', $role_id)
+                      ->count();
+                  $totalFiltered = $totalData;
+                  // Tambahkan logika query sesuai kebutuhan
+                  $data_tps = DataTps::with('province', 'regency', 'district', 'village', 'role')
+                      ->where('tps_status', '!=', 5)
+                      ->where('role_id', $role_id)
+                      ->offset($start)
+                      ->limit($limit)
+                      ->orderBy($order, $dir)
+                      ->get();
+              }
             } else {
               $search = $request->input('search.value');
     
-              $data_tps = DataTps::Where('tps_code', 'LIKE', "%{$search}%")
-                ->orWhere('tps_status', '!=', 5)
+              $data_tps = DataTps::with('province', 'regency', 'district', 'village', 'role')->where('tps_code', 'LIKE', "%{$search}%")
+                ->where('tps_status', '!=', 5)
                 ->orWhere('tps_name', 'LIKE', "%{$search}%")
                 ->orWhereRelation('province', 'name', 'LIKE', "%{$search}%")
                 ->orWhereRelation('district', 'name', 'LIKE', "%{$search}%")
@@ -81,8 +232,8 @@ class DataTpsController extends Controller
                 ->orderBy($order, $dir)
                 ->get();
     
-              $totalFiltered = DataTps::Where('tps_code', 'LIKE', "%{$search}%")
-                ->orWhere('tps_status', '!=', 5)
+              $totalFiltered = DataTps::with('province', 'regency', 'district', 'village', 'role')->where('tps_code', 'LIKE', "%{$search}%")
+                ->where('tps_status', '!=', 5)
                 ->orWhere('tps_name', 'LIKE', "%{$search}%")
                 ->orWhereRelation('province', 'name', 'LIKE', "%{$search}%")
                 ->orWhereRelation('district', 'name', 'LIKE', "%{$search}%")
@@ -93,7 +244,7 @@ class DataTpsController extends Controller
             }
         } else {
           $start = 0;  
-          $data_tps = DataTps::where('tps_status', '!=', 5)->get();
+          $data_tps = DataTps::with('province', 'regency', 'district', 'village', 'role')->where('tps_status', '!=', 5)->get();
         }
 
         $data = [];
@@ -150,10 +301,10 @@ class DataTpsController extends Controller
             'tps_address'       => 'required|max:255',
             'tps_province'      => 'required',
             'tps_regency'       => 'required',
-            'role_id'           => 'required',
+            'tps_saksi'         => 'required',
             'tps_suara_caleg'   => 'required',
             'tps_suara_partai'  => 'required',
-            'tps_docs'          => 'required|file|image|mimes:jpeg,png,jpg|max:1024',
+            'tps_docs'          => 'required|file|image|mimes:jpeg,png,jpg',
         ]);
   
         //  dd($validator->errors());
@@ -175,13 +326,15 @@ class DataTpsController extends Controller
         $timeNow = Carbon::now()->format('Ymd');
 
         // Check if a photo is uploaded
-        if ($request->hasFile('tps_photo')) {
-            $image = $request->file('tps_photo');
+        if ($request->hasFile('tps_docs')) {
+            $image = $request->file('tps_docs');
 
-            // Compress the image and save it
-            $filename = Carbon::now()->format('Hisu_').'tps'.($request->tps_id).'.'.$image->getClientOriginalExtension();
-            $compressedImage = Image::make($image)->fit(300, 300);
-            Storage::disk('public')->put('tps_uploads/'.$timeNow.'/'.$filename, $compressedImage->encode());
+             // Compress the image and save it
+             $filename = Carbon::now()->format('Hisu_').'tps'.($request->caleg_id).'.'.$image->getClientOriginalExtension();
+             $compressedImage = Image::make($image)->resize(300, 300, function ($constraint) {
+                 $constraint->aspectRatio();
+             });
+             Storage::disk('public')->put('tps_uploads/'.$timeNow.'/'.$filename, $compressedImage->encode());
         } else {
             // If no photo is uploaded, use default.jpeg
             $filename = 'default.jpeg';
@@ -196,9 +349,11 @@ class DataTpsController extends Controller
             'tps_regency'     => $request->tps_regency,
             'tps_district'    => $request->tps_district,
             'tps_village'     => $request->tps_village,
+            'tps_saksi'       => $request->tps_saksi,
             'tps_suara_caleg' => $request->tps_suara_caleg,
             'tps_suara_partai'=> $request->tps_suara_partai,
             'tps_docs'        => $filename,
+            'role_id'         => session('role_id'),
             'tps_created_by'  => session('user_id'),
             'tps_created_date'=> Carbon::now()->format('Y-m-d H:i:s'),
         ]);
@@ -255,10 +410,10 @@ class DataTpsController extends Controller
             'tps_address'       => 'required|max:255',
             'tps_province'      => 'required',
             'tps_regency'       => 'required',
-            'role_id'           => 'required',
+            'tps_saksi'         => 'required',
             'tps_suara_caleg'   => 'required',
             'tps_suara_partai'  => 'required',
-            'tps_docs'          => 'required|file|image|mimes:jpeg,png,jpg|max:1024',
+            'tps_docs'          => 'nullable|file|image|mimes:jpeg,png,jpg',
           ]);
   
           // tps Status
@@ -287,7 +442,9 @@ class DataTpsController extends Controller
               }
               // Compress the image and save it
               $filename = Carbon::now()->format('Hisu_').'tps'.($request->caleg_id).'.'.$image->getClientOriginalExtension();
-              $compressedImage = Image::make($image)->fit(300, 300);
+              $compressedImage = Image::make($image)->resize(300, 300, function ($constraint) {
+                  $constraint->aspectRatio();
+              });
               Storage::disk('public')->put('tps_uploads/'.$timeNow.'/'.$filename, $compressedImage->encode());
 
               // Update the tps_docs column only if the photo is changed
@@ -302,8 +459,10 @@ class DataTpsController extends Controller
           $data_tps->tps_regency           = $request->tps_regency;
           $data_tps->tps_district          = $request->tps_district;
           $data_tps->tps_village           = $request->tps_village;
+          $data_tps->tps_saksi             = $request->tps_saksi;
           $data_tps->tps_suara_caleg       = $request->tps_suara_caleg;
           $data_tps->tps_suara_partai      = $request->tps_suara_partai;
+          $data_tps->role_id               = session('role_id');
           $data_tps->tps_updated_by        = session('user_id');
           $data_tps->tps_updated_date      = Carbon::now()->format('Y-m-d H:i:s');
           $data_tps->save();
@@ -333,6 +492,29 @@ class DataTpsController extends Controller
         } else {
             return response()->json(['status' => false, 'message' => ['title' => 'TPS not Deleted!', 'text' => 'TPS ' . $request->tps_name . ' not deleted!']]);
         }
+    }
+
+    public function show_upload_tps($tps_id)
+    {
+      $tps = DataTps::find(Crypt::decrypt($tps_id));
+      if (!$tps) {
+        abort(404);
+      }
+
+      $dir = Carbon::parse($tps->tps_created_date)->format('Ymd');
+      $file_path = $dir.'/'.$tps->tps_docs;
+
+      $path = storage_path('app/public/tps_uploads/'.$file_path);
+      if (!File::exists($path)) {
+        $path = public_path('assets/upload/user/default.jpeg');
+      }
+
+      $file = File::get($path);
+      $type = File::mimeType($path);
+      $response = response($file, 200);
+      $response->header("Content-Type", $type);
+
+      return $response;
     }
 
      /**

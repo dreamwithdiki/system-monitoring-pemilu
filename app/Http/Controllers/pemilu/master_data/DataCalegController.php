@@ -66,8 +66,8 @@ class DataCalegController extends Controller
             } else {
               $search = $request->input('search.value');
     
-              $caleg = DataCaleg::Where('caleg_nik', 'LIKE', "%{$search}%")
-                ->orWhere('caleg_status', '!=', 5)
+              $caleg = DataCaleg::where('caleg_nik', 'LIKE', "%{$search}%")
+                ->where('caleg_status', '!=', 5)
                 ->orWhere('caleg_name', 'LIKE', "%{$search}%")
                 ->orWhere('caleg_nama_partai', 'LIKE', "%{$search}%")
                 ->orWhereRelation('province', 'name', 'LIKE', "%{$search}%")
@@ -79,8 +79,8 @@ class DataCalegController extends Controller
                 ->orderBy($order, $dir)
                 ->get();
     
-              $totalFiltered = DataCaleg::Where('caleg_nik', 'LIKE', "%{$search}%")
-                ->orWhere('caleg_status', '!=', 5)
+              $totalFiltered = DataCaleg::where('caleg_nik', 'LIKE', "%{$search}%")
+                ->where('caleg_status', '!=', 5)
                 ->orWhere('caleg_name', 'LIKE', "%{$search}%")
                 ->orWhere('caleg_nama_partai', 'LIKE', "%{$search}%")
                 ->orWhereRelation('province', 'name', 'LIKE', "%{$search}%")
@@ -171,9 +171,11 @@ class DataCalegController extends Controller
         if ($request->hasFile('caleg_photo')) {
             $image = $request->file('caleg_photo');
 
-            // Compress the image and save it
+             // Compress the image and save it
             $filename = Carbon::now()->format('Hisu_').'caleg'.($request->caleg_id).'.'.$image->getClientOriginalExtension();
-            $compressedImage = Image::make($image)->fit(300, 300);
+            $compressedImage = Image::make($image)->resize(300, 300, function ($constraint) {
+                $constraint->aspectRatio();
+            });
             Storage::disk('public')->put('caleg_uploads/'.$timeNow.'/'.$filename, $compressedImage->encode());
         } else {
             // If no photo is uploaded, use default.jpeg
@@ -276,7 +278,9 @@ class DataCalegController extends Controller
               }
               // Compress the image and save it
               $filename = Carbon::now()->format('Hisu_').'caleg'.($request->caleg_id).'.'.$image->getClientOriginalExtension();
-              $compressedImage = Image::make($image)->fit(300, 300);
+              $compressedImage = Image::make($image)->resize(300, 300, function ($constraint) {
+                  $constraint->aspectRatio();
+              });
               Storage::disk('public')->put('caleg_uploads/'.$timeNow.'/'.$filename, $compressedImage->encode());
 
               // Update the caleg_photo column only if the photo is changed

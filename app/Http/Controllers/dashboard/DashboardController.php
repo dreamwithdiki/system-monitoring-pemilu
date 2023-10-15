@@ -22,50 +22,21 @@ class DashboardController extends Controller
         'total_partner_is_active'       => $total_partner_is_active,
         'total_users_is_active'         => $total_users_is_active
       ]);
-    } else {
-      if (session('role_id') == 3) {
+    } else if (session('role_id') == 2) {
+      return view('content.dashboard.dashboards-timses', [
+       
+      ]);
+    } else if (session('role_id') == 3) {
+      return view('content.dashboard.dashboards-timdpt', [
 
-        $total_visit_order_assign = VisitOrder::where('visit_order_status', 2)->whereHas('partner', function ($q) {
-          $q->where('partner_email', session('user_email'));
-        })->count();
+      ]);
+    } else if (session('role_id') == 4) {
+      return view('content.dashboard.dashboards-saksi', [
 
-        $total_visit_order_visited = VisitOrder::where('visit_order_status', '>=', 5)->where('visit_order_status', '!=', 99)
-          ->whereHas('partner', function ($q) {
-            $q->where('partner_email', session('user_email'));
-          })->count();
-
-        return view('content.dashboard.dashboards-partner', [
-          'total_visit_order_assign' => $total_visit_order_assign,
-          'total_visit_order_visited' => $total_visit_order_visited
-        ]);
-      }
-
+      ]);
+    }else {
       return view('content.pages.pages-misc-not-authorized');
     }
   }
 
-  public function filter_year_month($year, $month)
-  {
-    $list_order_each_status = [];
-    $total_visit_order_month_chart = $this->total_visit_order_month_chart($year == 0 ? date('Y') : $year);
-    for ($i = 0; $i < 9; $i++) {
-      array_push($list_order_each_status, VisitOrder::where('visit_order_status', $i + 1)->whereYear('visit_order_date', ($year == 0) ? '>' : '=', $year)->whereMonth('visit_order_date', ($month == 0) ? '>' : '=', $month)->count());
-    }
-    return response()->json([
-      'list_order_each_status'        => $list_order_each_status,
-      'total_visit_order_month_chart' => $total_visit_order_month_chart,
-      'total_visit_order'        => VisitOrder::where('visit_order_status', '!=', 99)->whereYear('visit_order_date', ($year == 0) ? '>' : '=', $year)->whereMonth('visit_order_date', ($month == 0) ? '>' : '=', $month)->count(),
-    ]);
-  }
-
-  private function total_visit_order_month_chart($year)
-  {
-    $data = VisitOrder::selectRaw("DATE_FORMAT(visit_order_date, '%M - %Y') as month, COUNT(*) as total")
-      ->whereYear('visit_order_date', $year ?? date('Y'))
-      ->groupBy('month')
-      ->orderBy('month')
-      ->get();
-
-    return $data;
-  }
 }

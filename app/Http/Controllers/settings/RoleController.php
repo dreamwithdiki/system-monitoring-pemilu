@@ -61,13 +61,13 @@ class RoleController extends Controller
       ->select('role_id', 'role_name')
       ->where('role_name', 'like', '%' . $search . '%')
       ->where('role_id', '=', 4) // cari saksi
-      ->where(function($query){
-        if (session('role_id') == 1) {
-          $query;
-        } else if (session('role_id') == 2){
-          $query->where('role_id', '=', 3);
-        }
-      })
+      // ->where(function($query){
+      //   if (session('role_id') == 1) {
+      //     $query;
+      //   } else if (session('role_id') == 2){
+      //     $query->where('role_id', '=', 3);
+      //   }
+      // })
       ->isActive()
       ->get();
 

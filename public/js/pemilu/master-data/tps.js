@@ -333,6 +333,7 @@ $(function () {
         { data: 'tps_regency' },
         { data: 'tps_district' },
         { data: 'tps_village' },
+        { data: 'role_name' },
         { data: 'tps_suara_caleg' },
         { data: 'tps_suara_partai' },
         {
@@ -357,7 +358,7 @@ $(function () {
       ],
       columnDefs: [
         {
-          targets: 11,
+          targets: 12,
           searchable: false,
           orderable: false,
           render: function (data, type, row, meta) {
@@ -369,7 +370,7 @@ $(function () {
           }
         },
         {
-          targets: 12,
+          targets: 13,
           searchable: false,
           orderable: false,
           render: function (data, type, row, meta) {
@@ -481,7 +482,21 @@ $(function () {
           }
         }
       },
-      role_id: {
+      tps_district: {
+          validators: {
+          notEmpty: {
+              message: 'Please select district name'
+          }
+        }
+      },
+      tps_village: {
+          validators: {
+          notEmpty: {
+              message: 'Please select village name'
+          }
+        }
+      },
+      tps_saksi: {
           validators: {
           notEmpty: {
               message: 'Please select saksi'
@@ -501,7 +516,20 @@ $(function () {
               message: 'Please enter suara partai'
           }
         }
-      }
+      },
+      tps_docs: {
+          validators: {
+              notEmpty: {
+                  message: 'Please choose the docs'
+              },
+              // file: {
+              //     extension: 'jpg,jpeg,png', // Anda dapat menyesuaikan dengan ekstensi yang diinginkan
+              //     type: 'image/jpeg,image/png', // Anda dapat menyesuaikan dengan tipe gambar yang diinginkan
+              //     maxSize: 1024 * 1024, // 1 MB dalam byte
+              //     message: 'The selected file must be a valid image with a size not exceeding 1 MB.'
+              // }
+          }
+      }    
     },
     plugins: {
       trigger: new FormValidation.plugins.Trigger(),
@@ -611,7 +639,21 @@ $(function () {
           }
         }
       },
-      role_id: {
+      tps_district: {
+          validators: {
+          notEmpty: {
+              message: 'Please select district name'
+          }
+        }
+      },
+      tps_village: {
+          validators: {
+          notEmpty: {
+              message: 'Please select village name'
+          }
+        }
+      },
+      tps_saksi: {
           validators: {
           notEmpty: {
               message: 'Please select saksi'
@@ -631,7 +673,17 @@ $(function () {
               message: 'Please enter suara partai'
           }
         }
-      }
+      },
+      // tps_docs: {
+      //   validators: {
+      //       file: {
+      //           extension: 'jpg,jpeg,png', // Anda dapat menyesuaikan dengan ekstensi yang diinginkan
+      //           type: 'image/jpeg,image/png', // Anda dapat menyesuaikan dengan tipe gambar yang diinginkan
+      //           maxSize: 1024 * 1024, // 1 MB dalam byte
+      //           message: 'The selected file must be a valid image with a size not exceeding 1 MB.'
+      //       }
+      //   }
+      // }   
     },
     plugins: {
       trigger: new FormValidation.plugins.Trigger(),
@@ -719,9 +771,16 @@ $(function () {
           $('#editStatus').prop('checked', false);
         }
 
-        $('#editCode').val(response.data.tps_code);
+        $('#editKode').val(response.data.tps_code);
         $('#editTps').val(response.data.tps_name);
         $('#editAddress').val(response.data.tps_address);
+        $('#editSuaraCaleg').val(response.data.tps_suara_caleg);
+        $('#editSuaraPartai').val(response.data.tps_suara_partai);
+
+        if (response.data.role) {
+          var option = new Option(response.data.role.role_name, response.data.role.role_id, true, true);
+          $('#editRoleName').append(option).trigger('change');
+        }
 
         // Display current docs
         if (response.data.tps_docs) {
@@ -903,12 +962,18 @@ $(function () {
     $('#addFormLabel > p').html('Add new tps.');
     $('#formAddTps').attr('data-method', 'add');
     $('#formAddTps').data('method', 'add');
+
+    $('#addProvince').val('').trigger('change');
+    $('#addRegency').val('').trigger('change');
+    $('#addDistrict').val('').trigger('change');
+    $('#addVillage').val('').trigger('change');
+    $('#addRoleName').val('').trigger('change');
     fv.resetForm(true);
   });
 
   modal_edit_tps.on('hidden.bs.modal', function () {
     // fvEdit.resetForm(true);
-    $('#tps_docs').val(null);
+    $('#file').val(null);
     $('#imagePreview').empty();
     $('#imagePreview').html('<img src="#" class="img-fluid" style="max-width: 100%; height: auto;">');
     $('#imagePreview').css("background-image", "none");
@@ -916,7 +981,7 @@ $(function () {
 
   // Image Preview
   $(function() {
-      $("#tps_docs").on("change", function()
+      $("#file").on("change", function()
       {
           var files = !!this.files ? this.files : [];
           if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support

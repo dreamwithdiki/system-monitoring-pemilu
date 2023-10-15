@@ -31,6 +31,7 @@ Route::group(['middleware' => 'check.tokey'], function () use ($controller_path)
     Route::prefix('autocomplete')->group(function () use ($controller_path) {
         Route::get('role/find', $controller_path . '\settings\RoleController@find');
         Route::get('role/find-saksi', $controller_path . '\settings\RoleController@find_saksi');
+        Route::get('tps/find', $controller_path . '\pemilu\master_data\DataTpsController@find');
     });
 
     // MASTER
@@ -90,6 +91,7 @@ Route::group(['middleware' => 'check.tokey'], function () use ($controller_path)
                 Route::get('get-districts', $path_pemilu_master_data . '\DataTpsController@getDistricts');
                 Route::get('get-villages', $path_pemilu_master_data . '\DataTpsController@getVillages');
                 // end menampilkan data ke select2
+                Route::get('uploads/{tps_id}', $path_pemilu_master_data . '\DataTpsController@show_upload_tps');
                 Route::post('store', $path_pemilu_master_data . '\DataTpsController@store');
                 Route::post('update/{id}', $path_pemilu_master_data . '\DataTpsController@update');
                 Route::post('update-status', $path_pemilu_master_data . '\DataTpsController@statusUpdate');
@@ -105,18 +107,19 @@ Route::group(['middleware' => 'check.tokey'], function () use ($controller_path)
         $path_pendukung = $controller_path . '\pendukung';
         // DPT
         Route::prefix('dpt')->group(function () use ($path_pendukung) {
-            Route::get('/', $path_pendukung . '\DataDptController@index')->name('pendukung-dpt');
+            Route::get('/', $path_pendukung . '\DataDptController@index')->name('dpt');
             Route::get('get', $path_pendukung . '\DataDptController@datatable');
             Route::get('show/{id}', $path_pendukung . '\DataDptController@show');
+            // menampilkan data ke select2
+            Route::get('get-provinces', $path_pendukung . '\DataDptController@getProvinces');
+            Route::get('get-regencies', $path_pendukung . '\DataDptController@getRegencies');
+            Route::get('get-districts', $path_pendukung . '\DataDptController@getDistricts');
+            Route::get('get-villages', $path_pendukung . '\DataDptController@getVillages');
+            // end menampilkan data ke select2
             Route::post('store', $path_pendukung . '\DataDptController@store');
             Route::post('update/{id}', $path_pendukung . '\DataDptController@update');
             Route::post('update-status', $path_pendukung . '\DataDptController@statusUpdate');
             Route::post('delete', $path_pendukung . '\DataDptController@delete');
-            Route::post('submitted', $path_pendukung . '\DataDptController@submitted');
-            Route::post('paid/{id}', $path_pendukung . '\DataDptController@paid');
-            Route::post('rejected', $path_pendukung . '\DataDptController@rejected');
-            Route::get('show-paid/{id}', $path_pendukung . '\DataDptController@show_paid');
-            Route::get('get-visit-order', $path_pendukung . '\DataDptController@visitOrderDatatable');
         });
 
     });
@@ -137,49 +140,6 @@ Route::group(['middleware' => 'check.tokey'], function () use ($controller_path)
             Route::post('delete', $path_settings . '\UserController@delete');
             // user only
             Route::post('update-user/{id}', $path_settings . '\UserController@update_data_user');
-        });
-    });
-
-    // Partner
-    Route::prefix('partner')->group(function () use ($controller_path) {
-        $path_partner = $controller_path . '\partner';
-
-        // Partner Dashboard
-        Route::prefix('partner-dashboard')->group(function () use ($path_partner) {
-            Route::get('/', $path_partner . '\PartnerDashboardController@index')->name('partner-dashboard');
-            Route::get('get', $path_partner . '\PartnerDashboardController@datatable');
-            Route::get('show/{id}', $path_partner . '\PartnerDashboardController@show');
-            Route::post('store', $path_partner . '\PartnerDashboardController@store');
-            Route::post('update/{id}', $path_partner . '\PartnerDashboardController@update');
-            Route::post('update-status', $path_partner . '\PartnerDashboardController@update_status');
-            Route::post('delete', $path_partner . '\PartnerDashboardController@delete');
-        });
-
-        // Partner Visit
-        Route::prefix('partner-visit')->group(function () use ($path_partner) {
-            Route::get('/', $path_partner . '\PartnerVisitController@index')->name('partner-visit');
-            Route::get('list', $path_partner . '\PartnerVisitController@getVisitOrderList');
-            Route::get('show/{id}', $path_partner . '\PartnerVisitController@show');
-            Route::post('store', $path_partner . '\PartnerVisitController@store');
-            Route::get('getVisual/{id}', $path_partner . '\PartnerVisitController@getVisual');
-            Route::post('updateVisual/{id}', $path_partner . '\PartnerVisitController@updateVisual');
-            Route::post('updateNotes/{id}', $path_partner . '\PartnerVisitController@updateNotes');
-            Route::post('update-status', $path_partner . '\PartnerVisitController@statusUpdate');
-            Route::post('delete', $path_partner . '\PartnerVisitController@delete');
-            Route::get('checklist/{id}', $path_partner . '\PartnerVisitController@getChecklists');
-            Route::post('checklist/save', $path_partner . '\PartnerVisitController@saveChecklists');
-            Route::get('email', $path_partner . '\PartnerVisitController@email');
-        });
-
-        // Partner Setting
-        Route::prefix('partner-setting')->group(function () use ($path_partner) {
-            Route::get('/', $path_partner . '\ParnerSettingController@index')->name('partner-setting');
-            Route::get('get', $path_partner . '\ParnerSettingController@datatable');
-            Route::get('show/{id}', $path_partner . '\ParnerSettingController@show');
-            Route::post('store', $path_partner . '\ParnerSettingController@store');
-            Route::post('update/{id}', $path_partner . '\ParnerSettingController@update');
-            Route::post('update-status', $path_partner . '\ParnerSettingController@statusUpdate');
-            Route::post('delete', $path_partner . '\ParnerSettingController@delete');
         });
     });
 

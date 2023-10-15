@@ -53,6 +53,6 @@ class DataTps extends Model
 
     public function role()
     {
-        return $this->belongsTo(Role::class, 'role_id');
+        return $this->belongsTo(Role::class, 'tps_saksi', 'role_id');
     }
 }

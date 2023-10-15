@@ -602,6 +602,20 @@ $(function () {
           }
         }
       },
+      user_district: {
+          validators: {
+          notEmpty: {
+              message: 'Please select district name'
+          }
+        }
+      },
+      user_village: {
+          validators: {
+          notEmpty: {
+              message: 'Please select village name'
+          }
+        }
+      },
     },
     plugins: {
       trigger: new FormValidation.plugins.Trigger(),
@@ -737,6 +751,20 @@ $(function () {
           validators: {
           notEmpty: {
               message: 'Please select regency name'
+          }
+        }
+      },
+      user_district: {
+          validators: {
+          notEmpty: {
+              message: 'Please select district name'
+          }
+        }
+      },
+      user_village: {
+          validators: {
+          notEmpty: {
+              message: 'Please select village name'
           }
         }
       },

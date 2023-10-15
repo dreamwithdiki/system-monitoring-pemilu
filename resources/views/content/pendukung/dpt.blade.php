@@ -1,6 +1,6 @@
 @extends('layouts/contentNavbarLayout')
 
-@section('title', 'TPS - Master Data')
+@section('title', 'DPT - Pendukung')
 @section('vendor-style')
 <link rel="stylesheet" href="{{asset('assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css')}}">
 <link rel="stylesheet" href="{{asset('assets/vendor/libs/formvalidation/dist/css/formValidation.min.css')}}" />
@@ -24,8 +24,11 @@
 @endsection
 
 @section('page-script')
-<script src="{{asset('js/pemilu/master-data/tps.js')}}"></script>
+<script src="{{asset('js/pendukung/dpt.js')}}"></script>
 <script>
+  // Check selected custom option
+  window.Helpers.initCustomOptionCheck();
+
   // untuk karakter hanya angka.
   function hanyaAngka(evt) {
       var charCode = (evt.which) ? evt.which : event.keyCode
@@ -50,15 +53,15 @@
 </style>
 
 
-<!-- Data Table TPS -->
+<!-- Data Table DPT -->
 <div class="card">
   <div class="card-header d-flex justify-content-between">
     <div class="head-label">
-      <h5 class="card-title mb-0 pt-2"><span><i class="tf-icons bx bx-user-voice bx-sm me-sm-2"></i>TPS Table</h5>
+      <h5 class="card-title mb-0 pt-2"><span><i class="tf-icons bx bx-id-card bx-sm me-sm-2"></i>DPT Table</h5>
     </div>
     <div class="text-end pt-3 pt-md-0">
-      <button class="btn btn-primary fw-bold" type="button" data-bs-toggle="modal" data-bs-target="#modalAddTps">
-        <span><i class="tf-icons bx bx-plus-medical me-sm-2"></i> <span class="d-none d-sm-inline-block">Add TPS</span></span>
+      <button class="btn btn-primary fw-bold" type="button" data-bs-toggle="modal" data-bs-target="#modalAddDpt">
+        <span><i class="tf-icons bx bx-plus-medical me-sm-2"></i> <span class="d-none d-sm-inline-block">Add DPT</span></span>
       </button>
     </div>
   </div>
@@ -72,17 +75,14 @@
       <thead>
         <tr>
           <th>No</th>
-          <th>Kode</th>
-          <th>TPS</th>
-          <th>Alamat</th>
+          <th>NIK</th>
+          <th>Nama</th>
+          <th>Jenis Kelamin</th>
           <th>Provinsi</th>
           <th>Kabupaten</th>
           <th>Kecamatan</th>
           <th>Kelurahan</th>
-          <th>Saksi</th>
-          <th>Suara Caleg</th>
-          <th>Suara Partai</th>
-          <th>Docs</th>
+          <th>TPS</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
@@ -90,22 +90,22 @@
     </table>
   </div>
 </div>
-<!--/ Data Table TPS -->
+<!--/ Data Table DPT -->
 
 <hr class="my-5">
 
-<!-- Modal Add TPS -->
-<div class="modal fade" id="modalAddTps" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+<!-- Modal Add DPT -->
+<div class="modal fade" id="modalAddDpt" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content modal-block-loader">
       <div class="modal-header">
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form id="formAddTps" data-method="add">
+      <form id="formAddDpt" data-method="add">
         <div class="modal-body">
           <div id="addFormLabel" class="text-center mb-4">
-            <h3><span>TPS Form<span></h3>
-            <p>Add new TPS.</p>
+            <h3><span>DPT Form<span></h3>
+            <p>Add new DPT.</p>
           </div>
           <div class="m-4">
             <div class="row">
@@ -113,7 +113,7 @@
                 <label class="form-label" for="addStatus">Status <span style='color:red'>*</span></label>
                 <div class="row" style="display: flex; flex-direction: column; align-items: flex-start;">
                   <label class="switch switch-primary">
-                    <input id="addStatus" name="tps_status" class="form-check-input switch-input me-2" type="checkbox" style="width: 2.4rem;" @checked(true)>
+                    <input id="addStatus" name="dpt_status" class="form-check-input switch-input me-2" type="checkbox" style="width: 2.4rem;" @checked(true)>
                     <span class="switch-toggle-slider">
                       <span class="switch-on">
                         <i class="bx bx-check"></i>
@@ -128,30 +128,55 @@
             </div>
             <div class="row g2">
               <div class="col mb-3">
-                <label for="addKode" class="form-label">Kode <span style='color:red'>*</span></label>
-                <input type="text" id="addKode" name="tps_code" class="form-control" placeholder="Enter Kode" >
+                <label for="addNik" class="form-label">NIK <span style='color:red'>*</span></label>
+                <input type="text" id="addNik" name="dpt_nik" class="form-control" placeholder="Enter NIK" >
               </div>
               <div class="col mb-3">
-                <label for="addTps" class="form-label">TPS <span style='color:red'>*</span></label>
-                <input type="text" id="addTps" name="tps_name" class="form-control" placeholder="Enter TPS" >
+                <label for="addNama" class="form-label">Nama <span style='color:red'>*</span></label>
+                <input type="text" id="addNama" name="dpt_name" class="form-control" placeholder="Enter Name" >
               </div>
             </div>
-            <div class="row">
-                <div class="col mb-3">
-                  <label for="addAddress" class="form-label">Alamat <span style='color:red'>*</span></label>
-                  <textarea id="addAddress" name="tps_address" class="form-control" placeholder="Explanation about the new address" rows="5" style="max-height: 100px;resize: none;"></textarea>
+            <div class="card-body">
+                <div class="row">
+                  <label class="form-label">Jenis Kelamin</label>
+                  <div class="col-md mb-md-0 mb-2">
+                    <div class="form-check custom-option custom-option-basic">
+                      <label class="form-check-label custom-option-content" id="addParamMan">
+                        <input class="form-check-input" type="radio" name="dpt_jenkel" id="addParamMan" value="1">
+                        <span class="custom-option-header">
+                          <span class="h6 mb-0">Laki-Laki</span>
+                        </span>
+                        <span class="custom-option-body">
+                          <small>For Man</small>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-md">
+                    <div class="form-check custom-option custom-option-basic">
+                      <label class="form-check-label custom-option-content" id="addParamWoman">
+                        <input class="form-check-input" type="radio" name="dpt_jenkel" id="addParamWoman" value="2" @checked(true)>
+                        <span class="custom-option-header">
+                          <span class="h6 mb-0">Perempuan</span>
+                        </span>
+                        <span class="custom-option-body">
+                          <small>For Woman</small>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
                 </div>
             </div>
             <div class="row g2">
               <div class="col mb-3">
                 <label class="form-label" for="addProvince">Provinsi <span style='color:red'>*</span></label>
-                <select id="addProvince" name="tps_province" class="ac_province form-select">
+                <select id="addProvince" name="dpt_province" class="ac_province form-select">
                   <option value="">Select Province Name</option>
                 </select>
               </div>
               <div class="col mb-3">
                 <label class="form-label" for="addRegency">Kabupaten <span style='color:red'>*</span></label>
-                <select id="addRegency" name="tps_regency" class="ac_regency form-select">
+                <select id="addRegency" name="dpt_regency" class="ac_regency form-select">
                   <option value="">Choice</option>
                 </select>
               </div>
@@ -159,40 +184,24 @@
             <div class="row g2">
               <div class="col mb-3">
                 <label class="form-label" for="addDistrict">Kecamatan <span style='color:red'>*</span></label>
-                <select id="addDistrict" name="tps_district" class="ac_district form-select">
+                <select id="addDistrict" name="dpt_district" class="ac_district form-select">
                   <option value="">Choice</option>
                 </select>
               </div>
               <div class="col mb-3">
                 <label class="form-label" for="addVillage">Kelurahan <span style='color:red'>*</span></label>
-                <select id="addVillage" name="tps_village" class="ac_village form-select">
+                <select id="addVillage" name="dpt_village" class="ac_village form-select">
                   <option value="">Choice</option>
                 </select>
               </div>
             </div>
             <div class="row">
                 <div class="col mb-3">
-                    <label class="form-label" for="tps_saksi">Saksi <span style='color:red'>*</span></label>
-                    <select id="addRoleName" name="tps_saksi" class="ac_role form-select" @required(true)>
-                        <option value="">Select Saksi</option>
+                    <label class="form-label" for="tps_id">TPS <span style='color:red'>*</span></label>
+                    <select id="addTps" name="tps_id" class="ac_tps form-select" @required(true)>
+                        <option value="">Select TPS</option>
                     </select>
                 </div>
-            </div>
-            <div class="row g2">
-                <div class="col mb-3">
-                    <label for="addSuaraCaleg" class="form-label">Suara Caleg <span style='color:red'>*</span></label>
-                    <input type="text" id="addSuaraCaleg" name="tps_suara_caleg" class="form-control" placeholder="Enter Suara Caleg" onkeypress="return hanyaAngka(event)" @required(true)>
-                </div>
-                <div class="col mb-3">
-                    <label for="addSuaraPartai" class="form-label">Suara Partai <span style='color:red'>*</span></label>
-                    <input type="text" id="addSuaraPartai" name="tps_suara_partai" class="form-control" placeholder="Enter Suara Partai" onkeypress="return hanyaAngka(event)" @required(true)>
-                </div>
-            </div>
-            <div class="row g2">
-              <div class="col mb-3">
-                <label class="form-label" for="bs-validation-upload-file">Dosc <span style='color:red'>Type : jpg,jpeg,png *</span></label>
-                <input type="file" class="form-control" name="tps_docs" id="bs-validation-upload-file"/>
-              </div>
             </div>
           </div>
         </div>
@@ -204,20 +213,20 @@
     </div>
   </div>
 </div>
-<!--/ Modal Add TPS -->
+<!--/ Modal Add DPT -->
 
-<!-- Modal Edit TPS -->
-<div class="modal fade" id="modalEditTps" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+<!-- Modal Edit DPT -->
+<div class="modal fade" id="modalEditDpt" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content modal-block-loader">
       <div class="modal-header">
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form id="formEditTps" data-method="add">
+      <form id="formEditDpt" data-method="add">
         <div class="modal-body">
           <div id="editFormLabel" class="text-center mb-4">
-            <h3><span>TPS Form<span></h3>
-            <p>Add edit TPS.</p>
+            <h3><span>DPT Form<span></h3>
+            <p>Add edit DPT.</p>
           </div>
           <div class="m-4">
             <div class="row">
@@ -225,7 +234,7 @@
                 <label class="form-label" for="editStatus">Status <span style='color:red'>*</span></label>
                 <div class="row" style="display: flex; flex-direction: column; align-items: flex-start;">
                   <label class="switch switch-primary">
-                    <input id="editStatus" name="tps_status" class="form-check-input switch-input me-2" type="checkbox" style="width: 2.4rem;" @checked(true)>
+                    <input id="editStatus" name="dpt_status" class="form-check-input switch-input me-2" type="checkbox" style="width: 2.4rem;" @checked(true)>
                     <span class="switch-toggle-slider">
                       <span class="switch-on">
                         <i class="bx bx-check"></i>
@@ -238,49 +247,57 @@
                 </div>
               </div>
             </div>
-            <div class="row g-2">
-              <div class="col mb-3">
-                <label for="editKode" class="form-label">Kode <span style='color:red'>*</span></label>
-                <input type="text" id="editKode" name="tps_code" class="form-control" placeholder="Enter Code" @required(true)>
-              </div>
-              <div class="col mb-3">
-                <label for="editTps" class="form-label">TPS <span style='color:red'>*</span></label>
-                <input type="text" id="editTps" name="tps_name" class="form-control" placeholder="Enter TPS" @required(true)>
-              </div>
-            </div>
-            <div class="row">
+            <div class="row g2">
                 <div class="col mb-3">
-                  <label for="editAddress" class="form-label">Alamat <span style='color:red'>*</span></label>
-                  <textarea id="editAddress" name="tps_address" class="form-control" placeholder="Explanation about the new address" rows="5" style="max-height: 100px;resize: none;"></textarea>
+                  <label for="editNik" class="form-label">NIK <span style='color:red'>*</span></label>
+                  <input type="text" id="editNik" name="dpt_nik" class="form-control" placeholder="Enter NIK" @required(true)>
+                </div>
+                <div class="col mb-3">
+                  <label for="editName" class="form-label">Nama <span style='color:red'>*</span></label>
+                  <input type="text" id="editName" name="dpt_name" class="form-control" placeholder="Enter Name" @required(true)>
                 </div>
             </div>
-            <div class="row">
-              <div class="col mb-3">
-                <input type="hidden" id="oldImage" name="oldImage" value="">
-                <label class="form-label">Current Docs</label>
-                <div class="col-md-3">
-                    <img src="#" class="rounded current-photo" style="max-width: 100%; height: auto;">
+            <div class="card-body">
+                <div class="row">
+                  <label class="form-label">Jenis Kelamin</label>
+                  <div class="col-md mb-md-0 mb-2">
+                    <div class="form-check custom-option custom-option-basic">
+                      <label class="form-check-label custom-option-content" id="editParamMan">
+                        <input class="form-check-input" type="radio" name="dpt_jenkel" id="editParamMan" value="1">
+                        <span class="custom-option-header">
+                          <span class="h6 mb-0">Laki-Laki</span>
+                        </span>
+                        <span class="custom-option-body">
+                          <small>For Man</small>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-md">
+                    <div class="form-check custom-option custom-option-basic">
+                      <label class="form-check-label custom-option-content" id="editParamWoman">
+                        <input class="form-check-input" type="radio" name="dpt_jenkel" id="editParamWoman" value="2" @checked(true)>
+                        <span class="custom-option-header">
+                          <span class="h6 mb-0">Perempuan</span>
+                        </span>
+                        <span class="custom-option-body">
+                          <small>For Woman</small>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col mb-3">
-                <label class="form-label" for="tps_docs">Change Docs</label>
-                <input type="file" class="form-control" id="file" name="tps_docs"/>
-                <br>
-                <div id="imagePreview"></div>
-              </div>
             </div>
             <div class="row g-2">
               <div class="col mb-3">
                 <label class="form-label" for="editProvince">Provinsi <span style='color:red'>*</span></label>
-                <select id="editProvince" name="tps_province" class="form-select" @required(true)>
+                <select id="editProvince" name="dpt_province" class="form-select" @required(true)>
                   <option value="">Select Province Name</option>
                 </select>
               </div>
               <div class="col mb-3">
                 <label class="form-label" for="editRegency">Kabupaten <span style='color:red'>*</span></label>
-                <select id="editRegency" name="tps_regency" class="form-select" @required(true)>
+                <select id="editRegency" name="dpt_regency" class="form-select" @required(true)>
                   <option value="">Choice</option>
                 </select>
               </div>
@@ -288,33 +305,23 @@
             <div class="row g-2">
               <div class="col mb-3">
                 <label class="form-label" for="editDistrict">Kecamatan <span style='color:red'>*</span></label>
-                <select id="editDistrict" name="tps_district" class="form-select">
+                <select id="editDistrict" name="dpt_district" class="form-select">
                   <option value="">Choice</option>
                 </select>
               </div>
               <div class="col mb-3">
                 <label class="form-label" for="editVillage">Kelurahan <span style='color:red'>*</span></label>
-                <select id="editVillage" name="tps_village" class="form-select">
+                <select id="editVillage" name="dpt_village" class="form-select">
                   <option value="">Choice</option>
                 </select>
               </div>
             </div>
             <div class="row">
                 <div class="col mb-3">
-                    <label class="form-label" for="tps_saksi">Saksi <span style='color:red'>*</span></label>
-                    <select id="editRoleName" name="tps_saksi" class="ac_edit_role form-select" @required(true)>
-                        <option value="">Select Saksi</option>
+                    <label class="form-label" for="tps_id">TPS <span style='color:red'>*</span></label>
+                    <select id="editTps" name="tps_id" class="ac_edit_tps form-select" @required(true)>
+                        <option value="">Select TPS</option>
                     </select>
-                </div>
-            </div>
-            <div class="row g2">
-                <div class="col mb-3">
-                    <label for="editSuaraCaleg" class="form-label">Suara Caleg <span style='color:red'>*</span></label>
-                    <input type="text" id="editSuaraCaleg" name="tps_suara_caleg" class="form-control" placeholder="Enter Suara Caleg" onkeypress="return hanyaAngka(event)" @required(true)>
-                </div>
-                <div class="col mb-3">
-                    <label for="editSuaraPartai" class="form-label">Suara Partai <span style='color:red'>*</span></label>
-                    <input type="text" id="editSuaraPartai" name="tps_suara_partai" class="form-control" placeholder="Enter Suara Partai" onkeypress="return hanyaAngka(event)" @required(true)>
                 </div>
             </div>
           </div>
@@ -327,5 +334,5 @@
     </div>
   </div>
 </div>
-<!--/ Modal Edit Tps -->
+<!--/ Modal Edit DPT -->
 @endsection

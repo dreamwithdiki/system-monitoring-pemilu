@@ -34,6 +34,17 @@
 @section('page-script')
 <script src="{{asset('assets/js/ui-popover.js')}}"></script>
 <script src="{{asset('js/pemilu/master-data/users.js')}}"></script>
+
+<script>
+  // untuk karakter hanya angka.
+  function hanyaAngka(evt) {
+      var charCode = (evt.which) ? evt.which : event.keyCode
+      if (charCode > 31 && (charCode < 48 || charCode > 57))
+
+          return false;
+      return true;
+  }
+</script>
 @endsection
 
 @section('content')
@@ -182,13 +193,13 @@
             </div>
             <div class="row g2">
               <div class="col mb-3">
-                <label class="form-label" for="addDistrict">Daerah Pemilihan</label>
+                <label class="form-label" for="addDistrict">Kecamatan <span style='color:red'>*</span></label>
                 <select id="addDistrict" name="user_district" class="ac_district form-select">
                   <option value="">Choice</option>
                 </select>
               </div>
               <div class="col mb-3">
-                <label class="form-label" for="addVillage">Desa</label>
+                <label class="form-label" for="addVillage">Kelurahan <span style='color:red'>*</span></label>
                 <select id="addVillage" name="user_village" class="ac_village form-select">
                   <option value="">Choice</option>
                 </select>
@@ -288,13 +299,13 @@
             </div>
             <div class="row g-2">
               <div class="col mb-3">
-                <label class="form-label" for="editDistrict">Daerah Pemilihan</label>
+                <label class="form-label" for="editDistrict">Kecamatan <span style='color:red'>*</span></label>
                 <select id="editDistrict" name="user_district" class="form-select">
                   <option value="">Choice</option>
                 </select>
               </div>
               <div class="col mb-3">
-                <label class="form-label" for="editVillage">Desa</label>
+                <label class="form-label" for="editVillage">Kelurahan <span style='color:red'>*</span></label>
                 <select id="editVillage" name="user_village" class="form-select">
                   <option value="">Choice</option>
                 </select>
@@ -327,14 +338,4 @@
     </div>
   </div>
 </div>
-<script>
-  // untuk karakter hanya angka.
-  function hanyaAngka(evt) {
-      var charCode = (evt.which) ? evt.which : event.keyCode
-      if (charCode > 31 && (charCode < 48 || charCode > 57))
-
-          return false;
-      return true;
-  }
-</script>
 @endsection

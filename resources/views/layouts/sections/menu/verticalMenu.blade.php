@@ -5,8 +5,12 @@ if(session('role_id') == 1) {
   $menuRoles = $menuData[0];
 } else if(session('role_id') == 2) {
   $menuRoles = $menuData[2];
-} else {
+} else if(session('role_id') == 3) {
   $menuRoles = $menuData[3];
+} else if(session('role_id') == 4) {
+  $menuRoles = $menuData[4];
+} else {
+  $menuRoles = $menuData[5];
 }
 @endphp
 

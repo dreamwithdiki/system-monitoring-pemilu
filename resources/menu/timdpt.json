@@ -7,13 +7,13 @@
         "slug": "dashboard"
       },
       {
-        "menuHeader": "Partner"
+        "menuHeader": "DPT"
       },
       {
-        "url": "/partner/partner-visit",
-        "name": "Partner Visit",
-        "icon": "menu-icon tf-icons fa fa-location-dot",
-        "slug": "partner-visit"
+        "url": "/pendukung/dpt",
+        "name": "Data Pendukung",
+        "icon": "menu-icon tf-icons fa fa-address-card ",
+        "slug": "pendukung-dpt"
       },
       {
         "menuHeader": "Settings"
