@@ -24,10 +24,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        if(session('role_id') == 1 || session('role_id') == 2){
+        if(session('role_id') == 1){
           return view('content.settings.user');
         } else {
-          if(session('role_id') == 3) {
+          if(session('role_id') == 2 || session('role_id') == 3 || session('role_id') == 4) {
             // Membuat objek Carbon dari string tanggal dan waktu
             $created_date = Carbon::parse(session('user_created_date'));
             // Mengubah format menjadi "d F Y \j\a\m H:i:s"
@@ -139,21 +139,17 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-      if ($request->role_id == 3) {
-          $validator = Validator::make($request->all(), [
-              'role_id'           => 'required',
-              'user_password'     => 'required|min:8|max:255',
-              'user_photo'        => 'nullable|file|image|mimes:jpeg,png,jpg|max:1024',
-          ]);
-      } else {
-          $validator = Validator::make($request->all(), [
-              'role_id'           => 'required',
-              'user_uniq_name'    => ['required', 'min:3', 'max:255'],
-              'user_email'        => 'required|user_email:dns|unique:sys_user',
-              'user_password'     => 'required|min:8|max:255',
-              'user_photo'        => 'nullable|file|image|mimes:jpeg,png,jpg|max:1024',
-          ]);
-      }
+      $validator = Validator::make($request->all(), [
+          'role_id'           => 'required',
+          'user_nik'          => ['required', 'min:3', 'max:255'],
+          'user_uniq_name'    => ['required', 'min:3', 'max:255'],
+          'user_no_hp'        => 'required',
+          'user_email'        => 'required|user_email:dns|unique:sys_user',
+          'user_password'     => 'required|min:8|max:255',
+          'user_photo'        => 'nullable|file|image|mimes:jpeg,png,jpg|max:1024',
+          'user_province'     => 'required',
+          'user_regency'      => 'required',
+      ]);
 
       // dd($request->all());
 
@@ -167,43 +163,47 @@ class UserController extends Controller
       if ($request->hasFile('user_photo')) {
           $image = $request->file('user_photo');
 
-          // Compress the image and save it
-          $filename = Carbon::now()->format('Hisu_').'users'.($request->user_id).'.'.$image->getClientOriginalExtension();
-          $compressedImage = Image::make($image)->fit(300, 300);
-          Storage::disk('public')->put('users_uploads/'.$filename, $compressedImage->encode());
+           // Compress the image and save it
+           $filename = Carbon::now()->format('Hisu_').'users'.($request->caleg_id).'.'.$image->getClientOriginalExtension();
+           $compressedImage = Image::make($image)->resize(300, 300, function ($constraint) {
+               $constraint->aspectRatio();
+           });
+           Storage::disk('public')->put('users_uploads/'.$filename, $compressedImage->encode());
       } else {
           // If no photo is uploaded, use default.jpeg
           $filename = 'default.jpeg';
       }
 
-      $email_exist = User::where('user_email', $request->user_email)->exists();
-      $user_ref_id = null;
-      $user_ref_param = 1;
-      $email = $request->user_email;
-      $name = $request->user_uniq_name;
-      if($request->role_id == 3)  {
-        $partner = Partner::where('partner_id', $request->user_ref_id)->first(); // ngambil dari partner di lempar ke user_ref_id.
-        $name = $partner->partner_name;
-        $email = $partner->partner_email;
-        $user_ref_id = $partner->partner_id;
-        $user_ref_param = 3; // partner
-        $email_exist = User::where('user_email', $email)->exists();
+      $nik_exist = User::where('user_nik', $request->user_nik)->exists();
+      if ($nik_exist) {
+        return response()->json(['status' => false, 'message' => ['title' => 'Duplicate Entry', 'text' => 'NIK already registered on another user!']]);
       }
 
-      // user email check duplicate entry
+      $email_exist = User::where('user_email', $request->user_email)->exists();
       if ($email_exist) {
         return response()->json(['status' => false, 'message' => ['title' => 'Duplicate Entry', 'text' => 'Email already registered on another user!']]);
       }
 
+      $phone_exist = User::where('user_no_hp', $request->user_no_hp)->exists();
+      if ($phone_exist) {
+        return response()->json(['status' => false, 'message' => ['title' => 'Duplicate Entry', 'text' => 'Phone already registered on another user!']]);
+      }
+
       $newUser = new User();
       $newUser->user_status       = $status;
-      $newUser->user_ref_param    = $user_ref_param; 
-      $newUser->user_ref_id       = $user_ref_id; 
+      $newUser->user_ref_param    = 0; 
+      $newUser->user_ref_id       = 0; 
       $newUser->role_id           = $request->role_id;
-      $newUser->user_uniq_name    = $name;
-      $newUser->user_email        = $email;
+      $newUser->user_nik          = $request->user_nik;
+      $newUser->user_uniq_name    = $request->user_uniq_name;
+      $newUser->user_no_hp        = $request->user_no_hp;
+      $newUser->user_email        = $request->user_email;
       $newUser->user_password     = Hash::make($request->user_password);
       $newUser->user_photo        = $filename;
+      $newUser->user_province     = $request->user_province;
+      $newUser->user_regency      = $request->user_regency;
+      $newUser->user_district     = $request->user_district;
+      $newUser->user_village      = $request->user_village;
       $newUser->user_created_by   = session(('user_id'));
       $newUser->user_created_date = Carbon::now()->format('Y-m-d H:i:s');
 
@@ -221,7 +221,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-      $user = User::with('role', 'partner')->where('user_id', $id)->first();
+      $user = User::with('role', 'province', 'regency', 'district', 'village')->where('user_id', $id)->first();
 
       if($user) {
         return response()->json(['status' => true, 'data' => $user]);
@@ -259,19 +259,16 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($request->role_id == 3) {
-            $validator = Validator::make($request->all(), [
-                'role_id'           => 'required',
-                'user_photo'        => 'nullable|file|image|mimes:jpeg,png,jpg|max:1024',
-            ]);
-        } else {
-            $validator = Validator::make($request->all(), [
-                'role_id'           => 'required',
-                'user_uniq_name'    => 'required',
-                'user_email'        => 'required',
-                'user_photo'        => 'nullable|file|image|mimes:jpeg,png,jpg|max:1024',
-            ]);
-        }
+        $validator = Validator::make($request->all(), [
+            'role_id'           => 'required',
+            'user_nik'          => ['required', 'min:3', 'max:255'],
+            'user_uniq_name'    => ['required', 'min:3', 'max:255'],
+            'user_no_hp'        => 'required',
+            'user_email'        => 'required',
+            'user_photo'        => 'nullable|file|image|mimes:jpeg,png,jpg|max:1024',
+            'user_province'     => 'required',
+            'user_regency'      => 'required',
+        ]);
 
         // dd($validator->errors());
         // dd($request->all());
@@ -296,39 +293,43 @@ class UserController extends Controller
                 Storage::disk('public')->delete('users_uploads/' . $oldImage);
             }
             // Compress the image and save it
-            $filename = Carbon::now()->format('Hisu_').'users'.($request->user_id).'.'.$image->getClientOriginalExtension();
-            $compressedImage = Image::make($image)->fit(300, 300);
+            $filename = Carbon::now()->format('Hisu_').'users'.($request->caleg_id).'.'.$image->getClientOriginalExtension();
+            $compressedImage = Image::make($image)->resize(300, 300, function ($constraint) {
+                $constraint->aspectRatio();
+            });
             Storage::disk('public')->put('users_uploads/'.$filename, $compressedImage->encode());
 
             // Update the user_photo column only if the photo is changed
             $user->user_photo = $filename;
         }
+
+        $nik_exist = User::where('user_nik', $request->user_nik)->where('user_id', '!=', $id)->exists();
+        if ($nik_exist) {
+          return response()->json(['status' => false, 'message' => ['title' => 'Duplicate Entry', 'text' => 'NIK already registered on another user!']]);
+        }
         
         $email_exist = User::where('user_email', $request->user_email)->where('user_id', '!=', $id)->exists();
-        $user_ref_id = null;
-        $user_ref_param = 1;
-        $email = $request->user_email;
-        $name = $request->user_uniq_name;
-        if($request->role_id == 3)  {
-          $partner = Partner::where('partner_id', $request->user_ref_id)->first(); // ngambil dari partner di lempar ke user_ref_id.
-          $name = $partner->partner_name;
-          $email = $partner->partner_email;
-          $user_ref_id = $partner->partner_id;
-          $user_ref_param = 3; // partner
-          $email_exist = User::where('user_email',  $email)->where('user_id', '!=', $id)->exists();
-        }
-
-        // user email check duplicate entry
         if ($email_exist) {
           return response()->json(['status' => false, 'message' => ['title' => 'Duplicate Entry', 'text' => 'Email already registered on another user!']]);
         }
+
+        $phone_exist = User::where('user_no_hp', $request->user_no_hp)->where('user_id', '!=', $id)->exists();
+        if ($phone_exist) {
+          return response()->json(['status' => false, 'message' => ['title' => 'Duplicate Entry', 'text' => 'Phone already registered on another user!']]);
+        }
         
         $user->user_status        = $status;
-        $user->user_ref_param     = $user_ref_param;
-        $user->user_ref_id        = $user_ref_id; 
+        $user->user_ref_param     = 0;
+        $user->user_ref_id        = 0; 
         $user->role_id            = $request->role_id;
-        $user->user_uniq_name     = $name;
-        $user->user_email         = $email;
+        $user->user_nik           = $request->user_nik;
+        $user->user_uniq_name     = $request->user_uniq_name;
+        $user->user_no_hp         = $request->user_no_hp;
+        $user->user_email         = $request->user_email;
+        $user->user_province      = $request->user_province;
+        $user->user_regency       = $request->user_regency;
+        $user->user_district      = $request->user_district;
+        $user->user_village       = $request->user_village;
         $user->user_updated_by    = session('user_id');
         $user->user_updated_date  = Carbon::now()->format('Y-m-d H:i:s');
         $user->save();
@@ -355,8 +356,8 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
           'role_id'           => 'required',
-          'user_uniq_name'    => 'required',
-          'user_photo'        => 'nullable|file|image|mimes:jpeg,png,jpg|max:1024',
+          'user_uniq_name'    => ['required', 'min:3', 'max:255'],
+          'user_photo'        => 'nullable|file|image|mimes:jpeg,png,jpg|max:1024'
         ]);
 
         if ($validator->fails()) {
@@ -383,8 +384,10 @@ class UserController extends Controller
               Storage::disk('public')->delete('users_uploads/' . $oldImage);
           }
           // Compress the image and save it
-          $filename = Carbon::now()->format('Hisu_').'users'.($request->user_id).'.'.$image->getClientOriginalExtension();
-          $compressedImage = Image::make($image)->fit(300, 300);
+          $filename = Carbon::now()->format('Hisu_').'users'.($request->caleg_id).'.'.$image->getClientOriginalExtension();
+          $compressedImage = Image::make($image)->resize(300, 300, function ($constraint) {
+              $constraint->aspectRatio();
+          });
           Storage::disk('public')->put('users_uploads/'.$filename, $compressedImage->encode());
 
           // Update the user_photo column only if the photo is changed
@@ -401,7 +404,9 @@ class UserController extends Controller
 
         // Perbarui nilai sesi 
         session()->put('user_id', $user->user_id);
+        session()->put('user_nik', $user->user_nik);
         session()->put('user_uniq_name', $user->user_uniq_name);
+        session()->put('user_no_hp', $user->user_no_hp);
         session()->put('user_email', $user->user_email);
         session()->put('user_photo', $user->user_photo);
         session()->put('user_created_date', $user->user_created_date);

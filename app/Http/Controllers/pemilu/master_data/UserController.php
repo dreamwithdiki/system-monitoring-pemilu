@@ -72,33 +72,37 @@ class UserController extends Controller
             $dir = $request->input('order.0.dir');
     
             if (empty($request->input('search.value'))) {
-              $users = User::offset($start)
-                ->limit($limit)
-                ->orderBy($order, $dir)
-                ->get();
+                $users = User::where('user_id', '!=', 2) 
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy($order, $dir)
+                    ->get();
             } else {
-              $search = $request->input('search.value');
+                $search = $request->input('search.value');
     
-              $users = User::where('user_nik', 'LIKE', "%{$search}%")
-                ->orWhere('user_uniq_name', 'LIKE', "%{$search}%")
-                ->orWhere('user_no_hp', 'LIKE', "%{$search}%")
-                ->orWhere('user_email', 'LIKE', "%{$search}%")
-                ->orWhereRelation('role', 'role_name', 'LIKE', "%{$search}%")
-                ->offset($start)
-                ->limit($limit)
-                ->orderBy($order, $dir)
-                ->get();
+                $users = User::where('user_id', '!=', 2) 
+                    ->where('user_nik', 'LIKE', "%{$search}%")
+                    ->orWhere('user_uniq_name', 'LIKE', "%{$search}%")
+                    ->orWhere('user_no_hp', 'LIKE', "%{$search}%")
+                    ->orWhere('user_email', 'LIKE', "%{$search}%")
+                    ->orWhereRelation('role', 'role_name', 'LIKE', "%{$search}%")
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy($order, $dir)
+                    ->get();
     
-              $totalFiltered = User::where('user_nik', 'LIKE', "%{$search}%")
-                ->orWhere('user_uniq_name', 'LIKE', "%{$search}%")
-                ->orWhere('user_no_hp', 'LIKE', "%{$search}%")
-                ->orWhere('user_email', 'LIKE', "%{$search}%")
-                ->orWhereRelation('role', 'role_name', 'LIKE', "%{$search}%")
-                ->count();
+                $totalFiltered = User::where('user_id', '!=', 2) 
+                    ->where('user_nik', 'LIKE', "%{$search}%")
+                    ->orWhere('user_uniq_name', 'LIKE', "%{$search}%")
+                    ->orWhere('user_no_hp', 'LIKE', "%{$search}%")
+                    ->orWhere('user_email', 'LIKE', "%{$search}%")
+                    ->orWhereRelation('role', 'role_name', 'LIKE', "%{$search}%")
+                    ->count();
             }
         } else {
             $start = 0;
-            $users = User::all();
+            // $users = User::all();
+            $users = User::where('user_id', '!=', 2)->get();
         }
 
         $data = [];
@@ -368,8 +372,8 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
           'role_id'           => 'required',
-          'user_uniq_name'    => 'required',
-          'user_photo'        => 'nullable|file|image|mimes:jpeg,png,jpg|max:1024',
+          'user_uniq_name'    => ['required', 'min:3', 'max:255'],
+          'user_photo'        => 'nullable|file|image|mimes:jpeg,png,jpg|max:1024'
         ]);
 
         if ($validator->fails()) {
@@ -396,8 +400,10 @@ class UserController extends Controller
               Storage::disk('public')->delete('users_uploads/' . $oldImage);
           }
           // Compress the image and save it
-          $filename = Carbon::now()->format('Hisu_').'users'.($request->user_id).'.'.$image->getClientOriginalExtension();
-          $compressedImage = Image::make($image)->fit(300, 300);
+          $filename = Carbon::now()->format('Hisu_').'users'.($request->caleg_id).'.'.$image->getClientOriginalExtension();
+          $compressedImage = Image::make($image)->resize(300, 300, function ($constraint) {
+              $constraint->aspectRatio();
+          });
           Storage::disk('public')->put('users_uploads/'.$filename, $compressedImage->encode());
 
           // Update the user_photo column only if the photo is changed
@@ -414,7 +420,9 @@ class UserController extends Controller
 
         // Perbarui nilai sesi 
         session()->put('user_id', $user->user_id);
+        session()->put('user_nik', $user->user_nik);
         session()->put('user_uniq_name', $user->user_uniq_name);
+        session()->put('user_no_hp', $user->user_no_hp);
         session()->put('user_email', $user->user_email);
         session()->put('user_photo', $user->user_photo);
         session()->put('user_created_date', $user->user_created_date);

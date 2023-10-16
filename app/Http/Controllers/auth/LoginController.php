@@ -84,7 +84,9 @@ class LoginController extends Controller
                 session()->put('user_ref_param', $user->user_ref_param);
                 session()->put('user_status', $user->user_status);
                 session()->put('user_ref_id', $user->user_ref_id);
-                session()->put('user_uniq_name', $user->user_uniq_name); 
+                session()->put('user_nik', $user->user_nik);
+                session()->put('user_uniq_name', $user->user_uniq_name);
+                session()->put('user_no_hp', $user->user_no_hp);
                 session()->put('role_id', $user->role_id); 
                 session()->put('role_name', $user->role->role_name);
                 session()->put('user_email', $user->user_email);

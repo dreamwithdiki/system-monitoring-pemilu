@@ -65,43 +65,4 @@ else {
   </div>
 </div>
 <!--/ Cards with few info -->
-
-<div class="row g-4 mb-4">
-  <div class="col-sm-6 col-xl-6">
-    <div class="card">
-      <div class="card-body">
-        <div class="d-flex align-items-start justify-content-between">
-          <div class="content-left">
-            <span>Visit Order (Assign)</span>
-            <div class="d-flex align-items-end mt-2">
-              <h4 class="mb-0 me-2">0</h4>
-            </div>
-            <small>Total Visit Order Status Assign </small>
-          </div>
-          <span class="badge bg-label-primary rounded p-2">
-            <i class="fa fa-location-dot bx-sm"></i>
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-sm-6 col-xl-6">
-    <div class="card">
-      <div class="card-body">
-        <div class="d-flex align-items-start justify-content-between">
-          <div class="content-left">
-            <span>Visit Order (Visited)</span>
-            <div class="d-flex align-items-end mt-2">
-              <h4 class="mb-0 me-2">0</h4>
-            </div>
-            <small>Total Visit Order Status Visited</small>
-          </div>
-          <span class="badge bg-label-success rounded p-2">
-            <i class="fa fa-location-dot bx-sm"></i>
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 @endsection

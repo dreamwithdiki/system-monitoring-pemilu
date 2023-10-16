@@ -1,3 +1,28 @@
+@php
+$configData = Helper::appClasses();
+
+date_default_timezone_set("Asia/Jakarta");  
+
+$hour = date('H', time());
+
+if( $hour > 5 && $hour <= 11) {
+    $result = "Selamat Pagi 😃😃😃";
+}
+else if($hour > 11 && $hour <= 15) {
+    $result = "Selamat Siang 🥰🥰🥰";
+}
+else if($hour > 15 && $hour <= 18) {
+    $result = "Selamat Sore 😄😄😄";
+}
+else if($hour > 18 && $hour <= 23) {
+    $result = "Selamat Malam 😴😴😴";
+}
+else {
+    $result = "Kenapa belum tidur ? ini sudah larut malam";
+}
+@endphp
+
+
 @extends('layouts/layoutMaster')
 
 @section('title', 'Dashboard - Admin')
@@ -17,210 +42,123 @@
 @endsection
 
 @section('content')
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Dashboard /</span> Dashboard
+</h4>
+
+<!-- Cards with few info -->
 <div class="row">
-
-  <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">
-    <div class="card h-100">
-      <div class="card-body">
-        <ul class="p-0 m-0">
-          <li class="d-flex mb-4 pb-1">
-            <div class="avatar flex-shrink-0 me-3">
-              <span class="avatar-initial rounded bg-label-secondary"><i class='bx bxs-lock-open'></i></span>
-            </div>
-            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-              <div class="me-2">
-                <h6 class="mb-0">Open</h6>
-              </div>
-              <div class="user-progress">
-                <h5 class="fw-bold" id="total_order_status_0">1</h5>
-              </div>
-            </div>
-          </li>
-          <li class="d-flex mb-4 pb-1">
-            <div class="avatar flex-shrink-0 me-3">
-              <span class="avatar-initial rounded bg-label-warning"><i class='bx bx-cart-download'></i></span>
-            </div>
-            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-              <div class="me-2">
-                <h6 class="mb-0">Assigned</h6>
-              </div>
-              <div class="user-progress">
-                <h5 class="fw-bold" id="total_order_status_1">2</h5>
-              </div>
-            </div>
-          </li>
-          <li class="d-flex mb-4 pb-1">
-            <div class="avatar flex-shrink-0 me-3">
-              <span class="avatar-initial rounded bg-label-danger"><i class='bx bxs-checkbox-minus'></i></span>
-            </div>
-            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-              <div class="me-2">
-                <h6 class="mb-0">Cancelled</h6>
-              </div>
-              <div class="user-progress">
-                <h5 class="fw-bold" id="total_order_status_2">3</h5>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">
-    <div class="card h-100">
-      <div class="card-body">
-        <ul class="p-0 m-0">
-          <li class="d-flex mb-4 pb-1">
-            <div class="avatar flex-shrink-0 me-3">
-              <span class="avatar-initial rounded bg-label-info"><i class='bx bx-revision'></i></span>
-            </div>
-            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-              <div class="me-2">
-                <h6 class="mb-0">Revisit</h6>
-              </div>
-              <div class="user-progress">
-                <h5 class="fw-bold" id="total_order_status_3">5</h5>
-              </div>
-            </div>
-          </li>
-          <li class="d-flex mb-4 pb-1">
-            <div class="avatar flex-shrink-0 me-3">
-              <span class="avatar-initial rounded bg-label-primary"><i class='bx bxs-map'></i></span>
-            </div>
-            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-              <div class="me-2">
-                <h6 class="mb-0">Visited</h6>
-              </div>
-              <div class="user-progress">
-                <h5 class="fw-bold" id="total_order_status_4">6</h5>
-              </div>
-            </div>
-          </li>
-          <li class="d-flex mb-4 pb-1">
-            <div class="avatar flex-shrink-0 me-3">
-              <span class="avatar-initial rounded bg-label-success"><i class='bx bxs-check-square'></i></span>
-            </div>
-            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-              <div class="me-2">
-                <h6 class="mb-0">Validated</h6>
-              </div>
-              <div class="user-progress">
-                <h5 class="fw-bold" id="total_order_status_5">7</h5>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">
-    <div class="card h-100">
-      <div class="card-body">
-        <ul class="p-0 m-0">
-          <li class="d-flex mb-4 pb-1">
-            <div class="avatar flex-shrink-0 me-3">
-              <span class="avatar-initial rounded bg-label-danger"><i class='bx bx-coin'></i></span>
-            </div>
-            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-              <div class="me-2">
-                <h6 class="mb-0">Can't billed</h6>
-              </div>
-              <div class="user-progress">
-                <h5 class="fw-bold" id="total_order_status_6">8</h5>
-              </div>
-            </div>
-          </li>
-          <li class="d-flex mb-4 pb-1">
-            <div class="avatar flex-shrink-0 me-3">
-              <span class="avatar-initial rounded bg-label-success"><i class='bx bx-credit-card'></i></span>
-            </div>
-            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-              <div class="me-2">
-                <h6 class="mb-0">Paid to client</h6>
-              </div>
-              <div class="user-progress">
-                <h5 class="fw-bold" id="total_order_status_7">8</h5>
-              </div>
-            </div>
-          </li>
-          <li class="d-flex mb-4 pb-1">
-            <div class="avatar flex-shrink-0 me-3">
-              <span class="avatar-initial rounded bg-label-primary"><i class='bx bxs-dollar-circle'></i></span>
-            </div>
-            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-              <div class="me-2">
-                <h6 class="mb-0">Paid to Partner</h6>
-              </div>
-              <div class="user-progress">
-                <h5 class="fw-bold" id="total_order_status_8">8</h5>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-md-12 col-lg-12 col-xl-12 order-0 mb-4">
-    <div class="card h-100">
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-2 d-flex align-items-center justify-content-center" style="text-align: center">
-            <div class="">
-              <h2 class="mb-2" id="total_order">5</h2>
-              <span>Total Orders</span>
-            </div>
+  <div class="col-lg-12 col-md-6 col-sm-6 mb-4">
+    <div class="card">
+      <div class="d-flex justify-content-between">
+        <div class="col-sm-7">
+          <div class="card-body">
+            <h5 class="card-title text-primary">Hello {{ session('user_uniq_name') }}, {{ $result }}</h5>
+            <p class="mb-4">Welcome back to <span class="fw-bold">Monitoring</span>.</p>
           </div>
-          <div class="col-md-8">
-            <div id="reportBarChart"></div>
-          </div>
-          <div class="col-md-2">
-            <div class="d-flex flex-column align-items-center gap-1">
-              <div class="row">
-                <div class="text-center col-md-6 col-sm-6">
-                  <div class="dropdown">
-                    <button class="btn btn-sm btn-label-secondary dropdown-toggle" type="button" id="dropdown-year" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      All
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="growthReportId">
-                      <a class="dropdown-item" id="dropdown-item-year" data-id="0" href="javascript:void(0);">All</a>
-                      {{-- @foreach ($list_year as $year)
-                        <a class="dropdown-item" id="dropdown-item-year" data-id="{{ $year }}" href="javascript:void(0);">{{ $year }}</a>
-                      @endforeach --}}
-                    </div>
-                  </div>
-                </div>
-                <div class="text-center col-md-6 col-sm-6">
-                  <div class="dropdown">
-                    <button class="btn btn-sm btn-label-secondary dropdown-toggle" type="button" id="dropdown-month" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      All
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="growthReportId">
-                      <a class="dropdown-item" id="dropdown-item-month" data-id="0" href="javascript:void(0);">All</a>
-                      {{-- @foreach ($list_month as $key => $month)
-                        <a class="dropdown-item" id="dropdown-item-month" data-id="{{ $key + 1 }}" href="javascript:void(0);">{{ $month }}</a>
-                      @endforeach --}}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div id="orderStatisticsChart"></div>
-            </div>
+        </div>
+        <div class="col-sm-5 text-center text-sm-left">
+          <div class="card-body pb-0 px-0 px-md-4">
+            <img src="{{asset('assets/img/illustrations/man-with-laptop-'.$configData['style'].'.png')}}" height="140" alt="View Badge User" data-app-light-img="illustrations/man-with-laptop-light.png" data-app-dark-img="illustrations/man-with-laptop-dark.png">
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  <div class="col-xl-12 col-12">
-    <div class="card">
-      <div class="card-body">
-        <canvas id="barChartTotal" class="chartjs"></canvas>
-      </div>
-    </div>
-  </div>
-  <!-- /Bar Charts -->
 </div>
+<!--/ Cards with few info -->
+
+  <!-- Cards with unicons & charts -->
+<div class="row">
+  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
+    <a href="{{ route('dpt') }}">
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title d-flex align-items-start justify-content-between">
+            <span class="badge bg-label-primary rounded p-2">
+              <i class="fa fa-headset bx-sm"></i>
+            </span>
+          </div>
+          <span class="fw-semibold d-block mb-1">Total Dukungan</span>
+          <h2 class="card-title mb-2">{{ $total_dpt_is_active }}</h2>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
+    <a href="{{ route('dpt') }}">
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title d-flex align-items-start justify-content-between">
+            <span class="badge bg-label-primary rounded p-2">
+              <i class="fa fa-mars bx-sm"></i>
+            </span>
+          </div>
+          <span class="fw-semibold d-block mb-1">Total Laki-Laki</span>
+          <h2 class="card-title mb-2">{{ $total_dpt_man }}</h2>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
+    <a href="{{ route('dpt') }}">
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title d-flex align-items-start justify-content-between">
+            <span class="badge bg-label-success rounded p-2">
+              <i class="fa fa-venus bx-sm"></i> 
+            </span>
+          </div>
+          <span class="fw-semibold d-block mb-1">Total Perempuan</span>
+          <h2 class="card-title mb-2">{{ $total_dpt_woman }}</h2>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
+    <a href="{{ route('pemilu-master-data-tps') }}">
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title d-flex align-items-start justify-content-between">
+            <span class="badge bg-label-info rounded p-2">
+              <i class="fa fa-gift bx-sm"></i> 
+            </span>
+          </div>
+          <span class="fw-semibold d-block mb-1">Total Suara Partai</span>
+          <h2 class="card-title mb-2">{{ $totalSuaraPartai }}</h2>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
+    <a href="{{ route('pemilu-master-data-tps') }}">
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title d-flex align-items-start justify-content-between">
+            <span class="badge bg-label-primary rounded p-2">
+              <i class="fa fa-envelope bx-sm"></i> 
+            </span>
+          </div>
+          <span class="fw-semibold d-block mb-1">Total Jumlah Pemilih</span>
+          <h2 class="card-title mb-2">{{ $totalSuaraCaleg }}</h2>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
+    <a href="{{ route('pemilu-master-data-user') }}">
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title d-flex align-items-start justify-content-between">
+            <span class="badge bg-label-warning rounded p-2">
+              <i class="fa fa-users bx-sm"></i>
+            </span>
+          </div>
+          <span class="fw-semibold d-block mb-1">Total Users</span>
+          <h2 class="card-title mb-2">{{ $total_users_is_active }}</h2>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+<!--/ Cards with unicons & charts -->
 @endsection

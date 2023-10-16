@@ -16,7 +16,7 @@
   <!-- Canonical SEO -->
   <link rel="canonical" href="{{ config('variables.productPage') ? config('variables.productPage') : '' }}">
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/branding/IconVA.webp') }}" />
+  <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/branding/vote.png') }}" />
 
   
 

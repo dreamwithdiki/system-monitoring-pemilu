@@ -43,24 +43,6 @@
       "name": "Data Pendukung",
       "icon": "menu-icon tf-icons fa fa-address-card ",
       "slug": "pendukung-dpt"
-    },
-    {
-      "menuHeader": "Report"
-    },
-    {
-      "url": "/report/report-visit-order",
-      "name": "Visit Order",
-      "icon": "menu-icon tf-icons fas fa-file",
-      "slug": "report-visit-order"
-    },
-    {
-      "menuHeader": "Settings"
-    },
-    {
-      "url": "/settings/user",
-      "name": "User",
-      "icon": "menu-icon tf-icons fa fa-users",
-      "slug": "settings-user"
     }
   ]
 }

@@ -97,8 +97,10 @@
       <div class="card-body">
         <small class="text-muted text-uppercase">About</small>
         <ul class="list-unstyled mb-4 mt-3">
+          <li class="d-flex align-items-center mb-3"><i class="bx bx-terminal"></i><span class="fw-semibold mx-2">NIK:</span> <span>{{ session('user_nik') }}</span></li>
           <li class="d-flex align-items-center mb-3"><i class="bx bx-user"></i><span class="fw-semibold mx-2">Full Name:</span> <span>{{ session('user_uniq_name') }}</span></li>
           <li class="d-flex align-items-center mb-3"><i class="bx bx-envelope"></i><span class="fw-semibold mx-2">Email:</span> <span>{{ session('user_email') }}</span></li>
+          <li class="d-flex align-items-center mb-3"><i class="bx bx-phone"></i><span class="fw-semibold mx-2">Phone:</span> <span>{{ session('user_no_hp') }}</span></li>
           <li class="d-flex align-items-center mb-3"><i class="bx bx-check"></i><span class="fw-semibold mx-2">Status:</span> <span class="badge bg-label-success">{{ session('user_status') == 2 ? 'Active' : 'Not Active' }}</span></li>
           <li class="d-flex align-items-center mb-3"><i class="bx bx-star"></i><span class="fw-semibold mx-2">Role:</span> <span class="badge bg-primary">{{ session('role_name') }}</span></li>
           <li class="d-flex align-items-center mb-3"><i class="bx bx-flag"></i><span class="fw-semibold mx-2">Country:</span> <span>Indonesia</span></li>
