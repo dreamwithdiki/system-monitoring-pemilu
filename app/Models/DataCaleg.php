@@ -31,23 +31,28 @@ class DataCaleg extends Model
         $query->where('caleg_status',2);
     }
 
-    public function province()
+    public function kecamatan()
     {
-        return $this->belongsTo(MasterProvinces::class, 'caleg_province', 'id');
+        return $this->belongsTo(Kecamatan::class, 'kecamatan_id');
     }
 
-    public function regency()
-    {
-        return $this->belongsTo(MasterRegencies::class, 'caleg_regency', 'id');
-    }
+    // public function province()
+    // {
+    //     return $this->belongsTo(MasterProvinces::class, 'caleg_province', 'id');
+    // }
 
-    public function district()
-    {
-        return $this->belongsTo(MasterDistricts::class, 'caleg_district', 'id');
-    }
+    // public function regency()
+    // {
+    //     return $this->belongsTo(MasterRegencies::class, 'caleg_regency', 'id');
+    // }
 
-    public function village()
-    {
-        return $this->belongsTo(MasterVillages::class, 'caleg_village', 'id');
-    }
+    // public function district()
+    // {
+    //     return $this->belongsTo(MasterDistricts::class, 'caleg_district', 'id');
+    // }
+
+    // public function village()
+    // {
+    //     return $this->belongsTo(MasterVillages::class, 'caleg_village', 'id');
+    // }
 }

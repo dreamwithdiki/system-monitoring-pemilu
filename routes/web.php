@@ -56,7 +56,8 @@ Route::group(['middleware' => 'check.tokey'], function () use ($controller_path)
                 Route::post('store', $path_pemilu_master_data . '\DataCalegController@store');
                 Route::post('update/{id}', $path_pemilu_master_data . '\DataCalegController@update');
                 Route::post('update-status', $path_pemilu_master_data . '\DataCalegController@statusUpdate');
-                Route::get('uploads/{caleg_id}', $path_pemilu_master_data . '\DataCalegController@show_upload_caleg');
+                Route::get('uploads/{caleg_id}', $path_pemilu_master_data . '\DataCalegController@show_upload_caleg'); 
+                Route::get('upload-partai/{caleg_partai_id}', $path_pemilu_master_data . '\DataCalegController@show_upload_caleg_partai'); 
                 Route::post('delete', $path_pemilu_master_data . '\DataCalegController@delete');
             });
 

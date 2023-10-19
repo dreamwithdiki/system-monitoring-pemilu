@@ -44,51 +44,6 @@
     return true;
   }
 </script>
-<script>
-
-//  untuk Checklist Kecamatan
-function _check_kecamatan_checkbox_header(el, all = false) {
-   if (all) {
-     $(el).find('.checkbox-header').each(function (index, val) {
-       var tmp_checkall = true;
-       $(val).parents('div').find('.checkbox-item').each(function (index2, val2) {
-         if (!$(val2).is(":checked")) {
-           tmp_checkall = false;
-         }
-       })
-       if (tmp_checkall == true) {
-         $(val).prop('checked', true)
-       } else {
-         $(val).prop('checked', false)
-       }
-     })
-   } else {
-     var check = $(el).is(":checked");
-     if (check) {
-       $(el).parents('div').find('input[type="checkbox"]').prop('checked', true);
-     } else {
-       $(el).parents('div').find('input[type="checkbox"]').prop('checked', false);
-     }
-   }
- }
-
- function _check_kecamatan_checkbox_item(el) {
-   var tmp_checkall = true;
-   $(el).parents('div').find('.checkbox-item').each(function (index, val) {
-       if (!$(val).is(":checked")) {
-           tmp_checkall = false;
-       }
-       if (tmp_checkall == true) {
-           $(val).prop('checked', true);
-       }
-   });
-   if (tmp_checkall == true) {
-       $(el).parents('div').find('.checkbox-header').prop('checked', true);
-   } else {
-       $(el).parents('div').find('.checkbox-header').prop('checked', false);
-   }
-}
-</script>
 @endsection
 
 @section('content')
@@ -126,14 +81,15 @@ function _check_kecamatan_checkbox_header(el, all = false) {
       <thead>
         <tr>
           <th>No</th>
+          <th>Foto</th>
           <th>NIK</th>
           <th>Nama</th>
+          <th>Provinsi</th>
+          <th>Kabupaten</th>
+          <th>Kecamatan</th>
+          <th>Kelurahan</th>
           <th>Visi & Misi</th>
-          <th>No Urut Partai</th>
           <th>Nama Partai</th>
-          <th>No Urut Caleg</th>
-          <th>Foto Caleg</th>
-          <th>Foto Partai</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
@@ -178,111 +134,63 @@ function _check_kecamatan_checkbox_header(el, all = false) {
               </div>
             </div>
             <div class="row g2">
-              <div class="col-xl mb-3">
+              <div class="col mb-3">
                 <label for="addNik" class="form-label">NIK <span style='color:red'>*</span></label>
                 <input type="text" id="addNik" name="caleg_nik" class="form-control" placeholder="NIK" onkeypress="return hanyaAngka(event)" max="16">
               </div>
-              <div class="col-xl mb-3">
+              <div class="col mb-3">
                 <label for="addName" class="form-label">Nama <span style='color:red'>*</span></label>
                 <input type="text" id="addName" name="caleg_name" class="form-control" placeholder="Enter Name" >
               </div>
             </div>
             <div class="row g2">
-              <div class="col-xl mb-3">
+              <div class="col mb-3">
+                <label class="form-label" for="addProvince">Provinsi <span style='color:red'>*</span></label>
+                <select id="addProvince" name="caleg_province" class="ac_province form-select">
+                  <option value="">Select Province Name</option>
+                </select>
+              </div>
+              <div class="col mb-3">
+                <label class="form-label" for="addRegency">Kabupaten <span style='color:red'>*</span></label>
+                <select id="addRegency" name="caleg_regency" class="ac_regency form-select">
+                  <option value="">Choice</option>
+                </select>
+              </div>
+            </div>
+            <div class="row g2">
+              <div class="col mb-3">
+                <label class="form-label" for="addDistrict">Kecamatan <span style='color:red'>*</span></label>
+                <select id="addDistrict" name="caleg_district" class="ac_district form-select">
+                  <option value="">Choice</option>
+                </select>
+              </div>
+              <div class="col mb-3">
+                <label class="form-label" for="addVillage">Kelurahan <span style='color:red'>*</span></label>
+                <select id="addVillage" name="caleg_village" class="ac_village form-select">
+                  <option value="">Choice</option>
+                </select>
+              </div>
+            </div>
+            <div class="row g2">
+              <div class="col mb-3">
                 <label class="form-label" for="bs-validation-upload-file">Photo Caleg</label>
                 <input type="file" class="form-control" name="caleg_photo" id="bs-validation-upload-file"/>
               </div>
             </div>
             <div class="row g2">
-              <div class="col-xl mb-3">
+              <div class="col mb-3">
                 <label class="form-label" for="bs-validation-upload-file">Photo Partai</label>
                 <input type="file" class="form-control" name="caleg_photo_partai" id="bs-validation-upload-file"/>
               </div>
             </div>
-            {{-- <div class="row">
+            <div class="row">
               <div class="col mb-3">
-              <label for="addChecklistKecamatan" class="form-label">Daerah Pemilihan <span style='color:red'>*</span></label>
-                @php 
-                    $tmp_kecamatan_id='x';
-                    $tmp_group_kec_count=0;
-                    foreach($ceklisKecamatan as $key => $check){
-                        if($check->kecamatan_id!=$tmp_kecamatan_id){
-                            $tmp_kecamatan_id=$check->kecamatan_id;
-                            if($tmp_group_kec_count==0||$tmp_group_kec_count % 2==0){
-                                if($tmp_group_kec_count==0){
-                                    echo '<div class="row" style="padding-left:15px; padding-right:15px">';
-                                }else{
-                                    echo '</div><div class="row" style="padding-left:15px; padding-right:15px">';
-                                }
-                            }
-                            if($key==count($ceklisKecamatan)-1 || $key!=0){
-                                echo '</div>';
-                            }
-                            echo '<div class="col mb-6 kecamatan_type">
-                                    <div class="form-check form-check-primary mt-3">
-                                        <input class="form-check-input checkbox-item-modal-add-kecamatan checkbox-item" type="checkbox" onClick="_check_kecamatan_checkbox_item(this);" name="kecamatan_type[]" id="kecamatan_type_'.$check->kecamatan_id.'" value="'.$check->kecamatan_id.'" required>
-                                        <label class="form-check-label" for="kecamatan_type_'.$check->kecamatan_id.'">'.$check->kecamatan_name.'</label>
-                                    </div>
-                                ';
-                            $tmp_group_kec_count++;
-                        }else{
-                            echo '
-                                <input class="form-check-input checkbox-item-modal-add-kecamatan checkbox-item" type="checkbox" onClick="_check_kecamatan_checkbox_item(this);" name="kecamatan_type[]" id="kecamatan_type_'.$check->kecamatan_id.'" value="'.$check->kecamatan_id.'" required>
-                                <label class="form-check-label" for="kecamatan_type_'.$check->kecamatan_id.'">'.$check->kecamatan_name.'</label>
-                            ';
-                        }
-                    } 
-                @endphp
-                
-                </div>
-              </div>
-            </div> --}}
-
-            <div class="row">
-              <div class="col-xl mb-3">
-                <label for="addChecklistKecamatan" class="form-label">Daerah Pemilihan <span style='color:red'>*</span></label>
-                <div class="row" style="padding-left: 15px; padding-right: 15px">
-                  @php 
-                  $tmp_group_id = 'x';
-                  $tmp_group_kec_count = 0;
-
-                  foreach($ceklisKecamatan as $key => $check){
-                    if($check->kecamatan_id!=$tmp_group_id){
-                      if($tmp_group_kec_count==0||$tmp_group_kec_count % 2==0){
-                              echo '</div><div class="row" style="padding-left: 15px; padding-right: 15px">';
-                          }
-                          if ($tmp_group_kec_count > 0) {
-                              echo '</div>';
-                          }
-
-                          echo '<div class="col mb-6 kecamatan_type">';
-                          $tmp_group_id = $check->kecamatan_id;
-                          $tmp_group_kec_count++;
-                      }
-
-                      echo '
-                          <div class="form-check form-check-primary mt-3">
-                              <input class="form-check-input checkbox-item-modal-add-kecamatan checkbox-item" type="checkbox" onClick="_check_kecamatan_checkbox_item(this);" name="kecamatan_type[]" id="kecamatan_type_'.$check->kecamatan_id.'" value="'.$check->kecamatan_id.'" required>
-                              <label class="form-check-label" for="kecamatan_type_'.$check->kecamatan_id.'">'.$check->kecamatan_name.'</label>
-                          </div>
-                      ';
-                  }
-
-                  if ($tmp_group_kec_count > 0) {
-                      echo '</div>';
-                  }
-                @endphp
-               </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-xl mb-3">
                 <label for="addVisiMisi" class="form-label">Visi & Misi <span style='color:red'>*</span></label>
                 <textarea id="addVisiMisi" name="caleg_visi_misi" class="form-control" placeholder="Explanation about the new visi & misi" rows="5" style="max-height: 100px;resize: none;"></textarea>
               </div>
             </div>
             <div class="row g2">
-                <div class="col-xl mb-3">
+                <div class="col mb-3">
                   <label for="addNamaPartai" class="form-label">Nama Partai <span style='color:red'>*</span></label>
                   <input type="text" id="addNamaPartai" name="caleg_nama_partai" class="form-control" placeholder="Enter Nama Partai" >
                 </div>
@@ -334,7 +242,7 @@ function _check_kecamatan_checkbox_header(el, all = false) {
             <div class="row g-2">
               <div class="col mb-3">
                 <label for="editNIK" class="form-label">NIK <span style='color:red'>*</span></label>
-                <input type="text" id="editNIK" name="caleg_nik" class="form-control" placeholder="Enter NIK" onkeypress="return hanyaAngka(event)" max="16" @required(true)>
+                <input type="text" id="editNIK" name="caleg_nik" class="form-control" placeholder="Enter NIK" @required(true)>
               </div>
               <div class="col mb-3">
                 <label for="editName" class="form-label">Nama <span style='color:red'>*</span></label>
@@ -344,7 +252,7 @@ function _check_kecamatan_checkbox_header(el, all = false) {
             <div class="row">
               <div class="col mb-3">
                 <input type="hidden" id="oldImage" name="oldImage" value="">
-                <label class="form-label">Current Photo Caleg</label>
+                <label class="form-label">Current Photo</label>
                 <div class="col-md-3">
                     <img src="#" class="rounded current-photo" style="max-width: 100%; height: auto;">
                 </div>
@@ -352,76 +260,48 @@ function _check_kecamatan_checkbox_header(el, all = false) {
             </div>
             <div class="row">
               <div class="col mb-3">
-                <label class="form-label" for="caleg_photo">Change Photo Caleg</label>
+                <label class="form-label" for="caleg_photo">Change Photo</label>
                 <input type="file" class="form-control" id="caleg_photo" name="caleg_photo"/>
                 <br>
                 <div id="imagePreview"></div>
               </div>
             </div>
-
-            <div class="row">
+            <div class="row g-2">
               <div class="col mb-3">
-                <input type="hidden" id="oldImage" name="oldImagePartai" value="">
-                <label class="form-label">Current Photo Partai</label>
-                <div class="col-md-3">
-                    <img src="#" class="rounded current-photo-partai" style="max-width: 100%; height: auto;">
-                </div>
+                <label class="form-label" for="editProvince">Provinsi <span style='color:red'>*</span></label>
+                <select id="editProvince" name="caleg_province" class="form-select" @required(true)>
+                  <option value="">Select Province Name</option>
+                </select>
               </div>
-            </div>
-            <div class="row">
               <div class="col mb-3">
-                <label class="form-label" for="caleg_partai">Change Photo Partai</label>
-                <input type="file" class="form-control" id="caleg_partai" name="caleg_partai"/>
-                <br>
-                <div id="imagePreview"></div>
+                <label class="form-label" for="editRegency">Kabupaten <span style='color:red'>*</span></label>
+                <select id="editRegency" name="caleg_regency" class="form-select" @required(true)>
+                  <option value="">Choice</option>
+                </select>
               </div>
             </div>
-
-            <div class="row">
-              <div class="col-xl mb-3">
-                <label for="editChecklistKecamatan" class="form-label">Daerah Pemilihan <span style='color:red'>*</span></label>
-                <div class="row" style="padding-left: 15px; padding-right: 15px">
-                  @php 
-                  $tmp_group_id = 'x';
-                  $tmp_group_kec_count = 0;
-
-                  foreach($ceklisKecamatan as $key => $check){
-                    if($check->kecamatan_id!=$tmp_group_id){
-                      if($tmp_group_kec_count==0||$tmp_group_kec_count % 2==0){
-                              echo '</div><div class="row" style="padding-left: 15px; padding-right: 15px">';
-                          }
-                          if ($tmp_group_kec_count > 0) {
-                              echo '</div>';
-                          }
-
-                          echo '<div class="col mb-6 edit_kecamatan_type">';
-                          $tmp_group_id = $check->kecamatan_id;
-                          $tmp_group_kec_count++;
-                      }
-
-                      echo '
-                          <div class="form-check form-check-primary mt-3">
-                              <input class="form-check-input checkbox-item-modal-edit-kecamatan checkbox-item" type="checkbox" onClick="_check_kecamatan_checkbox_item(this);" name="edit_kecamatan_type[]" id="edit_kecamatan_type_'.$check->kecamatan_id.'" value="'.$check->kecamatan_id.'" required>
-                              <label class="form-check-label" for="edit_kecamatan_type_'.$check->kecamatan_id.'">'.$check->kecamatan_name.'</label>
-                          </div>
-                      ';
-                  }
-
-                  if ($tmp_group_kec_count > 0) {
-                      echo '</div>';
-                  }
-                @endphp
-               </div>
+            <div class="row g-2">
+              <div class="col mb-3">
+                <label class="form-label" for="editDistrict">Kecamatan <span style='color:red'>*</span></label>
+                <select id="editDistrict" name="caleg_district" class="form-select">
+                  <option value="">Choice</option>
+                </select>
+              </div>
+              <div class="col mb-3">
+                <label class="form-label" for="editVillage">Kelurahan <span style='color:red'>*</span></label>
+                <select id="editVillage" name="caleg_village" class="form-select">
+                  <option value="">Choice</option>
+                </select>
               </div>
             </div>
             <div class="row">
-                <div class="col-xl mb-3">
+                <div class="col mb-3">
                     <label for="editVisiMisi" class="form-label">Visi & Misi <span style='color:red'>*</span></label>
                     <textarea id="editVisiMisi" name="caleg_visi_misi" class="form-control" placeholder="Explanation about the new visi & misi" rows="5" style="max-height: 100px;resize: none;"></textarea>
                 </div>
             </div>
             <div class="row g2">
-                <div class="col-xl mb-3">
+                <div class="col mb-3">
                     <label for="editNamaPartai" class="form-label">Nama Partai <span style='color:red'>*</span></label>
                     <input type="text" id="editNamaPartai" name="caleg_nama_partai" class="form-control" placeholder="Enter Nama Partai" >
                 </div>
