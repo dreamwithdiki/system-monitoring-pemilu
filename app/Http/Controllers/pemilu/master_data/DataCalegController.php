@@ -253,7 +253,7 @@ class DataCalegController extends Controller
      */
     public function show($id)
     {
-        $caleg = DataCaleg::with('kecamatan_ceklis')->where('caleg_id', Crypt::decrypt($id))->first();
+        $caleg = DataCaleg::with('kecamatan_ceklis.checklist_kec',)->where('caleg_id', Crypt::decrypt($id))->first();
         if($caleg) {
             return response()->json(['status' => true, 'data' => $caleg]);
         } else {

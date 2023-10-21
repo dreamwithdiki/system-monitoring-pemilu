@@ -24,6 +24,9 @@ Route::post('/reset-password', $controller_path . '\auth\LoginController@reset_p
 Route::group(['middleware' => 'check.tokey'], function () use ($controller_path) {
     Route::get('/', $controller_path . '\dashboard\DashboardController@index')->name('dashboard');
     Route::get('/dashboard', $controller_path . '\dashboard\DashboardController@index')->name('dashboard-index');
+    Route::get('/get-latest-caleg', $controller_path . '\dashboard\DashboardController@getLatestCaleg');
+    Route::get('/uploads/{caleg_id}', $controller_path . '\dashboard\DashboardController@show_upload_caleg'); 
+    Route::get('/uploads_partai/{caleg_partai_id}', $controller_path . '\dashboard\DashboardController@show_upload_caleg_partai'); 
     Route::get('/filter-year-month/{year}/{month}', $controller_path . '\dashboard\DashboardController@filter_year_month');
     Route::post('/change-password', $controller_path . '\auth\LoginController@change_password')->name('change-password');
 

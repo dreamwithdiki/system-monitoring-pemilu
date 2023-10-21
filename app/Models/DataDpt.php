@@ -33,7 +33,47 @@ class DataDpt extends Model
 
     public function kecamatan_ceklis()
     {
-        return $this->hasMany(KecamatanCeklisDpt::class, 'dpt_id');
+        return $this->hasMany(KecamatanCeklis::class, 'dpt_id');
+    }
+
+    public function province()
+    {
+        return $this->belongsTo(MasterProvinces::class, 'dpt_province', 'id');
+    }
+
+    public function regency()
+    {
+        return $this->belongsTo(MasterRegencies::class, 'dpt_regency', 'id');
+    }
+
+    public function district()
+    {
+        return $this->belongsTo(MasterDistricts::class, 'dpt_district', 'id');
+    }
+
+    public function village()
+    {
+        return $this->belongsTo(MasterVillages::class, 'dpt_village', 'id');
+    }
+
+    public function province_name()
+    {
+        return $this->province->name;
+    }
+
+    public function regency_name()
+    {
+        return $this->regency->name;
+    }
+
+    public function district_name()
+    {
+        return $this->district->name;
+    }
+
+    public function village_name()
+    {
+        return $this->village->name;
     }
 
     public function tps()
@@ -41,24 +81,13 @@ class DataDpt extends Model
         return $this->belongsTo(DataTps::class, 'tps_id');
     }
 
-    // public function province()
-    // {
-    //     return $this->belongsTo(MasterProvinces::class, 'dpt_province', 'id');
-    // }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'dpt_created_by', 'user_id');
+    }
 
-    // public function regency()
-    // {
-    //     return $this->belongsTo(MasterRegencies::class, 'dpt_regency', 'id');
-    // }
-
-    // public function district()
-    // {
-    //     return $this->belongsTo(MasterDistricts::class, 'dpt_district', 'id');
-    // }
-
-    // public function village()
-    // {
-    //     return $this->belongsTo(MasterVillages::class, 'dpt_village', 'id');
-    // }
-
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'dpt_created_by', 'role_id');
+    }
 }

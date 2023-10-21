@@ -142,29 +142,29 @@
                 </div>
             </div>
             <div class="row g-2">
-                <div class="col mb-3">
+                <div class="col-xl mb-3">
                   <label for="user_nik" class="form-label">NIK <span style='color:red'>*</span></label>
                   <input type="text" id="user_nik" name="user_nik" class="form-control" placeholder="Enter NIK" onkeypress="return hanyaAngka(event)" max="16" @required(true)>
                 </div>
             </div>
             <div class="row g-2">
-                <div class="col mb-3">
+                <div class="col-xl mb-3">
                   <label for="user_uniq_name" class="form-label">Nama <span style='color:red'>*</span></label>
                   <input type="text" id="user_uniq_name" name="user_uniq_name" class="form-control" placeholder="Enter Name" @required(true)>
                 </div>
-                <div class="col mb-3">
+                <div class="col-xl mb-3">
                   <label for="user_no_hp" class="form-label">Telepon <span style='color:red'>*</span></label>
                   <input type="text" id="user_no_hp" name="user_no_hp" class="form-control" placeholder="Enter Phone" onkeypress="return hanyaAngka(event)" max="16" @required(true)>
                 </div>
             </div>
             <div class="row g-2">
-                <div class="col mb-3">
+                <div class="col-xl mb-3">
                   <label class="form-label" for="role_id">Role / Penugasan <span style='color:red'>*</span></label>
                   <select id="role_id" name="role_id" class="ac_role form-select">
                     <option value="">Select Role</option>
                   </select>
                 </div>
-                <div class="col mb-3" id="emailField">
+                <div class="col-xl mb-3" id="emailField">
                   <label for="user_email" class="form-label">Email <span style='color:red'>*</span></label>
                   <input type="email" id="user_email" name="user_email" class="form-control" placeholder="Enter Email">
                 </div>
@@ -187,13 +187,13 @@
                 </div>
             </div>
             <div class="row g2">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="addProvince">Provinsi <span style='color:red'>*</span></label>
                 <select id="addProvince" name="user_province" class="ac_province form-select">
                   <option value="">Select Province Name</option>
                 </select>
               </div>
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="addRegency">Kabupaten <span style='color:red'>*</span></label>
                 <select id="addRegency" name="user_regency" class="ac_regency form-select">
                   <option value="">Choice</option>
@@ -201,13 +201,13 @@
               </div>
             </div>
             <div class="row g2">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="addDistrict">Kecamatan <span style='color:red'>*</span></label>
                 <select id="addDistrict" name="user_district" class="ac_district form-select">
                   <option value="">Choice</option>
                 </select>
               </div>
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="addVillage">Kelurahan <span style='color:red'>*</span></label>
                 <select id="addVillage" name="user_village" class="ac_village form-select">
                   <option value="">Choice</option>
@@ -215,7 +215,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="bs-validation-upload-file">Profile pic</label>
                 <input type="file" class="form-control" name="user_photo" id="bs-validation-upload-file"/>
               </div>
@@ -265,41 +265,41 @@
                 </div>
             </div>
             <div class="row g-2">
-                <div class="col mb-3">
+                <div class="col-xl mb-3">
                   <label for="edit_user_nik" class="form-label">NIK <span style='color:red'>*</span></label>
                   <input type="text" id="edit_user_nik" name="user_nik" class="form-control" placeholder="Enter NIK" onkeypress="return hanyaAngka(event)" max="16" @required(true)>
                 </div>
             </div>
             <div class="row g-2">
-                <div class="col mb-3">
+                <div class="col-xl mb-3">
                   <label for="edit_user_uniq_name" class="form-label">Nama <span style='color:red'>*</span></label>
                   <input type="text" id="edit_user_uniq_name" name="user_uniq_name" class="form-control" placeholder="Enter Full Name" @required(true)>
                 </div>
-                <div class="col mb-3">
+                <div class="col-xl mb-3">
                   <label for="edit_user_no_hp" class="form-label">Telepon <span style='color:red'>*</span></label>
                   <input type="text" id="edit_user_no_hp" name="user_no_hp" class="form-control" placeholder="Enter Phone" onkeypress="return hanyaAngka(event)" max="16" @required(true)>
                 </div>
             </div>
             <div class="row g-2">
-                <div class="col mb-3">
+                <div class="col-xl mb-3">
                   <label class="form-label" for="edit_role">Role / Penugasan <span style='color:red'>*</span></label>
                   <select id="edit_role" name="role_id" class="ac_edit_role form-select" @required(true)>
                     <option value="">Select Role</option>
                   </select>
                 </div>
-                <div class="col mb-3" id="editemailField">
+                <div class="col-xl mb-3" id="editemailField">
                   <label for="edit_user_email" class="form-label">Email <span style='color:red'>*</span></label>
                   <input type="email" id="edit_user_email" name="user_email" class="form-control" placeholder="Enter Email">
                 </div>
             </div>
             <div class="row g-2">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="editProvince">Provinsi <span style='color:red'>*</span></label>
                 <select id="editProvince" name="user_province" class="form-select" @required(true)>
                   <option value="">Select Province Name</option>
                 </select>
               </div>
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="editRegency">Kabupaten <span style='color:red'>*</span></label>
                 <select id="editRegency" name="user_regency" class="form-select" @required(true)>
                   <option value="">Choice</option>
@@ -307,13 +307,13 @@
               </div>
             </div>
             <div class="row g-2">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="editDistrict">Kecamatan <span style='color:red'>*</span></label>
                 <select id="editDistrict" name="user_district" class="form-select">
                   <option value="">Choice</option>
                 </select>
               </div>
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="editVillage">Kelurahan <span style='color:red'>*</span></label>
                 <select id="editVillage" name="user_village" class="form-select">
                   <option value="">Choice</option>
@@ -321,7 +321,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <input type="hidden" id="oldImage" name="oldImage" value="">
                 <label class="form-label">Current Photo</label>
                 <div class="col-md-3">
@@ -330,7 +330,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="user_photo">Change Profile</label>
                 <input type="file" class="form-control" id="file" name="user_photo" id="user_photo" />
                 <br>
@@ -347,6 +347,91 @@
     </div>
   </div>
 </div>
+
+<!-- Modal Detail User -->
+<div class="modal fade" id="modalDetailUser" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content modal-block-loader">
+      <div class="modal-header">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formDetailUser" data-method="detail">
+          <div id="detFormLabel" class="text-center mb-4">
+            <h3><span>Detail User<span></h3>
+            <p>detail.</p>
+          </div>
+          <div class="m-4">
+            <div class="row">
+                <div class="text-center mx-auto mb-3">
+                  <img src="#" class="rounded current-photo" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+            <div class="row g-2">
+                <div class="col-xl mb-3">
+                  <label class="form-label" for="detNIK">NIK</label>
+                  <h6 id="detNIK"></h6>
+                </div>
+                <div class="col-xl mb-3">
+                  <label class="form-label" for="detNama">Nama</label>
+                  <h6 id="detNama"></h6>
+                </div>
+            </div>
+            <div class="row g-2">
+              <div class="col-xl mb-3">
+                <label for="detNoHp" class="form-label">No. Handphone</label>
+                <h6 id="detNoHp"></h6>
+              </div>
+              <div class="col-xl mb-3">
+                <label for="detEmail" class="form-label">Email</label>
+                <h6 id="detEmail"></h6>
+              </div>
+            </div>
+            <div class="row g-2">
+                <div class="col-xl mb-3">
+                  <label class="form-label" for="detProvince">Provinsi</label>
+                  <h6 id="detProvince"></h6>
+                </div>
+                <div class="col-xl mb-3">
+                  <label class="form-label" for="detRegency">Kabupaten</label>
+                  <h6 id="detRegency"></h6>
+                </div>
+            </div>
+            <div class="row g-2">
+              <div class="col-xl mb-3">
+                <label class="form-label" for="detDistrict">Kecamatan</label>
+                <h6 id="detDistrict"></h6>
+              </div>
+              <div class="col-xl mb-3">
+                <label class="form-label" for="detVillage">Kelurahan</label>
+                <h6 id="detVillage"></h6>
+              </div>
+             </div>
+             <div class="row g-2">
+              <div class="col-xl mb-3">
+                <label class="form-label" for="detStatus">Status</label> 
+                <h6 id="detStatus"></h6>
+              </div>
+              <div class="col-xl mb-3">
+                <label class="form-label" for="detRole">Role / Penugasan</label> 
+                <h6 id="detRole"></h6>
+              </div>
+             </div>
+             <div class="row g-2">
+                <div class="col-xl mb-3">
+                  <label class="form-label" for="detlastLogin">Last Login</label> 
+                  <h6 id="detlastLogin"></h6>
+                </div>
+              </div>
+        
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Modal Detail User -->
 
 <!-- Modal Change Password -->
 <div class="modal fade" id="modalChangePasswordByAdmin" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">

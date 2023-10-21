@@ -38,7 +38,65 @@ else {
 @endsection
 
 @section('page-script')
+<script>
+  function updateLatestCaleg() {
+      $.ajax({
+          url: '/get-latest-caleg',
+          type: 'GET',
+          dataType: 'json',
+          success: function(data) {
+              if (data) {
+                  var latestCalegCard = $('#latestCalegCard');
 
+                  // Display current photo caleg
+                  if (data.caleg_photo) {
+                      var photoUrl = baseUrl + 'uploads/' + data.caleg_id;
+                      latestCalegCard.find('.current-photo').attr('src', photoUrl);
+                  } else {
+                      latestCalegCard.find('.current-photo').attr('src', '#');
+                      latestCalegCard.find('.current-photo').attr('alt', 'No Photo');
+                  }
+
+                  // Display current photo partai
+                  if (data.caleg_photo_partai) {
+                      var photoUrlPartai = baseUrl + 'uploads_partai/' + data.caleg_id;
+                      latestCalegCard.find('.current-photo-partai').attr('src', photoUrlPartai);
+                  } else {
+                      latestCalegCard.find('.current-photo-partai').attr('src', '#');
+                      latestCalegCard.find('.current-photo-partai').attr('alt', 'No Photo');
+                  }
+
+                  latestCalegCard.html(`
+                    <div class="card-header flex-grow-0">
+                      <div class="d-flex">
+                        <div class="avatar flex-shrink-0 me-3">
+                          <img src="${photoUrl}" alt="Caleg Photo" class="rounded-circle">
+                        </div>
+                        <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-1">
+                          <div class="me-2">
+                            <h5 class="mb-0">${data.caleg_name}</h5>
+                            <small class="text-muted">${data.caleg_nama_partai}</small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <img class="img-fluid" src="${photoUrlPartai}" alt="Partai Photo" />
+                    <div class="featured-date mt-n4 ms-4 bg-white rounded w-px-50 shadow text-center p-1">
+                      <h5 class="mb-0 text-dark">{{ $total_caleg_is_active }}</h5>
+                      <span class="text-primary">Caleg</span>
+                    </div>
+                  `);
+              }
+          }
+      });
+  }
+
+  // Initially load the latest caleg data
+  updateLatestCaleg();
+
+  // Refresh the latest data every 30 seconds (adjust the interval as needed)
+  setInterval(updateLatestCaleg, 30000);
+</script>
 @endsection
 
 @section('content')
@@ -47,8 +105,8 @@ else {
 
 <!-- Cards with few info -->
 <div class="row">
-  <div class="col-lg-12 col-md-6 col-sm-6 mb-4">
-    <div class="card">
+  <div class="col-lg-8 col-md-6 col-sm-6 mb-4">
+    <div class="card h-100">
       <div class="d-flex justify-content-between">
         <div class="col-sm-7">
           <div class="card-body">
@@ -56,14 +114,18 @@ else {
             <p class="mb-4">Welcome back to <span class="fw-bold">Monitoring</span>.</p>
           </div>
         </div>
-        <div class="col-sm-5 text-center text-sm-left">
-          <div class="card-body pb-0 px-0 px-md-4">
-            <img src="{{asset('assets/img/illustrations/man-with-laptop-'.$configData['style'].'.png')}}" height="140" alt="View Badge User" data-app-light-img="illustrations/man-with-laptop-light.png" data-app-dark-img="illustrations/man-with-laptop-dark.png">
-          </div>
-        </div>
       </div>
     </div>
   </div>
+
+  <div class="col-md-6 col-lg-4 mb-4">
+    <a href="{{ route('pemilu-master-data-caleg') }}">
+    <div class="card h-100" id="latestCalegCard">
+        <!-- Content will be updated here -->
+      </div>
+    </a>
+  </div>
+
 </div>
 <!--/ Cards with few info -->
 

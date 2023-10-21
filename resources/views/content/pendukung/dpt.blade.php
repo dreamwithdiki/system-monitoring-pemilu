@@ -88,6 +88,10 @@
           <th>NIK</th>
           <th>Nama</th>
           <th>Jenis Kelamin</th>
+          <th>Provinsi</th>
+          <th>Kabupaten</th>
+          <th>Kecamatan</th>
+          <th>Kelurahan</th>
           <th>TPS</th>
           <th>Status</th>
           <th>Actions</th>
@@ -133,11 +137,11 @@
               </div>
             </div>
             <div class="row g2">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label for="addNik" class="form-label">NIK <span style='color:red'>*</span></label>
                 <input type="text" id="addNik" name="dpt_nik" class="form-control" placeholder="Enter NIK" onkeypress="return hanyaAngka(event)" max="16" @required(true) >
               </div>
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label for="addNama" class="form-label">Nama <span style='color:red'>*</span></label>
                 <input type="text" id="addNama" name="dpt_name" class="form-control" placeholder="Enter Name" >
               </div>
@@ -173,45 +177,36 @@
                   </div>
                 </div>
             </div>
-            <div class="row mt-3">
+            <div class="row g2">
               <div class="col-xl mb-3">
-                <label for="addChecklistKecamatan" class="form-label">Daerah Pemilihan <span style='color:red'>*</span></label>
-                <div class="row" style="padding-left: 15px; padding-right: 15px">
-                  @php 
-                  $tmp_group_id = 'x';
-                  $tmp_group_kec_count = 0;
-
-                  foreach($ceklisKecamatan as $key => $check){
-                    if($check->kecamatan_id!=$tmp_group_id){
-                      if($tmp_group_kec_count==0||$tmp_group_kec_count % 2==0){
-                              echo '</div><div class="row" style="padding-left: 15px; padding-right: 15px">';
-                          }
-                          if ($tmp_group_kec_count > 0) {
-                              echo '</div>';
-                          }
-
-                          echo '<div class="col mb-6 kecamatan_type">';
-                          $tmp_group_id = $check->kecamatan_id;
-                          $tmp_group_kec_count++;
-                      }
-
-                      echo '
-                          <div class="form-check form-check-primary mt-3">
-                              <input class="form-check-input checkbox-item-modal-add-kecamatan checkbox-item" type="checkbox" onClick="_check_kecamatan_checkbox_item(this);" name="kecamatan_type[]" id="kecamatan_type_'.$check->kecamatan_id.'" value="'.$check->kecamatan_id.'" required>
-                              <label class="form-check-label" for="kecamatan_type_'.$check->kecamatan_id.'">'.$check->kecamatan_name.'</label>
-                          </div>
-                      ';
-                  }
-
-                  if ($tmp_group_kec_count > 0) {
-                      echo '</div>';
-                  }
-                @endphp
-               </div>
+                <label class="form-label" for="addProvince">Provinsi <span style='color:red'>*</span></label>
+                <select id="addProvince" name="dpt_province" class="ac_province form-select">
+                  <option value="">Select Province Name</option>
+                </select>
+              </div>
+              <div class="col-xl mb-3">
+                <label class="form-label" for="addRegency">Kabupaten <span style='color:red'>*</span></label>
+                <select id="addRegency" name="dpt_regency" class="ac_regency form-select">
+                  <option value="">Choice</option>
+                </select>
+              </div>
+            </div>
+            <div class="row g2">
+              <div class="col-xl mb-3">
+                <label class="form-label" for="addDistrict">Kecamatan <span style='color:red'>*</span></label>
+                <select id="addDistrict" name="dpt_district" class="ac_district form-select">
+                  <option value="">Choice</option>
+                </select>
+              </div>
+              <div class="col-xl mb-3">
+                <label class="form-label" for="addVillage">Kelurahan <span style='color:red'>*</span></label>
+                <select id="addVillage" name="dpt_village" class="ac_village form-select">
+                  <option value="">Choice</option>
+                </select>
               </div>
             </div>
             <div class="row">
-                <div class="col mb-3">
+                <div class="col-xl mb-3">
                     <label class="form-label" for="tps_id">TPS <span style='color:red'>*</span></label>
                     <select id="addTps" name="tps_id" class="ac_tps form-select" @required(true)>
                         <option value="">Select TPS</option>
@@ -263,11 +258,11 @@
               </div>
             </div>
             <div class="row g2">
-                <div class="col mb-3">
+                <div class="col-xl mb-3">
                   <label for="editNik" class="form-label">NIK <span style='color:red'>*</span></label>
                   <input type="text" id="editNik" name="dpt_nik" class="form-control" placeholder="Enter NIK" onkeypress="return hanyaAngka(event)" max="16" @required(true)>
                 </div>
-                <div class="col mb-3">
+                <div class="col-xl mb-3">
                   <label for="editName" class="form-label">Nama <span style='color:red'>*</span></label>
                   <input type="text" id="editName" name="dpt_name" class="form-control" placeholder="Enter Name" @required(true)>
                 </div>
@@ -303,45 +298,36 @@
                   </div>
                 </div>
             </div>
-            <div class="row mt-3">
+            <div class="row g-2">
               <div class="col-xl mb-3">
-                <label for="editChecklistKecamatan" class="form-label">Daerah Pemilihan <span style='color:red'>*</span></label>
-                <div class="row" style="padding-left: 15px; padding-right: 15px">
-                  @php 
-                  $tmp_group_id = 'x';
-                  $tmp_group_kec_count = 0;
-
-                  foreach($ceklisKecamatan as $key => $check){
-                    if($check->kecamatan_id!=$tmp_group_id){
-                      if($tmp_group_kec_count==0||$tmp_group_kec_count % 2==0){
-                              echo '</div><div class="row" style="padding-left: 15px; padding-right: 15px">';
-                          }
-                          if ($tmp_group_kec_count > 0) {
-                              echo '</div>';
-                          }
-
-                          echo '<div class="col mb-6 edit_kecamatan_type">';
-                          $tmp_group_id = $check->kecamatan_id;
-                          $tmp_group_kec_count++;
-                      }
-
-                      echo '
-                          <div class="form-check form-check-primary mt-3">
-                              <input class="form-check-input checkbox-item-modal-edit-kecamatan checkbox-item" type="checkbox" onClick="_check_edit_kecamatan_checkbox_item(this);" name="edit_kecamatan_type[]" id="edit_kecamatan_type_'.$check->kecamatan_id.'" value="'.$check->kecamatan_id.'" required>
-                              <label class="form-check-label" for="edit_kecamatan_type_'.$check->kecamatan_id.'">'.$check->kecamatan_name.'</label>
-                          </div>
-                      ';
-                  }
-
-                  if ($tmp_group_kec_count > 0) {
-                      echo '</div>';
-                  }
-                @endphp
-               </div>
+                <label class="form-label" for="editProvince">Provinsi <span style='color:red'>*</span></label>
+                <select id="editProvince" name="dpt_province" class="form-select" @required(true)>
+                  <option value="">Select Province Name</option>
+                </select>
+              </div>
+              <div class="col-xl mb-3">
+                <label class="form-label" for="editRegency">Kabupaten <span style='color:red'>*</span></label>
+                <select id="editRegency" name="dpt_regency" class="form-select" @required(true)>
+                  <option value="">Choice</option>
+                </select>
+              </div>
+            </div>
+            <div class="row g-2">
+              <div class="col-xl mb-3">
+                <label class="form-label" for="editDistrict">Kecamatan <span style='color:red'>*</span></label>
+                <select id="editDistrict" name="dpt_district" class="form-select">
+                  <option value="">Choice</option>
+                </select>
+              </div>
+              <div class="col-xl mb-3">
+                <label class="form-label" for="editVillage">Kelurahan <span style='color:red'>*</span></label>
+                <select id="editVillage" name="dpt_village" class="form-select">
+                  <option value="">Choice</option>
+                </select>
               </div>
             </div>
             <div class="row">
-                <div class="col mb-3">
+                <div class="col-xl mb-3">
                     <label class="form-label" for="tps_id">TPS <span style='color:red'>*</span></label>
                     <select id="editTps" name="tps_id" class="ac_edit_tps form-select" @required(true)>
                         <option value="">Select TPS</option>
@@ -375,36 +361,55 @@
           </div>
           <div class="m-4">
             <div class="row g-2">
-                <div class="col mb-3">
-                  <label class="form-label" for="det_nik">NIK</label>
-                  <h6 id="det_nik"></h6>
+                <div class="col-xl mb-3">
+                  <label class="form-label" for="detNik">NIK</label>
+                  <h6 id="detNik"></h6>
                 </div>
-                <div class="col mb-3">
-                  <label class="form-label" for="det_nama">Nama</label>
-                  <h6 id="det_nama"></h6>
+                <div class="col-xl mb-3">
+                  <label class="form-label" for="detNama">Nama</label>
+                  <h6 id="detNama"></h6>
                 </div>
             </div>
             <div class="row g-2">
-              <div class="col mb-3">
-                <label for="det_jenkel" class="form-label">Jenis Kelamin</label>
-                <h6 id="det_jenkel"></h6>
+              <div class="col-xl mb-3">
+                <label for="detJenkel" class="form-label">Jenis Kelamin</label>
+                <h6 id="detJenkel"></h6>
               </div>
-              <div class="col mb-3">
-                <label for="det_tps" class="form-label">TPS</label>
-                <h6 id="det_tps"></h6>
+              <div class="col-xl mb-3">
+                <label for="detTps" class="form-label">TPS</label>
+                <h6 id="detTps"></h6>
               </div>
             </div>
             <div class="row g-2">
-                <div class="col mb-3">
-                  <label class="form-label" for="det_kecamatan">Kecamatan</label>
-                  <h6 id="det_kecamatan"></h6>
+                <div class="col-xl mb-3">
+                  <label class="form-label" for="detProvince">Provinsi</label>
+                  <h6 id="detProvince"></h6>
                 </div>
-
-                <div class="col mb-3">
-                  <label class="form-label" for="det_status">Status</label>
-                  <h6 id="det_status"></h6>
+                <div class="col-xl mb-3">
+                  <label class="form-label" for="detRegency">Kabupaten</label>
+                  <h6 id="detRegency"></h6>
                 </div>
             </div>
+            <div class="row g-2">
+              <div class="col-xl mb-3">
+                <label class="form-label" for="detDistrict">Kecamatan</label>
+                <h6 id="detDistrict"></h6>
+              </div>
+              <div class="col-xl mb-3">
+                <label class="form-label" for="detVillage">kelurahan</label>
+                <h6 id="detVillage"></h6>
+              </div>
+             </div>
+             <div class="row">
+              <div class="col-xl mb-3">
+                <label class="form-label" for="detStatus">Status</label> 
+                <h6 id="detStatus"></h6>
+              </div>
+              <div class="col-xl mb-3">
+                <label class="form-label" for="detCreatedBy">Created By</label> 
+                <h6 id="detCreatedBy"></h6>
+              </div>
+             </div>
         
           </div>
         </form>

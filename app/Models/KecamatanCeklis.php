@@ -26,4 +26,9 @@ class KecamatanCeklis extends Model
     {
         return $this->belongsTo(Kecamatan::class, 'kecamatan_id');
     }
+
+    public function kecamatan_name()
+    {
+        return $this->checklist_kec->kecamatan_name;
+    }
 }

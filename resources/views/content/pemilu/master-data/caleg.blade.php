@@ -469,4 +469,81 @@ function _check_edit_kecamatan_checkbox_item(el) {
   </div>
 </div>
 <!--/ Modal Edit Caleg -->
+
+<!-- Modal Detail Caleg -->
+<div class="modal fade" id="modalDetailCaleg" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content modal-block-loader">
+      <div class="modal-header">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formDetailCaleg" data-method="detail">
+          <div id="detFormLabel" class="text-center mb-4">
+            <h3><span>Detail Caleg<span></h3>
+            <p>detail.</p>
+          </div>
+          <div class="m-4">
+            <div class="row g-2">
+                <div class="col-xl mb-3">
+                  <label class="form-label" for="detName">Nama</label>
+                  <h6 id="detName"></h6>
+                </div>
+                <div class="col-xl mb-3">
+                  <label class="form-label" for="detNIK">NIK</label>
+                  <h6 id="detNIK"></h6>
+                </div>
+            </div>
+            <div class="row g-2">
+              <div class="col-xl mb-3">
+                <label for="detNomorUrutPartai" class="form-label">No. Urut Partai</label>
+                <h6 id="detNomorUrutPartai"></h6>
+              </div>
+              <div class="col-xl mb-3">
+                <label for="detNomorUrutCaleg" class="form-label">No. Urut Caleg</label>
+                <h6 id="detNomorUrutCaleg"></h6>
+              </div>
+            </div>
+            <div class="row g-2">
+                <div class="col-xl mb-3">
+                  <label class="form-label" for="detNamaPartai">Nama Partai</label>
+                  <h6 id="detNamaPartai"></h6>
+                </div>
+
+                <div class="col-xl mb-3">
+                  <label class="form-label" for="detStatus">Status</label>
+                  <h6 id="detStatus"></h6>
+                </div>
+            </div>
+            <div class="row g-2">
+              <div class="col-md-6">
+                  <label class="form-label" for="current-photo">Current Photo Caleg</label>
+                  <img src="#" class="rounded current-photo" style="max-width: 100%; height: auto;">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label" for="current-photo-partai">Current Photo Partai</label>
+                <img src="#" class="rounded current-photo-partai" style="max-width: 100%; height: auto;">
+            </div>
+            <div class="row g-2">
+                <div class="col-xl mb-3">
+                  <label class="form-label" for="detKecamatan">Kecamatan</label>
+                  <h6 id="detKecamatan"></h6>
+                </div>
+
+                <div class="col-xl mb-3">
+                  <label class="form-label" for="detVisiMisi">Visi & Misi</label>
+                  <h6 id="detVisiMisi"></h6>
+                </div>
+            </div>
+          </div>
+        
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Modal Detail Caleg -->
 @endsection

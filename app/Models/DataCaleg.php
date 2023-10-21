@@ -35,6 +35,7 @@ class DataCaleg extends Model
     {
         return $this->hasMany(KecamatanCeklis::class, 'caleg_id');
     }
+    
 
     // public function province()
     // {

@@ -127,29 +127,29 @@
               </div>
             </div>
             <div class="row g2">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label for="addKode" class="form-label">Kode <span style='color:red'>*</span></label>
                 <input type="text" id="addKode" name="tps_code" class="form-control" placeholder="Enter Kode" >
               </div>
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label for="addTps" class="form-label">TPS <span style='color:red'>*</span></label>
                 <input type="text" id="addTps" name="tps_name" class="form-control" placeholder="Enter TPS" >
               </div>
             </div>
             <div class="row">
-                <div class="col mb-3">
+                <div class="col-xl mb-3">
                   <label for="addAddress" class="form-label">Alamat <span style='color:red'>*</span></label>
                   <textarea id="addAddress" name="tps_address" class="form-control" placeholder="Explanation about the new address" rows="5" style="max-height: 100px;resize: none;"></textarea>
                 </div>
             </div>
             <div class="row g2">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="addProvince">Provinsi <span style='color:red'>*</span></label>
                 <select id="addProvince" name="tps_province" class="ac_province form-select">
                   <option value="">Select Province Name</option>
                 </select>
               </div>
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="addRegency">Kabupaten <span style='color:red'>*</span></label>
                 <select id="addRegency" name="tps_regency" class="ac_regency form-select">
                   <option value="">Choice</option>
@@ -157,13 +157,13 @@
               </div>
             </div>
             <div class="row g2">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="addDistrict">Kecamatan <span style='color:red'>*</span></label>
                 <select id="addDistrict" name="tps_district" class="ac_district form-select">
                   <option value="">Choice</option>
                 </select>
               </div>
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="addVillage">Kelurahan <span style='color:red'>*</span></label>
                 <select id="addVillage" name="tps_village" class="ac_village form-select">
                   <option value="">Choice</option>
@@ -171,7 +171,7 @@
               </div>
             </div>
             <div class="row">
-                <div class="col mb-3">
+                <div class="col-xl mb-3">
                     <label class="form-label" for="tps_saksi">Saksi <span style='color:red'>*</span></label>
                     <select id="addRoleName" name="tps_saksi" class="ac_role form-select" @required(true)>
                         <option value="">Select Saksi</option>
@@ -179,17 +179,17 @@
                 </div>
             </div>
             <div class="row g2">
-                <div class="col mb-3">
+                <div class="col-xl mb-3">
                     <label for="addSuaraCaleg" class="form-label">Suara Caleg <span style='color:red'>*</span></label>
                     <input type="text" id="addSuaraCaleg" name="tps_suara_caleg" class="form-control" placeholder="Enter Suara Caleg" onkeypress="return hanyaAngka(event)" @required(true)>
                 </div>
-                <div class="col mb-3">
+                <div class="col-xl mb-3">
                     <label for="addSuaraPartai" class="form-label">Suara Partai <span style='color:red'>*</span></label>
                     <input type="text" id="addSuaraPartai" name="tps_suara_partai" class="form-control" placeholder="Enter Suara Partai" onkeypress="return hanyaAngka(event)" @required(true)>
                 </div>
             </div>
             <div class="row g2">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="bs-validation-upload-file">Dosc <span style='color:red'>Type : jpg,jpeg,png *</span></label>
                 <input type="file" class="form-control" name="tps_docs" id="bs-validation-upload-file"/>
               </div>
@@ -221,7 +221,7 @@
           </div>
           <div class="m-4">
             <div class="row">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="editStatus">Status <span style='color:red'>*</span></label>
                 <div class="row" style="display: flex; flex-direction: column; align-items: flex-start;">
                   <label class="switch switch-primary">
@@ -239,23 +239,23 @@
               </div>
             </div>
             <div class="row g-2">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label for="editKode" class="form-label">Kode <span style='color:red'>*</span></label>
                 <input type="text" id="editKode" name="tps_code" class="form-control" placeholder="Enter Code" @required(true)>
               </div>
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label for="editTps" class="form-label">TPS <span style='color:red'>*</span></label>
                 <input type="text" id="editTps" name="tps_name" class="form-control" placeholder="Enter TPS" @required(true)>
               </div>
             </div>
             <div class="row">
-                <div class="col mb-3">
+                <div class="col-xl mb-3">
                   <label for="editAddress" class="form-label">Alamat <span style='color:red'>*</span></label>
                   <textarea id="editAddress" name="tps_address" class="form-control" placeholder="Explanation about the new address" rows="5" style="max-height: 100px;resize: none;"></textarea>
                 </div>
             </div>
             <div class="row">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <input type="hidden" id="oldImage" name="oldImage" value="">
                 <label class="form-label">Current Docs</label>
                 <div class="col-md-3">
@@ -264,7 +264,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="tps_docs">Change Docs</label>
                 <input type="file" class="form-control" id="file" name="tps_docs"/>
                 <br>
@@ -272,13 +272,13 @@
               </div>
             </div>
             <div class="row g-2">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="editProvince">Provinsi <span style='color:red'>*</span></label>
                 <select id="editProvince" name="tps_province" class="form-select" @required(true)>
                   <option value="">Select Province Name</option>
                 </select>
               </div>
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="editRegency">Kabupaten <span style='color:red'>*</span></label>
                 <select id="editRegency" name="tps_regency" class="form-select" @required(true)>
                   <option value="">Choice</option>
@@ -286,13 +286,13 @@
               </div>
             </div>
             <div class="row g-2">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="editDistrict">Kecamatan <span style='color:red'>*</span></label>
                 <select id="editDistrict" name="tps_district" class="form-select">
                   <option value="">Choice</option>
                 </select>
               </div>
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="editVillage">Kelurahan <span style='color:red'>*</span></label>
                 <select id="editVillage" name="tps_village" class="form-select">
                   <option value="">Choice</option>
@@ -300,7 +300,7 @@
               </div>
             </div>
             <div class="row">
-                <div class="col mb-3">
+                <div class="col-xl mb-3">
                     <label class="form-label" for="tps_saksi">Saksi <span style='color:red'>*</span></label>
                     <select id="editRoleName" name="tps_saksi" class="ac_edit_role form-select" @required(true)>
                         <option value="">Select Saksi</option>
@@ -308,11 +308,11 @@
                 </div>
             </div>
             <div class="row g2">
-                <div class="col mb-3">
+                <div class="col-xl mb-3">
                     <label for="editSuaraCaleg" class="form-label">Suara Caleg <span style='color:red'>*</span></label>
                     <input type="text" id="editSuaraCaleg" name="tps_suara_caleg" class="form-control" placeholder="Enter Suara Caleg" onkeypress="return hanyaAngka(event)" @required(true)>
                 </div>
-                <div class="col mb-3">
+                <div class="col-xl mb-3">
                     <label for="editSuaraPartai" class="form-label">Suara Partai <span style='color:red'>*</span></label>
                     <input type="text" id="editSuaraPartai" name="tps_suara_partai" class="form-control" placeholder="Enter Suara Partai" onkeypress="return hanyaAngka(event)" @required(true)>
                 </div>

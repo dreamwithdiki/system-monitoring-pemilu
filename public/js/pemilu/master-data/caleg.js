@@ -9,6 +9,7 @@ $(function () {
   var dt_ajax_table = $('.datatables-ajax');
   var modal_add_caleg = $('#modalAddCaleg');
   var modal_edit_caleg = $('#modalEditCaleg');
+  var modal_detail_caleg   = $('#modalDetailCaleg');
   var modal_class_loader = $('.modal-block-loader');
   var typingTimer;
   
@@ -146,8 +147,12 @@ $(function () {
                   '<button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>' +
                   '<div class="dropdown-menu">' +
                       '<a id="dropdownMenuEdit" data-id="' + row.caleg_id + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit me-1"></i> Edit</a>' +
+                      '<div class="dropdown-divider"></div>' +
+                      '<a id="dropdownMenuDetail" data-id="' + row.caleg_id + '" data-name="' + row.caleg_name + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-detail me-1"></i> Detail</a>' +
+                      '<div class="dropdown-divider"></div>' +
                       '<a id="dropdownMenuActivate" data-id="' + row.caleg_id + '" data-status="2" class="dropdown-item dropdownMenuStatusUpdate" href="javascript:void(0);"><i class="bx bx-check me-1"></i> Activate</a>' +
                       '<a id="dropdownMenuDeactivate" data-id="' + row.caleg_id + '" data-status="1" class="dropdown-item dropdownMenuStatusUpdate" href="javascript:void(0);"><i class="bx bx-x me-1"></i> Deactivate</a>' +
+                      '<div class="dropdown-divider"></div>' +
                       '<a id="dropdownMenuDelete" data-id="' + row.caleg_id + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Delete</a>' +
                   '</div>' +
               '</div>';
@@ -225,6 +230,10 @@ $(function () {
         validators: {
             notEmpty: {
               message: 'Please enter NIK'
+            },
+            stringLength: {
+              min: 16,
+              message: 'NIK max harus 16 digit angka.'
             }
           }
       },
@@ -364,6 +373,10 @@ $(function () {
         validators: {
             notEmpty: {
               message: 'Please enter NIK'
+            },
+            stringLength: {
+              min: 16,
+              message: 'NIK max harus 16 digit angka.'
             }
           }
       },
@@ -537,6 +550,71 @@ $(function () {
     $('#formEditCaleg').data('method', 'edit');
     $('#formEditCaleg').attr('data-id', caleg_id);
     modal_edit_caleg.modal('show');
+  });
+
+  $(document).on('click', '#dropdownMenuDetail', function () {
+    var caleg_id = $(this).data('id');
+    var caleg_name = $(this).data('name');
+    // Fungsi untuk Detail caleg
+    // get data
+    $.ajax({
+      url: baseUrl + "pemilu/master-data/caleg/show/" + caleg_id,
+      type: 'GET',
+      beforeSend: function (data) {
+        window.Helpers.blockUIModalLoader(modal_class_loader);
+      },
+      success: function (response) {
+        $('#detName').text(response.data.caleg_name);
+        $('#detNIK').text(response.data.caleg_nik);
+
+        var caleg_no_urut_partai = '<span class="badge badge-center rounded-pill bg-secondary">' + response.data.caleg_no_urut_partai + '</span>';
+        var caleg_no_urut_caleg = '<span class="badge badge-center rounded-pill bg-secondary">' + response.data.caleg_no_urut_caleg + '</span>';
+
+        $('#detNomorUrutPartai').html(caleg_no_urut_partai);
+        $('#detNomorUrutCaleg').html(caleg_no_urut_caleg);
+
+        let kec = '';
+        if (response.data.kecamatan_ceklis && response.data.kecamatan_ceklis.length > 0) {
+          $.each(response.data.kecamatan_ceklis, function (index, val) {
+            kec += "- " + val.checklist_kec.kecamatan_name + "<br>";
+          });
+        } else {
+          kec = "No kecamatan.";
+        }
+        $('#detKecamatan').html(kec);
+
+        // Display current photo caleg
+        if (response.data.caleg_photo) {
+          var photoUrl = baseUrl + 'pemilu/master-data/caleg/uploads/' + caleg_id + '?' + Date.now();
+          $('.current-photo').attr('src', photoUrl);
+        } else {
+          $('.current-photo').attr('src', '#');
+          $('.current-photo').attr('alt', 'No Photo');
+        }
+
+        // Display current photo partai
+        if (response.data.caleg_photo_partai) {
+          var photoUrlPartai = baseUrl + 'pemilu/master-data/caleg/uploads_partai/' + caleg_id + '?' + Date.now();
+          $('.current-photo-partai').attr('src', photoUrlPartai);
+        } else {
+          $('.current-photo-partai').attr('src', '#');
+          $('.current-photo-partai').attr('alt', 'No Photo');
+        }
+
+        $('#detVisiMisi').text(response.data.caleg_visi_misi);
+        $('#detNamaPartai').text(response.data.caleg_nama_partai);
+        
+        var statusText = response.data.caleg_status === 1 ? '<span class="badge bg-danger">Deactive</span>' : '<span class="badge bg-success">Active</span>';
+        $('#detStatus').html(statusText);
+                
+        modal_class_loader.unblock();
+      }
+    });
+    $('#detFormLabel > p').html('Detail Caleg <b>' + caleg_name + '</b>');
+    $('#formDetailCaleg').attr('data-method', 'detail');
+    $('#formDetailCaleg').data('method', 'detail');
+    $('#formDetailCaleg').attr('data-id', caleg_id);
+    modal_detail_caleg.modal('show');
   });
   
   // Active / Deactive status button handler

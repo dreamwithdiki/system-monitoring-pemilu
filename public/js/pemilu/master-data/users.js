@@ -9,6 +9,7 @@ $(function () {
   var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
   var modal_add_user = $('#modalAddUser');
   var modal_edit_user = $('#modalEditUser');
+  var modal_detail_user   = $('#modalDetailUser');
   var modal_change_pass = $('#modalChangePasswordByAdmin');
   var ac_role       = $('.ac_role');
   var ac_edit_role       = $('.ac_edit_role');
@@ -464,6 +465,8 @@ $(function () {
                       deleteButton +
                       '<button class="btn btn-sm btn-icon btn-info dropdown-toggle hide-arrow mx-1" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>' +
                       '<div class="dropdown-menu">' +
+                        '<a id="dropdownMenuDetail" data-id="' + row.user_id + '" data-name="' + row.user_uniq_name + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-detail me-1"></i> Detail</a>' +
+                        '<div class="dropdown-divider"></div>' +
                         editButtonPass +
                         '<div class="dropdown-divider"></div>' +
                         '<a id="btn_user_activate" data-id="' + row.user_id + '" data-status="2" class="dropdown-item dropdownMenuStatusUpdate" href="javascript:void(0);"><i class="bx bx-check me-1"></i> Activate</a>' +
@@ -949,6 +952,81 @@ $(function () {
     $('#formEditUser').attr('data-id', user_id);
   
     modal_edit_user.modal('show');
+  });
+
+  $(document).on('click', '#dropdownMenuDetail', function () {
+    var user_id = $(this).data('id');
+    var user_name = $(this).data('name');
+    // Fungsi untuk Detail user
+    // get data
+    $.ajax({
+      url: baseUrl + "pemilu/master-data/user/show/" + user_id,
+      type: 'GET',
+      beforeSend: function (data) {
+        window.Helpers.blockUIModalLoader(modal_class_loader);
+      },
+      success: function (response) {
+        $('#detNIK').text(response.data.user_nik);
+        $('#detNama').text(response.data.user_uniq_name);
+        $('#detNoHp').text(response.data.user_no_hp);
+        $('#detEmail').text(response.data.user_email); 
+        var roleName = response.data.role.role_name;
+
+        if (response.data.role.role_id === 1) {
+            roleName += ' <span class="badge bg-primary"><i class="bx bx-badge-check"></i></span>'; 
+        }    
+      
+        $('#detRole').html(roleName);
+        $('#detProvince').text(response.data.province.name);
+        $('#detRegency').text(response.data.regency.name);
+        $('#detDistrict').text(response.data.district.name);
+        $('#detVillage').text(response.data.village.name);
+
+        // Display current photo
+        if (response.data.user_photo) {
+          var photoUrl = baseUrl + 'pemilu/master-data/user/uploads/' + response.data.user_id;
+          $('.current-photo').attr('src', photoUrl);
+        } else {
+          $('.current-photo').attr('src', '#');
+          $('.current-photo').attr('alt', 'No Photo');
+        }
+
+        // Tanggal awal dalam format 'YYYY-MM-DD HH:MM:SS'
+        var tanggalAwal = response.data.user_last_login;
+
+        // Parse tanggal awal menjadi objek Date
+        var tanggalObj = new Date(tanggalAwal);
+
+        // Objek konfigurasi untuk format yang diinginkan
+        var options = {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        };
+
+        // Buat objek Intl.DateTimeFormat dengan konfigurasi
+        var formatter = new Intl.DateTimeFormat('id-ID', options); // 'id-ID' adalah kode bahasa Indonesia
+
+        // Format tanggal menggunakan objek formatter
+        var tanggalHasil = formatter.format(tanggalObj);
+
+        // Tampilkan hasil di elemen HTML dengan id 'detlastLogin'
+        $('#detlastLogin').text(tanggalHasil);
+        
+        var statusText = response.data.user_status === 1 ? '<span class="badge bg-danger">Deactive</span>' : '<span class="badge bg-success">Active</span>';
+        $('#detStatus').html(statusText);
+                
+        modal_class_loader.unblock();
+      }
+    });
+    $('#detFormLabel > p').html('Detail User <b>' + user_name + '</b>');
+    $('#formDetailUser').attr('data-method', 'detail');
+    $('#formDetailUser').data('method', 'detail');
+    $('#formDetailUser').attr('data-id', user_id);
+    modal_detail_user.modal('show');
   });
   
   // Active / Deactive status button handler

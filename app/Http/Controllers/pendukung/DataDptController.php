@@ -4,8 +4,6 @@ namespace App\Http\Controllers\pendukung;
 
 use App\Http\Controllers\Controller;
 use App\Models\DataDpt;
-use App\Models\Kecamatan;
-use App\Models\KecamatanCeklisDpt;
 use Illuminate\Http\Request;
 use App\Models\MasterDistricts;
 use App\Models\MasterProvinces;
@@ -28,114 +26,11 @@ class DataDptController extends Controller
     public function index()
     {
         if(session('role_id') == 1 || session('role_id') == 2 || session('role_id') == 3 || session('role_id') == 4){
-            // return view('content.pendukung.dpt');
-            $ceklisKecamatan = Kecamatan::orderby('kecamatan_name', 'ASC')->isActive()->get();
-          
-            return view('content.pendukung.dpt', [
-              'ceklisKecamatan'=> $ceklisKecamatan
-            ]);
-        } else {
+            return view('content.pendukung.dpt');
+            } else {
             return view('content.pages.pages-misc-not-authorized');
         }
     }
-
-    // public function datatable(Request $request)
-    // {
-    //     $columns = [
-    //       0 => 'dpt_id',
-    //       1 => 'dpt_nik',
-    //       2 => 'dpt_name',
-    //       3 => 'dpt_jenkel',
-    //       4 => 'dpt_province',
-    //       5 => 'dpt_regency',
-    //       6 => 'dpt_district',
-    //       7 => 'dpt_village',
-    //       8 => 'tps_id', // diambil dari data TPS (sesuai dengan Kecamatan dan kelurahan)
-    //     ];
-
-    //     $search = [];
-    //     $totalData = DataDpt::with('province', 'regency', 'district', 'village', 'tps')->where('dpt_status', '!=', 5)->count();
-    //     $totalFiltered = $totalData;
-
-    //     if (!empty($request->input())) {
-    //         $limit = $request->input('length');
-    //         $start = $request->input('start');
-    //         $order = $columns[$request->input('order.0.column')];
-    //         $dir = $request->input('order.0.dir');
-    
-    //         if (empty($request->input('search.value'))) {
-    //           $data_dpt = DataDpt::where('dpt_status', '!=', 5)
-    //             ->offset($start)
-    //             ->limit($limit)
-    //             ->orderBy($order, $dir)
-    //             ->get();
-    //         } else {
-    //           $search = $request->input('search.value');
-    
-    //           $data_dpt = DataDpt::with('province', 'regency', 'district', 'village', 'tps')->where('dpt_nik', 'LIKE', "%{$search}%")
-    //             ->where('dpt_status', '!=', 5)
-    //             ->orWhere('dpt_name', 'LIKE', "%{$search}%")
-    //             ->orWhereRelation('province', 'name', 'LIKE', "%{$search}%")
-    //             ->orWhereRelation('district', 'name', 'LIKE', "%{$search}%")
-    //             ->orWhereRelation('regency', 'name', 'LIKE', "%{$search}%")
-    //             ->orWhereRelation('village', 'name', 'LIKE', "%{$search}%")
-    //             ->orWhereRelation('tps', 'tps_name', 'LIKE', "%{$search}%")
-    //             ->offset($start)
-    //             ->limit($limit)
-    //             ->orderBy($order, $dir)
-    //             ->get();
-    
-    //           $totalFiltered = DataDpt::with('province', 'regency', 'district', 'village', 'tps')->where('dpt_nik', 'LIKE', "%{$search}%")
-    //             ->where('dpt_status', '!=', 5)
-    //             ->orWhere('dpt_name', 'LIKE', "%{$search}%")
-    //             ->orWhereRelation('province', 'name', 'LIKE', "%{$search}%")
-    //             ->orWhereRelation('district', 'name', 'LIKE', "%{$search}%")
-    //             ->orWhereRelation('regency', 'name', 'LIKE', "%{$search}%")
-    //             ->orWhereRelation('village', 'name', 'LIKE', "%{$search}%")
-    //             ->orWhereRelation('tps', 'tps_name', 'LIKE', "%{$search}%")
-    //             ->count();
-    //         }
-    //     } else {
-    //       $start = 0;  
-    //       $data_dpt = DataDpt::with('province', 'regency', 'district', 'village', 'tps')->where('dpt_status', '!=', 5)->get();
-    //     }
-
-    //     $data = [];
-
-    //     if (!empty($data_dpt)) {
-    //       $no = $start;
-    //       foreach ($data_dpt as $dpt) {
-    //         $nestedData['no']               = ++$no;
-    //         $nestedData['dpt_id']           = Crypt::encrypt($dpt->dpt_id);
-    //         $nestedData['dpt_nik']          = $dpt->dpt_nik;
-    //         $nestedData['dpt_name']         = $dpt->dpt_name;
-    //         $nestedData['dpt_jenkel']       = $dpt->dpt_jenkel;
-    //         $nestedData['dpt_province']     = $dpt->province->name;
-    //         $nestedData['dpt_regency']      = $dpt->regency->name;
-    //         $nestedData['dpt_district']     = $dpt->district->name;
-    //         $nestedData['dpt_village']      = $dpt->village->name;
-    //         $nestedData['tps_name']         = $dpt->tps->tps_code .'-'. $dpt->tps->tps_name;
-    //         $nestedData['dpt_status']       = $dpt->dpt_status;
-    //         $data[] = $nestedData;
-    //       }
-    //     }
-
-    //     if ($data) {
-    //       return response()->json([
-    //         'draw' => intval($request->input('draw')),
-    //         'recordsTotal' => intval($totalData),
-    //         'recordsFiltered' => intval($totalFiltered),
-    //         'code' => 200,
-    //         'data' => $data,
-    //       ]);
-    //     } else {
-    //       return response()->json([
-    //         'message' => 'Internal Server Error',
-    //         'code' => 500,
-    //         'data' => [],
-    //       ]);
-    //     }
-    // }
 
     public function datatable(Request $request)
     {
@@ -148,7 +43,11 @@ class DataDptController extends Controller
           1 => 'dpt_nik',
           2 => 'dpt_name',
           3 => 'dpt_jenkel',
-          4 => 'tps_id', // diambil dari data TPS (sesuai dengan Kecamatan dan kelurahan)
+          4 => 'dpt_province',
+          5 => 'dpt_regency',
+          6 => 'dpt_district',
+          7 => 'dpt_village',
+          8 => 'tps_id', // diambil dari data TPS (sesuai dengan Kecamatan dan kelurahan)
         ];
 
         $search = [];
@@ -170,19 +69,21 @@ class DataDptController extends Controller
                   $totalData = DataDpt::where('dpt_status', '!=', 5)->count();
                   $totalFiltered = $totalData;
                   // Tambahkan logika query sesuai kebutuhan
-                  $data_dpt = DataDpt::with('tps')->where('dpt_status', '!=', 5)
+                  $data_dpt = DataDpt::with('province', 'regency', 'district', 'village', 'tps')
+                      ->where('dpt_status', '!=', 5)
                       ->offset($start)
                       ->limit($limit)
                       ->orderBy($order, $dir)
                       ->get();
               } elseif ($role_id >= 2 && $role_id <= 4) {
                   // Jika role_id adalah 2, 3, atau 4, tampilkan data yang sesuai dengan role_id
-                  $totalData = DataDpt::with('tps')->where('dpt_status', '!=', 5)
+                  $totalData = DataDpt::where('dpt_status', '!=', 5)
                       ->where('role_id', $role_id)
                       ->count();
                   $totalFiltered = $totalData;
                   // Tambahkan logika query sesuai kebutuhan
-                  $data_dpt = DataDpt::with('tps')->where('dpt_status', '!=', 5)
+                  $data_dpt = DataDpt::with('province', 'regency', 'district', 'village', 'tps')
+                      ->where('dpt_status', '!=', 5)
                       ->where('role_id', $role_id)
                       ->offset($start)
                       ->limit($limit)
@@ -193,22 +94,32 @@ class DataDptController extends Controller
             } else {
               $search = $request->input('search.value');
     
-              $data_dpt = DataDpt::with('tps')->where('dpt_nik', 'LIKE', "%{$search}%")
+              $data_dpt = DataDpt::with('province', 'regency', 'district', 'village', 'tps')->where('dpt_nik', 'LIKE', "%{$search}%")
                 ->where('dpt_status', '!=', 5)
                 ->orWhere('dpt_name', 'LIKE', "%{$search}%")
+                ->orWhereRelation('province', 'name', 'LIKE', "%{$search}%")
+                ->orWhereRelation('district', 'name', 'LIKE', "%{$search}%")
+                ->orWhereRelation('regency', 'name', 'LIKE', "%{$search}%")
+                ->orWhereRelation('village', 'name', 'LIKE', "%{$search}%")
+                ->orWhereRelation('tps', 'tps_name', 'LIKE', "%{$search}%")
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)
                 ->get();
     
-              $totalFiltered = DataDpt::with('tps')->where('dpt_nik', 'LIKE', "%{$search}%")
+              $totalFiltered = DataDpt::with('province', 'regency', 'district', 'village', 'tps')->where('dpt_nik', 'LIKE', "%{$search}%")
                 ->where('dpt_status', '!=', 5)
                 ->orWhere('dpt_name', 'LIKE', "%{$search}%")
+                ->orWhereRelation('province', 'name', 'LIKE', "%{$search}%")
+                ->orWhereRelation('district', 'name', 'LIKE', "%{$search}%")
+                ->orWhereRelation('regency', 'name', 'LIKE', "%{$search}%")
+                ->orWhereRelation('village', 'name', 'LIKE', "%{$search}%")
+                ->orWhereRelation('tps', 'tps_name', 'LIKE', "%{$search}%")
                 ->count();
             }
         } else {
           $start = 0;  
-          $data_dpt = DataDpt::with('tps')->where('dpt_status', '!=', 5)->get();
+          $data_dpt = DataDpt::with('province', 'regency', 'district', 'village', 'tps')->where('dpt_status', '!=', 5)->get();
         }
 
         $data = [];
@@ -221,6 +132,10 @@ class DataDptController extends Controller
             $nestedData['dpt_nik']          = $dpt->dpt_nik;
             $nestedData['dpt_name']         = $dpt->dpt_name;
             $nestedData['dpt_jenkel']       = $dpt->dpt_jenkel;
+            $nestedData['dpt_province']     = $dpt->province->name;
+            $nestedData['dpt_regency']      = $dpt->regency->name;
+            $nestedData['dpt_district']     = $dpt->district->name;
+            $nestedData['dpt_village']      = $dpt->village->name;
             $nestedData['tps_name']         = $dpt->tps->tps_code .'-'. $dpt->tps->tps_name;
             $nestedData['dpt_status']       = $dpt->dpt_status;
             $data[] = $nestedData;
@@ -257,8 +172,8 @@ class DataDptController extends Controller
             'dpt_nik'          => 'required|max:16',
             'dpt_name'         => 'required|max:255',
             'dpt_jenkel'       => 'required',
-            'kecamatan_type'   => 'required|array|min:1',
-            'kecamatan_type.*' => 'integer',
+            'dpt_province'     => 'required',
+            'dpt_regency'      => 'required',
             'tps_id'           => 'required'
         ]);
   
@@ -278,50 +193,22 @@ class DataDptController extends Controller
            return response()->json(['status' => false, 'message' => ['title' => 'Duplicate Entry', 'text' => 'NIK already registered on another DPT!']]);
          }
 
-        $dataDpt = new DataDpt();
-        $dataDpt->dpt_status        = $status;
-        $dataDpt->dpt_nik           = $request->dpt_nik;
-        $dataDpt->dpt_name          = $request->dpt_name;
-        $dataDpt->dpt_jenkel        = $request->dpt_jenkel;
-        $dataDpt->tps_id            = $request->tps_id;
-        $dataDpt->role_id           = session('role_id');
-        $dataDpt->dpt_created_by    = session('user_id');
-        $dataDpt->dpt_created_date  = Carbon::now()->format('Y-m-d H:i:s');
-        $dataDpt->save();
-        
-        // return response()->json(['status' => true, 'message' => ['title' => 'Successfully created!', 'text' => 'DPT ' . $request->dpt_name . ' created successfully!']]);
-        $kecamatan_type_data = $request->kecamatan_type;
-        $dpt_id            = $dataDpt->dpt_id;
-        
-        // Menyimpan data checklist kecamatan yang dipilih 
-        foreach ($kecamatan_type_data as $check) {
-          $checklist_kec_object = Kecamatan::where('kecamatan_id', $check)->first();
-          if (!empty($checklist_kec_object)) {
-              $checklist_group_data = [
-                  'dpt_id'                 => $dpt_id,
-                  'kecamatan_id'           => $checklist_kec_object->kecamatan_id,
-                  'kecamatan_created_by'   => session('user_id'),
-                  'kecamatan_created_date' => now()->format('Y-m-d H:i:s')
-              ];
-              
-              KecamatanCeklisDpt::create(
-                  [
-                      'dpt_id'                        => $dpt_id,
-                      'kecamatan_id'                  => $checklist_kec_object->kecamatan_id,
-                      'kecamatan_ceklis_dpt_created_by'   => session('user_id'),
-                      'kecamatan_ceklis_dpt_created_date' => now()->format('Y-m-d H:i:s')
-                  ],
-                  $checklist_group_data
-              );
-            
-          }
-      }
+        DataDpt::create([
+            'dpt_status'      => $status,
+            'dpt_nik'         => $request->dpt_nik,
+            'dpt_name'        => $request->dpt_name,
+            'dpt_jenkel'      => $request->dpt_jenkel,
+            'dpt_province'    => $request->dpt_province,
+            'dpt_regency'     => $request->dpt_regency,
+            'dpt_district'    => $request->dpt_district,
+            'dpt_village'     => $request->dpt_village,
+            'tps_id'          => $request->tps_id,
+            'role_id'         => session('role_id'),
+            'dpt_created_by'  => session('user_id'),
+            'dpt_created_date'=> Carbon::now()->format('Y-m-d H:i:s'),
+        ]);
 
-      return response()->json([
-          'status' => true,
-          'message' => ['title' => 'Successfully created!', 'text' => 'DPT ' . $request->dpt_name . ' created successfully!'],
-          'data' => $checklist_group_data
-      ]);
+        return response()->json(['status' => true, 'message' => ['title' => 'Successfully created!', 'text' => 'DPT ' . $request->dpt_name . ' created successfully!']]);
     }
 
     /**
@@ -332,8 +219,7 @@ class DataDptController extends Controller
      */
     public function show($id)
     {
-        // $data_dpt = DataDpt::with('kecamatan_ceklis', 'tps')->where('dpt_id', Crypt::decrypt($id))->first();
-        $data_dpt = DataDpt::with(['kecamatan_ceklis.checklist_kec', 'tps'])->where('dpt_id', Crypt::decrypt($id))->first();
+        $data_dpt = DataDpt::with('province', 'regency', 'district', 'village', 'tps', 'user', 'role')->where('dpt_id', Crypt::decrypt($id))->first();
         if($data_dpt) {
             return response()->json(['status' => true, 'data' => $data_dpt]);
         } else {
@@ -369,12 +255,12 @@ class DataDptController extends Controller
     public function update(Request $request, $id)
     {
          $this->validate($request, [
-            'dpt_nik'               => 'required|max:16',
-            'dpt_name'              => 'required|max:255',
-            'dpt_jenkel'            => 'required',
-            'edit_kecamatan_type'   => 'required|array|min:1',
-            'edit_kecamatan_type.*' => 'integer',
-            'tps_id'                => 'required'
+            'dpt_nik'          => 'required|max:16',
+            'dpt_name'         => 'required|max:255',
+            'dpt_jenkel'       => 'required',
+            'dpt_province'     => 'required',
+            'dpt_regency'      => 'required',
+            'tps_id'           => 'required'
           ]);
   
           // dpt Status
@@ -392,47 +278,17 @@ class DataDptController extends Controller
           $data_dpt->dpt_nik               = $request->dpt_nik;
           $data_dpt->dpt_name              = $request->dpt_name;
           $data_dpt->dpt_jenkel            = $request->dpt_jenkel;
+          $data_dpt->dpt_province          = $request->dpt_province;
+          $data_dpt->dpt_regency           = $request->dpt_regency;
+          $data_dpt->dpt_district          = $request->dpt_district;
+          $data_dpt->dpt_village           = $request->dpt_village;
           $data_dpt->tps_id                = $request->tps_id;
           $data_dpt->role_id               = session('role_id');
           $data_dpt->dpt_updated_by        = session('user_id');
           $data_dpt->dpt_updated_date      = Carbon::now()->format('Y-m-d H:i:s');
           $data_dpt->save();
           
-          $kecamatan_type_data = $request->edit_kecamatan_type;
-          $dpt_id     = $data_dpt->dpt_id;
-
-          // Menghapus data checklist kec. yang tidak dipilih kembali
-          KecamatanCeklisDpt::where('dpt_id', $dpt_id)->whereNotIn('kecamatan_id', $kecamatan_type_data)->delete();
-
-          // Menyimpan atau memperbarui data checklist kec. yang dipilih kembali
-          foreach ($kecamatan_type_data as $check) {
-            $checklist_kec_object = Kecamatan::where('kecamatan_id', $check)->first();
-            if (!empty($checklist_kec_object)) {
-                $checklist_group_data = [
-                    'dpt_id'                        => $dpt_id,
-                    'kecamatan_id'                  => $checklist_kec_object->kecamatan_id,
-                    'kecamatan_ceklis_dpt_created_by'   => session('user_id'),
-                    'kecamatan_ceklis_dpt_created_date' => now()->format('Y-m-d H:i:s')
-                ];
-                
-                 // Update or insert the record based on dpt_id and kecamatan_id
-                KecamatanCeklisDpt::updateOrInsert(
-                    [
-                        'dpt_id'        => $dpt_id,
-                        'kecamatan_id'  => $checklist_kec_object->kecamatan_id,
-                    ],
-                    $checklist_group_data
-                );
-              
-            }
-        }
-        // return response()->json(['status' => true, 'message' => ['title' => 'Successfully Updated!', 'text' => 'DPT ' . $request->dpt_name . ' updated successfully!']]);
-
-        return response()->json([
-            'status' => true,
-            'message' => ['title' => 'Successfully created!', 'text' => 'Caleg ' . $request->dpt_name . ' updated successfully!'],
-            'data' => $checklist_group_data
-        ]);
+          return response()->json(['status' => true, 'message' => ['title' => 'Successfully Updated!', 'text' => 'DPT ' . $request->dpt_name . ' updated successfully!']]);
     }
 
     /**
@@ -455,4 +311,59 @@ class DataDptController extends Controller
         }
     }
 
+    /**
+     * Display data to provinces, regencies, districts and village
+     */
+    public function getProvinces()
+    {
+        $provinces = MasterProvinces::all();
+
+        if ($provinces->count() > 0) {
+            return response()->json(['status' => true, 'data' => $provinces]);
+        } else {
+            return response()->json(['status' => false, 'data' => 'Data is empty!']);
+        }
+    }
+    public function getRegencies(Request $request)
+    {
+        $provinceId = $request->input('provinceId');
+
+        $regencies = MasterRegencies::where('province_id', $provinceId)->get();
+
+        if ($regencies->count() > 0) {
+            return response()->json(['status' => true, 'data' => $regencies]);
+        } else {
+            return response()->json(['status' => false, 'data' => 'Data is empty!']);
+        }
+    }
+
+    public function getDistricts(Request $request)
+    {
+        $regencyId = $request->input('regencyId');
+
+        $districts = MasterDistricts::where('regency_id', $regencyId)->get();
+
+        if ($districts->count() > 0) {
+            return response()->json(['status' => true, 'data' => $districts]);
+        } else {
+            return response()->json(['status' => false, 'data' => 'Data is empty!']);
+        }
+    }
+
+    public function getVillages(Request $request)
+    {
+        $districtId = $request->input('districtId');
+
+        $villages = MasterVillages::where('district_id', $districtId)->get();
+
+        if ($villages->count() > 0) {
+            return response()->json(['status' => true, 'data' => $villages]);
+        } else {
+            return response()->json(['status' => false, 'data' => 'Data is empty!']);
+        }
+    }
+
+     /**
+     * End Display data to provinces, regencies, districts and village
+     */
 }
