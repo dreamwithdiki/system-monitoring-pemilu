@@ -88,12 +88,62 @@ function _check_kecamatan_checkbox_header(el, all = false) {
        $(el).parents('div').find('.checkbox-header').prop('checked', false);
    }
 }
+
+function _check_edit_kecamatan_checkbox_header(el, all = false) {
+   if (all) {
+     $(el).find('.checkbox-header').each(function (index, val) {
+       var tmp_checkall = true;
+       $(val).parents('div').find('.checkbox-item').each(function (index2, val2) {
+         if (!$(val2).is(":checked")) {
+           tmp_checkall = false;
+         }
+       })
+       if (tmp_checkall == true) {
+         $(val).prop('checked', true)
+       } else {
+         $(val).prop('checked', false)
+       }
+     })
+   } else {
+     var check = $(el).is(":checked");
+     if (check) {
+       $(el).parents('div').find('input[type="checkbox"]').prop('checked', true);
+     } else {
+       $(el).parents('div').find('input[type="checkbox"]').prop('checked', false);
+     }
+   }
+ }
+
+function _check_edit_kecamatan_checkbox_item(el) {
+   var tmp_checkall = true;
+   $(el).parents('div').find('.checkbox-item').each(function (index, val) {
+       if (!$(val).is(":checked")) {
+           tmp_checkall = false;
+       }
+       if (tmp_checkall == true) {
+           $(val).prop('checked', true);
+       }
+   });
+   if (tmp_checkall == true) {
+       $(el).parents('div').find('.checkbox-header').prop('checked', true);
+   } else {
+       $(el).parents('div').find('.checkbox-header').prop('checked', false);
+   }
+}
 </script>
 @endsection
 
 @section('content')
 <style>
   #imagePreview {
+      width: 150px;
+      height: 150px;
+      background-position: center center;
+      background-size: cover;
+      -webkit-box-shadow: 0 0 1px 1px rgba(0, 0, 0, .3);
+      display: inline-block;
+  }
+  #imagePreviewPartai {
       width: 150px;
       height: 150px;
       background-position: center center;
@@ -188,6 +238,22 @@ function _check_kecamatan_checkbox_header(el, all = false) {
               </div>
             </div>
             <div class="row g2">
+                <div class="col-xl mb-3">
+                  <label for="addNomorUrutPartai" class="form-label">No Urut Partai <span style='color:red'>*</span></label>
+                  <input type="number" id="addNomorUrutPartai" name="caleg_no_urut_partai" class="form-control" placeholder="Enter No Urut Partai" min="1">
+                </div>
+                <div class="col-xl mb-3">
+                  <label for="addNomorUrutCaleg" class="form-label">No Urut Caleg <span style='color:red'>*</span></label>
+                  <input type="number" id="addNomorUrutCaleg" name="caleg_no_urut_caleg" class="form-control" placeholder="Enter No Urut Caleg" min="1">
+                </div>
+            </div>
+            <div class="row">
+              <div class="col-xl mb-3">
+                <label for="addNamaPartai" class="form-label">Nama Partai <span style='color:red'>*</span></label>
+                <input type="text" id="addNamaPartai" name="caleg_nama_partai" class="form-control" placeholder="Enter Nama Partai" >
+              </div>
+            </div>
+            <div class="row g2">
               <div class="col-xl mb-3">
                 <label class="form-label" for="bs-validation-upload-file">Photo Caleg</label>
                 <input type="file" class="form-control" name="caleg_photo" id="bs-validation-upload-file"/>
@@ -195,48 +261,10 @@ function _check_kecamatan_checkbox_header(el, all = false) {
             </div>
             <div class="row g2">
               <div class="col-xl mb-3">
-                <label class="form-label" for="bs-validation-upload-file">Photo Partai</label>
+                <label class="form-label" for="bs-validation-upload-file">Photo Partai <span style='color:red'>*</span></label>
                 <input type="file" class="form-control" name="caleg_photo_partai" id="bs-validation-upload-file"/>
               </div>
             </div>
-            {{-- <div class="row">
-              <div class="col mb-3">
-              <label for="addChecklistKecamatan" class="form-label">Daerah Pemilihan <span style='color:red'>*</span></label>
-                @php 
-                    $tmp_kecamatan_id='x';
-                    $tmp_group_kec_count=0;
-                    foreach($ceklisKecamatan as $key => $check){
-                        if($check->kecamatan_id!=$tmp_kecamatan_id){
-                            $tmp_kecamatan_id=$check->kecamatan_id;
-                            if($tmp_group_kec_count==0||$tmp_group_kec_count % 2==0){
-                                if($tmp_group_kec_count==0){
-                                    echo '<div class="row" style="padding-left:15px; padding-right:15px">';
-                                }else{
-                                    echo '</div><div class="row" style="padding-left:15px; padding-right:15px">';
-                                }
-                            }
-                            if($key==count($ceklisKecamatan)-1 || $key!=0){
-                                echo '</div>';
-                            }
-                            echo '<div class="col mb-6 kecamatan_type">
-                                    <div class="form-check form-check-primary mt-3">
-                                        <input class="form-check-input checkbox-item-modal-add-kecamatan checkbox-item" type="checkbox" onClick="_check_kecamatan_checkbox_item(this);" name="kecamatan_type[]" id="kecamatan_type_'.$check->kecamatan_id.'" value="'.$check->kecamatan_id.'" required>
-                                        <label class="form-check-label" for="kecamatan_type_'.$check->kecamatan_id.'">'.$check->kecamatan_name.'</label>
-                                    </div>
-                                ';
-                            $tmp_group_kec_count++;
-                        }else{
-                            echo '
-                                <input class="form-check-input checkbox-item-modal-add-kecamatan checkbox-item" type="checkbox" onClick="_check_kecamatan_checkbox_item(this);" name="kecamatan_type[]" id="kecamatan_type_'.$check->kecamatan_id.'" value="'.$check->kecamatan_id.'" required>
-                                <label class="form-check-label" for="kecamatan_type_'.$check->kecamatan_id.'">'.$check->kecamatan_name.'</label>
-                            ';
-                        }
-                    } 
-                @endphp
-                
-                </div>
-              </div>
-            </div> --}}
 
             <div class="row">
               <div class="col-xl mb-3">
@@ -281,12 +309,6 @@ function _check_kecamatan_checkbox_header(el, all = false) {
                 <textarea id="addVisiMisi" name="caleg_visi_misi" class="form-control" placeholder="Explanation about the new visi & misi" rows="5" style="max-height: 100px;resize: none;"></textarea>
               </div>
             </div>
-            <div class="row g2">
-                <div class="col-xl mb-3">
-                  <label for="addNamaPartai" class="form-label">Nama Partai <span style='color:red'>*</span></label>
-                  <input type="text" id="addNamaPartai" name="caleg_nama_partai" class="form-control" placeholder="Enter Nama Partai" >
-                </div>
-              </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -306,7 +328,7 @@ function _check_kecamatan_checkbox_header(el, all = false) {
       <div class="modal-header">
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form id="formEditCaleg" data-method="add">
+      <form id="formEditCaleg" data-method="edit">
         <div class="modal-body">
           <div id="editFormLabel" class="text-center mb-4">
             <h3><span>Caleg Form<span></h3>
@@ -332,17 +354,27 @@ function _check_kecamatan_checkbox_header(el, all = false) {
               </div>
             </div>
             <div class="row g-2">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label for="editNIK" class="form-label">NIK <span style='color:red'>*</span></label>
                 <input type="text" id="editNIK" name="caleg_nik" class="form-control" placeholder="Enter NIK" onkeypress="return hanyaAngka(event)" max="16" @required(true)>
               </div>
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label for="editName" class="form-label">Nama <span style='color:red'>*</span></label>
                 <input type="text" id="editName" name="caleg_name" class="form-control" placeholder="Enter Name" @required(true)>
               </div>
             </div>
+            <div class="row g2">
+              <div class="col-xl mb-3">
+                <label for="editNomorUrutPartai" class="form-label">No Urut Partai <span style='color:red'>*</span></label>
+                <input type="number" id="editNomorUrutPartai" name="caleg_no_urut_partai" class="form-control" placeholder="Enter No Urut Partai" min="1">
+              </div>
+              <div class="col-xl mb-3">
+                <label for="editNomorUrutCaleg" class="form-label">No Urut Caleg <span style='color:red'>*</span></label>
+                <input type="number" id="editNomorUrutCaleg" name="caleg_no_urut_caleg" class="form-control" placeholder="Enter No Urut Caleg" min="1">
+              </div>
+          </div>
             <div class="row">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <input type="hidden" id="oldImage" name="oldImage" value="">
                 <label class="form-label">Current Photo Caleg</label>
                 <div class="col-md-3">
@@ -351,7 +383,7 @@ function _check_kecamatan_checkbox_header(el, all = false) {
               </div>
             </div>
             <div class="row">
-              <div class="col mb-3">
+              <div class="col-xl mb-3">
                 <label class="form-label" for="caleg_photo">Change Photo Caleg</label>
                 <input type="file" class="form-control" id="caleg_photo" name="caleg_photo"/>
                 <br>
@@ -360,8 +392,8 @@ function _check_kecamatan_checkbox_header(el, all = false) {
             </div>
 
             <div class="row">
-              <div class="col mb-3">
-                <input type="hidden" id="oldImage" name="oldImagePartai" value="">
+              <div class="col-xl mb-3">
+                <input type="hidden" id="oldImagePartai" name="oldImagePartai" value="">
                 <label class="form-label">Current Photo Partai</label>
                 <div class="col-md-3">
                     <img src="#" class="rounded current-photo-partai" style="max-width: 100%; height: auto;">
@@ -369,11 +401,11 @@ function _check_kecamatan_checkbox_header(el, all = false) {
               </div>
             </div>
             <div class="row">
-              <div class="col mb-3">
-                <label class="form-label" for="caleg_partai">Change Photo Partai</label>
-                <input type="file" class="form-control" id="caleg_partai" name="caleg_partai"/>
+              <div class="col-xl mb-3">
+                <label class="form-label" for="caleg_photo_partai">Change Photo Partai</label>
+                <input type="file" class="form-control" id="caleg_photo_partai" name="caleg_photo_partai"/>
                 <br>
-                <div id="imagePreview"></div>
+                <div id="imagePreviewPartai"></div>
               </div>
             </div>
 
@@ -401,7 +433,7 @@ function _check_kecamatan_checkbox_header(el, all = false) {
 
                       echo '
                           <div class="form-check form-check-primary mt-3">
-                              <input class="form-check-input checkbox-item-modal-edit-kecamatan checkbox-item" type="checkbox" onClick="_check_kecamatan_checkbox_item(this);" name="edit_kecamatan_type[]" id="edit_kecamatan_type_'.$check->kecamatan_id.'" value="'.$check->kecamatan_id.'" required>
+                              <input class="form-check-input checkbox-item-modal-edit-kecamatan checkbox-item" type="checkbox" onClick="_check_edit_kecamatan_checkbox_item(this);" name="edit_kecamatan_type[]" id="edit_kecamatan_type_'.$check->kecamatan_id.'" value="'.$check->kecamatan_id.'" required>
                               <label class="form-check-label" for="edit_kecamatan_type_'.$check->kecamatan_id.'">'.$check->kecamatan_name.'</label>
                           </div>
                       ';

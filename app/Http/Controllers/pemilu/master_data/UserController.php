@@ -455,6 +455,27 @@ class UserController extends Controller
       }
     }
 
+    public function changePassword(Request $request, $id)
+    {
+         $this->validate($request, [
+            'change_password'     => 'required|min:8|max:255',
+          ]);
+  
+          // dd($request->all());
+  
+          $changePass = User::where('user_id', $id)->first();
+          
+          $changePass->user_password          = Hash::make($request->change_password);
+          $changePass->user_updated_by        = session('user_id');
+          $changePass->user_updated_date      = Carbon::now()->format('Y-m-d H:i:s');
+          $changePass->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => ['title' => 'Successfully created!', 'text' => 'Change Password ' . $request->user_uniq_name . ' updated successfully!'],
+        ]);
+    }
+
     public function show_upload_user($user_id)
     {
       $user = User::find($user_id);

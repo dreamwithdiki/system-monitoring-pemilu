@@ -9,6 +9,7 @@ $(function () {
   var dt_ajax_table      = $('.datatables-ajax');
   var modal_add_dpt      = $('#modalAddDpt');
   var modal_edit_dpt     = $('#modalEditDpt');
+  var modal_detail_dpt   = $('#modalDetailDpt');
   var ac_tps             = $('.ac_tps');
   var ac_edit_tps        = $('.ac_edit_tps');
   var modal_class_loader = $('.modal-block-loader');
@@ -44,236 +45,6 @@ $(function () {
       dropdownParent: $this.parent()
     });
   }
-
-  // Mengirim permintaan Ajax untuk mendapatkan data Province
-  $.ajax({
-    url: baseUrl + 'pendukung/dpt/get-provinces',
-    type: 'GET',
-    dataType: 'json',
-    success: function(response) {
-      if (response.status) {
-        $('#addProvince').append('<option value="">Choice</option>');
-        
-        var provinces = response.data;
-  
-        $.each(provinces, function(index, province) {
-          $('#addProvince').append('<option value="' + province.id + '">' + province.name + '</option>');
-        });
-  
-        // Memperbarui tampilan Select2 pada dropdown Province
-        $('#addProvince').select2({
-            placeholder: 'Choice',
-            minimumInputLength: 0,
-            dropdownParent: $('#addProvince').parent()
-        });
-        $('#addRegency').select2({
-          disabled: true,
-        });
-        $('#addDistrict').select2({
-          disabled: true,
-        });
-        $('#addVillage').select2({
-          disabled: true,
-        });
-      } else {
-        $('#addProvince').append('<option value="">' + response.data + '</option>');
-        $('#addRegency').select2({
-          disabled: true,
-        });
-        $('#addDistrict').select2({
-          disabled: true,
-        });
-        $('#addVillage').select2({
-          disabled: true,
-        });
-      }
-    }
-  });
-
-  // Mengubah opsi pilihan pada dropdown Regency berdasarkan Province yang dipilih
-  $('#addProvince').on('change', function(){
-    var provinceId = $(this).val();
-
-    // Jika Province tidak dipilih, kosongkan juga dropdown District dan Village
-    if (provinceId === '') {
-      $('#addRegency').empty();
-      $('#addDistrict').empty();
-      $('#addVillage').empty();
-      return;
-    }
-
-    // Mengirim permintaan Ajax untuk mendapatkan data Regency berdasarkan Province yang dipilih
-    $.ajax({
-      url: baseUrl + 'pendukung/dpt/get-regencies',
-      type: 'GET',
-      data: { provinceId: provinceId },
-      dataType: 'json',
-      success: function(response) {
-        if (response.status) {
-          var regencies = response.data;
-
-          // Simpan opsi Regency yang saat ini dipilih
-          var currentRegency = $('#addRegency').val();
-
-          // Hapus opsi lama pada dropdown Regency
-          $('#addRegency').empty();
-
-          $('#addRegency').append('<option value="">Choice</option>');
-          $('#addDistrict').append('<option value="">Choice</option>');
-          $('#addVillage').append('<option value="">Choice</option>');
-
-          $.each(regencies, function(index, regency) {
-            $('#addRegency').append('<option value="' + regency.id + '">' + regency.name + '</option>');
-          });
-
-          // Pilih kembali opsi Regency yang sebelumnya dipilih (jika ada)
-          if (currentRegency) {
-            $('#addRegency').val(currentRegency);
-          }
-
-          // Perbarui tampilan Select2 pada dropdown Regency
-          $('#addRegency').select2({
-            placeholder: 'Choice',
-            minimumInputLength: 0,
-            disabled: false,
-            dropdownParent: $('#addRegency').parent()
-          });
-
-          $('#addRegency').trigger('change');
-        } else {
-          $('#addRegency').empty();
-          $('#addDistrict').empty();
-          $('#addVillage').empty();
-          $('#addRegency').select2({
-            disabled: true,
-          });
-          $('#addDistrict').select2({
-            disabled: true,
-          });
-          $('#addVillage').select2({
-            disabled: true,
-          });
-        }
-      }
-    });
-  });
-
-  // Mengubah opsi pilihan pada dropdown District berdasarkan Regency yang dipilih
-  $('#addRegency').on('change', function() {
-    var regencyId = $(this).val();
-
-    // Jika Regency tidak dipilih, kosongkan juga dropdown Village
-    if (regencyId === '') {
-      $('#addDistrict').empty();
-      $('#addVillage').empty();
-      return;
-    }
-
-    // Mengirim permintaan Ajax untuk mendapatkan data District berdasarkan Regency yang dipilih
-    $.ajax({
-      url: baseUrl + 'pendukung/dpt/get-districts',
-      type: 'GET',
-      data: { regencyId: regencyId },
-      dataType: 'json',
-      success: function (response) {
-        if (response.status) {
-          var districts = response.data;
-
-          // Simpan opsi District yang saat ini dipilih
-          var currentDistrict = $('#addDistrict').val();
-
-          // Hapus opsi lama pada dropdown District
-          $('#addDistrict').empty();
-
-          $('#addDistrict').append('<option value="">Choice</option>');
-
-          // Mengisi opsi pilihan pada dropdown District
-          $.each(districts, function (index, district) {
-            $('#addDistrict').append('<option value="' + district.id + '">' + district.name + '</option>');
-          });
-
-          // Pilih kembali opsi District yang sebelumnya dipilih (jika ada)
-          if (currentDistrict) {
-            $('#addDistrict').val(currentDistrict);
-          }
-
-          // Perbarui tampilan Select2 pada dropdown District
-          $('#addDistrict').select2({
-            placeholder: 'Choice',
-            minimumInputLength: 0,
-            disabled: false,
-            dropdownParent: $('#addDistrict').parent()
-          });
-
-          $('#addDistrict').trigger('change');
-        } else {
-          $('#addDistrict').empty();
-          $('#addVillage').empty();
-          $('#addDistrict').select2({
-            disabled: true,
-          });
-          $('#addVillage').select2({
-            disabled: true,
-          });
-        }
-      }
-    });
-  });
-
-  // Mengubah opsi pilihan pada dropdown Village berdasrkan District yang dipilih
-  $('#addDistrict').on('change', function() {
-    var districtId = $(this).val();
-
-    // Jika District tidak dipilih, kosongkan dropdown Village
-    if (districtId === '') {
-      $('#addVillage').empty();
-      return;
-    }
-
-    // Mengirim permintaan Ajax untuk mendapatkan data Village berdasarkan District yang dipilih
-    $.ajax({
-      url: baseUrl + 'pendukung/dpt/get-villages',
-      type: 'GET',
-      data: { districtId: districtId },
-      dataType: 'json',
-      success: function(response) {
-        if (response.status) {
-          var villages = response.data;
-
-          // Simpan opsi District yang saat ini dipilih
-          var currentVillage = $('#addVillage').val();
-
-          // Hapus opsi lama pada dropdown Village
-          $('#addVillage').empty();
-
-          $.each(villages, function(index, village) {
-            $('#addVillage').append('<option value="' + village.id + '">' + village.name + '</option>');
-          });
-
-          // Pilih kembali opsi Village yang sebelumnya dipilih (jika ada)
-          if (currentVillage) {
-            $('#addVillage').val(currentVillage);
-          }
-
-          // Perbarui tampilan Select2 pada dropdown Village
-          $('#addVillage').select2({
-            placeholder: 'Choice',
-            disabled: false,
-            minimumInputLength: 0,
-            dropdownParent: $('#addVillage').parent()
-          });
-
-          $('#addVillage').trigger('change');
-        } else {
-          $('#addVillage').empty();
-          $('#addVillage').select2({
-            disabled: true,
-          });
-        }
-      }
-    });
-  });
-
 
   // Data Table
   if (dt_ajax_table.length) {
@@ -322,16 +93,12 @@ $(function () {
           },
           orderable: false
         },
-        { data: 'dpt_province' },
-        { data: 'dpt_regency' },
-        { data: 'dpt_district' },
-        { data: 'dpt_village' },
         { data: 'tps_name' },
         { data: 'dpt_status', orderable: false }
       ],
       columnDefs: [
         {
-          targets: 9,
+          targets: 5,
           searchable: false,
           orderable: false,
           render: function (data, type, row, meta) {
@@ -343,7 +110,7 @@ $(function () {
           }
         },
         {
-          targets: 10,
+          targets: 6,
           searchable: false,
           orderable: false,
           render: function (data, type, row, meta) {
@@ -352,6 +119,7 @@ $(function () {
                   '<button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>' +
                   '<div class="dropdown-menu">' +
                       '<a id="dropdownMenuEdit" data-id="' + row.dpt_id + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit me-1"></i> Edit</a>' +
+                      '<a id="dropdownMenuDetail" data-id="' + row.dpt_id + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-detail me-1"></i> Detail</a>' +
                       '<a id="dropdownMenuActivate" data-id="' + row.dpt_id + '" data-status="2" class="dropdown-item dropdownMenuStatusUpdate" href="javascript:void(0);"><i class="bx bx-check me-1"></i> Activate</a>' +
                       '<a id="dropdownMenuDeactivate" data-id="' + row.dpt_id + '" data-status="1" class="dropdown-item dropdownMenuStatusUpdate" href="javascript:void(0);"><i class="bx bx-x me-1"></i> Deactivate</a>' +
                       '<a id="dropdownMenuDelete" data-id="' + row.dpt_id + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Delete</a>' +
@@ -434,33 +202,12 @@ $(function () {
           }
         }
       },
-      dpt_province: {
+      'kecamatan_type[]': {
           validators: {
-          notEmpty: {
-              message: 'Please select province name'
+              notEmpty: {
+                  message: 'Please select checklist kecamatan'
+              }
           }
-        }
-      },
-      dpt_regency: {
-          validators: {
-          notEmpty: {
-              message: 'Please select regency name'
-          }
-        }
-      },
-      dpt_district: {
-          validators: {
-          notEmpty: {
-              message: 'Please select district name'
-          }
-        }
-      },
-      dpt_village: {
-          validators: {
-          notEmpty: {
-              message: 'Please select village name'
-          }
-        }
       },
       tps_id: {
           validators: {
@@ -510,6 +257,13 @@ $(function () {
               confirmButton: 'btn btn-success'
             }
           });
+
+          var checkedKecamatan = response.data.kecamatan_id;
+          $('.checkbox-item-modal-add-kecamatan').prop('checked', false); // Deselect all checkboxes
+          for (var i = 0; i < checkedKecamatan.length; i++) {
+              var checkId = checkedKecamatan[i];
+              $('#kecamatan_type_' + checkId).prop('checked', true); // Check checkboxes based on saved data
+          }
         } else {
           Swal.fire({
             icon: 'error',
@@ -554,33 +308,12 @@ $(function () {
           }
         }
       },
-      dpt_province: {
+      'edit_kecamatan_type[]': {
           validators: {
-          notEmpty: {
-              message: 'Please select province name'
+              notEmpty: {
+                  message: 'Please select checklist kecamatan'
+              }
           }
-        }
-      },
-      dpt_regency: {
-          validators: {
-          notEmpty: {
-              message: 'Please select regency name'
-          }
-        }
-      },
-      dpt_district: {
-          validators: {
-          notEmpty: {
-              message: 'Please select district name'
-          }
-        }
-      },
-      dpt_village: {
-          validators: {
-          notEmpty: {
-              message: 'Please select village name'
-          }
-        }
       },
       tps_id: {
           validators: {
@@ -629,6 +362,14 @@ $(function () {
               confirmButton: 'btn btn-success'
             }
           });
+
+          var checkedKecamatan = response.data.kecamatan_id;
+          $('.checkbox-item-modal-edit-kecamatan').prop('checked', false); // Deselect all checkboxes
+          for (var i = 0; i < checkedKecamatan.length; i++) {
+              var checkId = checkedKecamatan[i];
+              $('#edit_kecamatan_type_' + checkId).prop('checked', true); // Check checkboxes based on saved data
+          }
+
         } else {
           Swal.fire({
             icon: 'error',
@@ -655,9 +396,20 @@ $(function () {
   });
   // End Form
   
+  // Function to set the selected dpt_jenkel value to localStorage
+  function setSelectedClientParam(dpt_jenkel) {
+    localStorage.setItem('selected_dpt_jenkel', dpt_jenkel);
+  }
+
+  // Function to get the selected dpt_jenkel value from localStorage
+  function getSelectedClientParam() {
+    return localStorage.getItem('selected_dpt_jenkel');
+  }
+
   // Edit button handler
   $(document).on('click', '#dropdownMenuEdit', function () {
     var dpt_id = $(this).data('id');
+    var tmp_id;
 
     // get data
     $.ajax({
@@ -677,69 +429,27 @@ $(function () {
         $('#editName').val(response.data.dpt_name);
         
         if (response.data.dpt_jenkel == 1) {
-            $('#addParamMan').prop('checked', true);
+          $('input[name="dpt_jenkel"][value="1"]').prop('checked', true);
+          setSelectedClientParam(1); // Store selected value to localStorage
+        } else if (response.data.dpt_jenkel == 2) {
+          $('input[name="dpt_jenkel"][value="2"]').prop('checked', true);
+          setSelectedClientParam(2); // Store selected value to localStorage
         } else {
-            $('#addParamWoman').prop('checked', true);
+          // Default to Individu (2) if dpt_jenkel is neither 1 nor 2
+          $('input[name="dpt_jenkel"][value="2"]').prop('checked', true);
+          setSelectedClientParam(2); // Store selected value to localStorage
         }
+
+        $.each(response.data.kecamatan_ceklis, function (index, val) {
+          tmp_id = val.kecamatan_id;
+          $('#edit_kecamatan_type_' + tmp_id).prop('checked', true);
+        })
 
         if (response.data.tps) {
           var tpsLabel = response.data.tps.tps_code + " - " + response.data.tps.tps_name;
           var option = new Option(tpsLabel, response.data.tps.tps_id, true, true);
           $('#editTps').append(option).trigger('change');
-        }        
-
-        // Kosongkan dropdown "Province" sebelum menambahkan opsi-opsi baru
-        $('#editProvince').empty();
-
-        // Mendapatkan data provinces
-        $.ajax({
-          url: baseUrl + 'pendukung/dpt/get-provinces',
-          type: 'GET',
-          dataType: 'json',
-          success: function(provinceResponse) {
-            if (provinceResponse.status) {
-              var provinces = provinceResponse.data;
-              
-              // Menambahkan opsi-opsi baru pada dropdown "Province"
-              $.each(provinces, function(index, province) {
-                var option = new Option(province.name, province.id);
-                $('#editProvince').append(option);
-              });
-              
-              // Memperbarui tampilan Select2 pada dropdown "Province"
-              $('#editProvince').select2({
-                placeholder: 'Choice',
-                minimumInputLength: 0,
-                dropdownParent: $('#editProvince').parent()
-              });
-
-              // Memilih kembali opsi "Province" yang sebelumnya dipilih (jika ada)
-              if (response.data.province) {
-                $('#editProvince').val(response.data.province.id).trigger('change');
-              }
-            } else {
-              $('#editProvince').append('<option value="">' + provinceResponse.data + '</option>');
-              $('#editRegency').append('<option value="">' + provinceResponse.data + '</option>');
-              $('#editDistrict').append('<option value="">' + provinceResponse.data + '</option>');
-              $('#editVillage').append('<option value="">' + provinceResponse.data + '</option>');
-            }
-          }
-        }); 
-
-        if (response.data.regency) {
-          var option = new Option(response.data.regency.name, response.data.regency.id, true, true);
-          $('#editRegency').append(option).trigger('change');
-        }
-        
-        if (response.data.district) {
-          var option = new Option(response.data.district.name, response.data.district.id, true, true);
-          $('#editDistrict').append(option).trigger('change');
-        }
-
-        if (response.data.village) {
-          var option = new Option(response.data.village.name, response.data.village.id, true, true);
-          $('#editVillage').append(option).trigger('change');
-        }
+        }       
 
         modal_class_loader.unblock();
       }
@@ -750,6 +460,54 @@ $(function () {
     $('#formEditDpt').data('method', 'edit');
     $('#formEditDpt').attr('data-id', dpt_id);
     modal_edit_dpt.modal('show');
+  });
+
+  // Restore the selected dpt_jenkel value from localStorage on page load
+  $(document).ready(function() {
+    var selectedClientParam = getSelectedClientParam();
+    if (selectedClientParam == 1) {
+      $('input[name="dpt_jenkel"][value="1"]').prop('checked', true);
+    } else if (selectedClientParam == 2) {
+      $('input[name="dpt_jenkel"][value="2"]').prop('checked', true);
+    }
+  });
+
+  $(document).on('click', '#dropdownMenuDetail', function () {
+    var dpt_id = $(this).data('id');
+    // Fungsi untuk Detail dpt
+    // get data
+    $.ajax({
+      url: baseUrl + "pendukung/dpt/show/" + dpt_id,
+      type: 'GET',
+      beforeSend: function (data) {
+        window.Helpers.blockUIModalLoader(modal_class_loader);
+      },
+      success: function (response) {
+
+        $('#det_nik').text(response.data.dpt_nik);
+        $('#det_nama').text(response.data.dpt_name);
+        $('#det_jenkel').text(response.data.dpt_jenkel == 1 ? 'Laki-Laki' : 'Perempuan');
+        $('#det_tps').text(response.data.tps.tps_code + " - " + response.data.tps.tps_name);
+        $('#det_status').text(response.data.dpt_status == 1 ? 'Deactive' : 'Active');
+
+        let kec = '';
+        if (response.data.kecamatan_ceklis && response.data.kecamatan_ceklis.length > 0) {
+          $.each(response.data.kecamatan_ceklis, function (index, val) {
+            kec += "-" + val.checklist_kec.kecamatan_name + "<br>";
+          });
+        } else {
+          kec = "No kecamatan.";
+        }
+        $('#det_kecamatan').html(kec);
+                
+        modal_class_loader.unblock();
+      }
+    });
+    $('#detFormLabel > p').html('Detail DPT.');
+    $('#formDetailDpt').attr('data-method', 'detail');
+    $('#formDetailDpt').data('method', 'detail');
+    $('#formDetailDpt').attr('data-id', dpt_id);
+    modal_detail_dpt.modal('show');
   });
   
   // Active / Deactive status button handler
@@ -860,11 +618,6 @@ $(function () {
     $('#addFormLabel > p').html('Add new DPT.');
     $('#formAddDpt').attr('data-method', 'add');
     $('#formAddDpt').data('method', 'add');
-
-    $('#addProvince').val('').trigger('change');
-    $('#addRegency').val('').trigger('change');
-    $('#addDistrict').val('').trigger('change');
-    $('#addVillage').val('').trigger('change');
     fv.resetForm(true);
   });
 
@@ -896,234 +649,5 @@ $(function () {
       dropdownParent: $this.parent()
     });
   }
-
-  // Mengirim permintaan Ajax untuk mendapatkan data Province
-  $.ajax({
-    url: baseUrl + 'pendukung/dpt/get-provinces',
-    type: 'GET',
-    dataType: 'json',
-    success: function(response) {
-      if (response.status) {
-        $('#editProvince').append('<option value="">Choice</option>');
-        
-        var provinces = response.data;
-  
-        $.each(provinces, function(index, province) {
-          $('#editProvince').append('<option value="' + province.id + '">' + province.name + '</option>');
-        });
-  
-        // Memperbarui tampilan Select2 pada dropdown Province
-        $('#editProvince').select2({
-            placeholder: 'Choice',
-            minimumInputLength: 0,
-            dropdownParent: $('#editProvince').parent()
-        });
-        $('#editRegency').select2({
-          disabled: true,
-        });
-        $('#editDistrict').select2({
-          disabled: true,
-        });
-        $('#editVillage').select2({
-          disabled: true,
-        });
-      } else {
-        $('#editProvince').append('<option value="">' + response.data + '</option>');
-        $('#editRegency').select2({
-          disabled: true,
-        });
-        $('#editDistrict').select2({
-          disabled: true,
-        });
-        $('#editVillage').select2({
-          disabled: true,
-        });
-      }
-    }
-  });
-
-  // Mengubah opsi pilihan pada dropdown Regency berdasarkan Province yang dipilih
-  $('#editProvince').on('change', function(){
-    var provinceId = $(this).val();
-
-    // Jika Province tidak dipilih, kosongkan juga dropdown District dan Village
-    if (provinceId === '') {
-      $('#editRegency').empty();
-      $('#editDistrict').empty();
-      $('#editVillage').empty();
-      return;
-    }
-
-    // Mengirim permintaan Ajax untuk mendapatkan data Regency berdasarkan Province yang dipilih
-    $.ajax({
-      url: baseUrl + 'pendukung/dpt/get-regencies',
-      type: 'GET',
-      data: { provinceId: provinceId },
-      dataType: 'json',
-      success: function(response) {
-        if (response.status) {
-          var regencies = response.data;
-
-          // Simpan opsi Regency yang saat ini dipilih
-          var currentRegency = $('#editRegency').val();
-
-          // Hapus opsi lama pada dropdown Regency
-          $('#editRegency').empty();
-
-          $('#editRegency').append('<option value="">Choice</option>');
-          $('#editDistrict').append('<option value="">Choice</option>');
-          $('#editVillage').append('<option value="">Choice</option>');
-
-          $.each(regencies, function(index, regency) {
-            $('#editRegency').append('<option value="' + regency.id + '">' + regency.name + '</option>');
-          });
-
-          // Pilih kembali opsi Regency yang sebelumnya dipilih (jika ada)
-          if (currentRegency) {
-            $('#editRegency').val(currentRegency);
-          }
-
-          // Perbarui tampilan Select2 pada dropdown Regency
-          $('#editRegency').select2({
-            placeholder: 'Choice',
-            minimumInputLength: 0,
-            disabled: false,
-            dropdownParent: $('#editRegency').parent()
-          });
-
-          $('#editRegency').trigger('change');
-        } else {
-          $('#editRegency').empty();
-          $('#editDistrict').empty();
-          $('#editVillage').empty();
-          $('#editRegency').select2({
-            disabled: true,
-          });
-          $('#editDistrict').select2({
-            disabled: true,
-          });
-          $('#editVillage').select2({
-            disabled: true,
-          });
-        }
-      }
-    });
-  });
-
-  // Mengubah opsi pilihan pada dropdown District berdasarkan Regency yang dipilih
-  $('#editRegency').on('change', function() {
-    var regencyId = $(this).val();
-
-    // Jika Regency tidak dipilih, kosongkan juga dropdown Village
-    if (regencyId === '') {
-      $('#editDistrict').empty();
-      $('#editVillage').empty();
-      return;
-    }
-
-    // Mengirim permintaan Ajax untuk mendapatkan data District berdasarkan Regency yang dipilih
-    $.ajax({
-      url: baseUrl + 'pendukung/dpt/get-districts',
-      type: 'GET',
-      data: { regencyId: regencyId },
-      dataType: 'json',
-      success: function (response) {
-        if (response.status) {
-          var districts = response.data;
-
-          // Simpan opsi District yang saat ini dipilih
-          var currentDistrict = $('#editDistrict').val();
-
-          // Hapus opsi lama pada dropdown District
-          $('#editDistrict').empty();
-
-          $('#editDistrict').append('<option value="">Choice</option>');
-
-          // Mengisi opsi pilihan pada dropdown District
-          $.each(districts, function (index, district) {
-            $('#editDistrict').append('<option value="' + district.id + '">' + district.name + '</option>');
-          });
-
-          // Pilih kembali opsi District yang sebelumnya dipilih (jika ada)
-          if (currentDistrict) {
-            $('#editDistrict').val(currentDistrict);
-          }
-
-          // Perbarui tampilan Select2 pada dropdown District
-          $('#editDistrict').select2({
-            placeholder: 'Choice',
-            minimumInputLength: 0,
-            disabled: false,
-            dropdownParent: $('#editDistrict').parent()
-          });
-
-          $('#editDistrict').trigger('change');
-        } else {
-          $('#editDistrict').empty();
-          $('#editVillage').empty();
-          $('#editDistrict').select2({
-            disabled: true,
-          });
-          $('#editVillage').select2({
-            disabled: true,
-          });
-        }
-      }
-    });
-  });
-
-  // Mengubah opsi pilihan pada dropdown Village berdasrkan District yang dipilih
-  $('#editDistrict').on('change', function() {
-    var districtId = $(this).val();
-
-    // Jika District tidak dipilih, kosongkan dropdown Village
-    if (districtId === '') {
-      $('#editVillage').empty();
-      return;
-    }
-
-    // Mengirim permintaan Ajax untuk mendapatkan data Village berdasarkan District yang dipilih
-    $.ajax({
-      url: baseUrl + 'pendukung/dpt/get-villages',
-      type: 'GET',
-      data: { districtId: districtId },
-      dataType: 'json',
-      success: function(response) {
-        if (response.status) {
-          var villages = response.data;
-
-          // Simpan opsi District yang saat ini dipilih
-          var currentVillage = $('#editVillage').val();
-
-          // Hapus opsi lama pada dropdown Village
-          $('#editVillage').empty();
-
-          $.each(villages, function(index, village) {
-            $('#editVillage').append('<option value="' + village.id + '">' + village.name + '</option>');
-          });
-
-          // Pilih kembali opsi Village yang sebelumnya dipilih (jika ada)
-          if (currentVillage) {
-            $('#editVillage').val(currentVillage);
-          }
-
-          // Perbarui tampilan Select2 pada dropdown Village
-          $('#editVillage').select2({
-            placeholder: 'Choice',
-            disabled: false,
-            minimumInputLength: 0,
-            dropdownParent: $('#editVillage').parent()
-          });
-
-          $('#editVillage').trigger('change');
-        } else {
-          $('#editVillage').empty();
-          $('#editVillage').select2({
-            disabled: true,
-          });
-        }
-      }
-    });
-  });
 
 });

@@ -31,9 +31,9 @@ class DataCaleg extends Model
         $query->where('caleg_status',2);
     }
 
-    public function kecamatan()
+    public function kecamatan_ceklis()
     {
-        return $this->belongsTo(Kecamatan::class, 'kecamatan_id');
+        return $this->hasMany(KecamatanCeklis::class, 'caleg_id');
     }
 
     // public function province()

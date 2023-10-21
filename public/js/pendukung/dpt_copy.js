@@ -5,33 +5,29 @@
 'use strict';
 
 $(function () {
-
-  var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-  var modal_add_user = $('#modalAddUser');
-  var modal_edit_user = $('#modalEditUser');
-  var modal_change_pass = $('#modalChangePasswordByAdmin');
-  var ac_role       = $('.ac_role');
-  var ac_edit_role       = $('.ac_edit_role');
-  var dt_ajax_table = $('.datatables-ajax');
+  var CSRF_TOKEN         = $('meta[name="csrf-token"]').attr('content');
+  var dt_ajax_table      = $('.datatables-ajax');
+  var modal_add_dpt      = $('#modalAddDpt');
+  var modal_edit_dpt     = $('#modalEditDpt');
+  var ac_tps             = $('.ac_tps');
+  var ac_edit_tps        = $('.ac_edit_tps');
   var modal_class_loader = $('.modal-block-loader');
-
   var typingTimer;
   
-  // ajax setup
   $.ajaxSetup({
     headers: {
       'X-CSRF-TOKEN': CSRF_TOKEN
     }
   });
 
-  // Select2 role handler
-  if (ac_role.length) {
-    var $this = ac_role;
+   // Select2 tps handler
+   if (ac_tps.length) {
+    var $this = ac_tps;
     $this.wrap('<div class="position-relative"></div>').select2({
-      placeholder: 'Select role',
+      placeholder: 'Select TPS',
       minimumInputLength: 0,
       ajax: {
-        url: baseUrl + 'autocomplete/role/find',
+        url: baseUrl + 'autocomplete/tps/find',
         dataType: 'json',
         data: function (params) {
           return {
@@ -51,7 +47,7 @@ $(function () {
 
   // Mengirim permintaan Ajax untuk mendapatkan data Province
   $.ajax({
-    url: baseUrl + 'pemilu/master-data/user/get-provinces',
+    url: baseUrl + 'pendukung/dpt/get-provinces',
     type: 'GET',
     dataType: 'json',
     success: function(response) {
@@ -108,7 +104,7 @@ $(function () {
 
     // Mengirim permintaan Ajax untuk mendapatkan data Regency berdasarkan Province yang dipilih
     $.ajax({
-      url: baseUrl + 'pemilu/master-data/user/get-regencies',
+      url: baseUrl + 'pendukung/dpt/get-regencies',
       type: 'GET',
       data: { provinceId: provinceId },
       dataType: 'json',
@@ -175,7 +171,7 @@ $(function () {
 
     // Mengirim permintaan Ajax untuk mendapatkan data District berdasarkan Regency yang dipilih
     $.ajax({
-      url: baseUrl + 'pemilu/master-data/user/get-districts',
+      url: baseUrl + 'pendukung/dpt/get-districts',
       type: 'GET',
       data: { regencyId: regencyId },
       dataType: 'json',
@@ -236,7 +232,7 @@ $(function () {
 
     // Mengirim permintaan Ajax untuk mendapatkan data Village berdasarkan District yang dipilih
     $.ajax({
-      url: baseUrl + 'pemilu/master-data/user/get-villages',
+      url: baseUrl + 'pendukung/dpt/get-villages',
       type: 'GET',
       data: { districtId: districtId },
       dataType: 'json',
@@ -278,16 +274,17 @@ $(function () {
     });
   });
 
-   // Data Table
+
+  // Data Table
   if (dt_ajax_table.length) {
     var dt_ajax = dt_ajax_table.DataTable({
       processing: true,
       serverSide: true,
       initComplete: onInit,
       ajax: {
-        url: baseUrl + 'pemilu/master-data/user/get',
+        url: baseUrl + 'pendukung/dpt/get',
         beforeSend: function () {
-          window.Helpers.blockUIPageLoader(baseUrl + 'pemilu/master-data/user/get');
+          window.Helpers.blockUIPageLoader(baseUrl + 'pendukung/dpt/get');
         },
         complete: function () {
           $.unblockUI();
@@ -310,180 +307,57 @@ $(function () {
         }
       },
       columns: [
-        // columns according to JSON
-        { data: 'no' },
-        { 
-          data: 'user_photo',
-          render: function (data, type, row) {
-            if (data !== "" && data !== null && data !== undefined) {
-              var avatarClass = '';
-              
-              if (row.user_status == 2) {
-                avatarClass = 'avatar-online';
-              } else if (row.user_status == 1) {
-                avatarClass = 'avatar-away';
-              } else if (row.user_status == 5) {
-                avatarClass = 'avatar-busy';
+        { data: 'no', orderable: false },
+        { data: 'dpt_nik' },
+        { data: 'dpt_name' },
+        { data: 'dpt_jenkel', 
+          render: function (data, type, row, meta) {
+              if (data == 1) {
+                  return '<span class="badge bg-primary">Laki-Laki</span>';
+              } else if (data == 2) {
+                  return '<span class="badge bg-success">Perempuan</span>';
               } else {
-                avatarClass = 'avatar-offline';
+                  return '<span class="badge bg-danger">Unknown</span>';
               }
-
-              var http = new XMLHttpRequest();
-              http.open('HEAD', '/storage/users_uploads/' + row.user_photo, false);
-              http.send();
-
-              var fileImageElement = document.createElement('img'); // Create the image element
-
-              if (http.status === 200) {
-                fileImageElement.src = '/storage/users_uploads/' + row.user_photo;
-              } else {
-                fileImageElement.src = '/assets/upload/user/default.jpeg';
-              }
-
-              return '<div class="avatar avatar-md me-2 ' + avatarClass + '"><img src="' + fileImageElement.src + '" alt="Avatar" class="rounded-circle"></div>';
-
-            } else {
-              return '<span class="badge bg-label-warning me-1">No Photo</span>';
-            }
-          }
+          },
+          orderable: false
         },
-        { 
-          data: 'user_nik',
-          render: function (data, type, row) {
-            if (row.user_status == 5) {
-              return '<del>' + data + '</del>';
-            } else {
-              return data;
-            }
-          }
-        }, 
-        { 
-          data: 'user_uniq_name',
-          render: function (data, type, row) {
-            if (row.user_status == 5) {
-              return '<del>' + data + '</del>';
-            } else {
-              return data;
-            }
-          }
-        }, 
-        { 
-          data: 'user_no_hp',
-          render: function (data, type, row) {
-            if (row.user_status == 5) {
-              return '<del>' + data + '</del>';
-            } else {
-              return data;
-            }
-          }
-        },
-        { 
-          data: 'user_email',
-          render: function (data, type, row) {
-            if (row.user_status == 5) {
-              return '<del>' + data + '</del>';
-            } else {
-              return data;
-            }
-          }
-        },
-        { 
-          data: 'role_name',
-          render: function (data, type, row) {
-            if (row.user_status == 5) {
-              return '<del>' + data + '</del>';
-            } else {
-              return data;
-            }
-          }
-        },
-        { 
-          data: 'user_last_login',
-          orderable: false,
-          render: function (data, type, row) {
-            if (row.user_status == 5) {
-              return '<del>' + (data ? data : '') + '</del>';
-            } else {
-              return data ? data : '';
-            }
-          }
-        },
-        { data: 'user_status' },
+        { data: 'dpt_province' },
+        { data: 'dpt_regency' },
+        { data: 'dpt_district' },
+        { data: 'dpt_village' },
+        { data: 'tps_name' },
+        { data: 'dpt_status', orderable: false }
       ],
       columnDefs: [
         {
-          targets: 8,
+          targets: 9,
           searchable: false,
           orderable: false,
           render: function (data, type, row, meta) {
             if (data == 2) {
               return '<span class="badge bg-label-success me-1">Active</span>';
-            } else if (data == 1) {
-              return '<span class="badge bg-label-warning me-1">Deactive</span>';
-            } else if (data == 5) {
-              return '<span class="badge bg-label-danger me-1">Deleted</span>';
             } else {
-              return '<span class="badge bg-label-secondary me-1">Unknown</span>';
+              return '<span class="badge bg-label-danger me-1">Deactive</span>';
             }
           }
         },
         {
-          // Actions
-          targets: 9,
+          targets: 10,
           searchable: false,
           orderable: false,
           render: function (data, type, row, meta) {
- 
-              try {
-                // Original content of the render function
-                var editButton = '';
-                var deleteButton = '';
-
-                if (row.user_status == 5) {
-                  // Jika user_status = 5 (Deleted), tombol delete, tombol edit, change pass tidak ditampilkan
-                  editButton = '';
-                  deleteButton = '';
-                } else if (row.user_status == 1 || row.user_status == 2) {
-                  // Jika user_status = 1 (Deactive) atau user_status = 2 (Active), tombol delete, tombol edit ditampilkan
-                  editButton =  '<button id="btn_user_edit" class="btn btn-sm btn-icon btn-primary mx-1" data-id="' + row.user_id + '" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true" title="Edit ' + row.user_uniq_name + '"><i class="bx bx-edit me-1"></i></button>';
-                  // changepasswordButton = '<a id="btn_change_pass" data-id="' + row.user_id + '" data-name="' + row.user_uniq_name + '" class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalChangePass"><i class="bx bx-key me-1"></i> Change Password</a>';
-                  // kasih kondisi jika user_id = 1 yaitu button hapus nya di hilangin karena ini untuk benar-benar superadmin. walaupun yg lain ada superadmin tapi ini superadmin special tidak oleh ada button hapusnya.
-                  if (row.user_id > 1) {
-                    deleteButton = '<button id="btn_user_delete" class="btn btn-sm btn-icon btn-danger mx-1" data-id="' + row.user_id + '" data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true" title="Delete ' + row.user_uniq_name + '"><i class="bx bx-trash me-1"></i></button>';
-                  }
-                }
-
-                var editButtonPass = '';
-                if (row.user_id > 2) {
-                  editButtonPass = '<a id="btn_user_change_password" class="dropdown-item cursor-pointer dropdown-item" data-id="' + row.user_id + '" data-name="'+ row.user_uniq_name +'" data-bs-toggle="modal" data-bs-target="#modalChangePasswordByAdmin" href="javascript:void(0);"><i class="bx bx-lock-open me-2"></i><span class="align-middle" title="Change password ' + row.user_uniq_name + '">Change Password</span></a>';
-                }
-
-                return (
-                    '<div class="d-inline-block text-nowrap">' +
-                      editButton +
-                      deleteButton +
-                      '<button class="btn btn-sm btn-icon btn-info dropdown-toggle hide-arrow mx-1" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>' +
-                      '<div class="dropdown-menu">' +
-                        editButtonPass +
-                        '<div class="dropdown-divider"></div>' +
-                        '<a id="btn_user_activate" data-id="' + row.user_id + '" data-status="2" class="dropdown-item dropdownMenuStatusUpdate" href="javascript:void(0);"><i class="bx bx-check me-1"></i> Activate</a>' +
-                        '<a id="btn_user_deactivate" data-id="' + row.user_id + '" data-status="1" class="dropdown-item dropdownMenuStatusUpdate" href="javascript:void(0);"><i class="bx bx-x me-1"></i> Deactivate</a>' +
-                      '</div>' +
-                    '</div>'
-                  );
-                  
-              } catch (error) {
-                // Handle errors in the render function gracefully
-                Swal.fire({
-                  title: 'Error!',
-                  text: "Internal Server Error",
-                  icon: 'error',
-                  customClass: {
-                    confirmButton: 'btn btn-primary'
-                  }
-                });
-              }
-            }
+              return '' +
+              '<div class="d-inline-block text-nowrap">' +
+                  '<button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>' +
+                  '<div class="dropdown-menu">' +
+                      '<a id="dropdownMenuEdit" data-id="' + row.dpt_id + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit me-1"></i> Edit</a>' +
+                      '<a id="dropdownMenuActivate" data-id="' + row.dpt_id + '" data-status="2" class="dropdown-item dropdownMenuStatusUpdate" href="javascript:void(0);"><i class="bx bx-check me-1"></i> Activate</a>' +
+                      '<a id="dropdownMenuDeactivate" data-id="' + row.dpt_id + '" data-status="1" class="dropdown-item dropdownMenuStatusUpdate" href="javascript:void(0);"><i class="bx bx-x me-1"></i> Deactivate</a>' +
+                      '<a id="dropdownMenuDelete" data-id="' + row.dpt_id + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Delete</a>' +
+                  '</div>' +
+              '</div>';
+          }
         }
       ],
       order: [[0, 'asc']],
@@ -514,270 +388,87 @@ $(function () {
     });    
   }
 
-  // Form
-  var addUserForm = document.getElementById('formAddUser');
-
-  var fv = FormValidation.formValidation(addUserForm, {
-    fields: {
-      user_email: {
-        validators: {
-          notEmpty: {
-            message: 'Please enter your email'
-          },
-          emailAddress: {
-            message: 'Please enter valid email address'
-          }
-        }
-      }, 
-      user_ref_id: {
-        validators: {
-          notEmpty: {
-            message: 'The partner name is required'
-          }
-        }
-      },
-      user_nik: {
-       validators: {
-         notEmpty: {
-           message: 'Please enter your NIK'
-         }
-       }
-      },
-      user_uniq_name: {
-        validators: {
-          notEmpty: {
-            message: 'Please enter your full name'
-          }
-        }
-       },
-       user_no_hp: {
-        validators: {
-          notEmpty: {
-            message: 'Please enter mobile phone'
-          },
-          regexp: {
-            message: 'Please enter a valid user phone',
-            regexp: /^\+?[0-9]+$/,
-          }
-        }
-      },
-      role_id: {
-        validators: {
-          notEmpty: {
-            message: 'Please select role name',
-          }
-        }
-      },
-      user_password: {
-        validators: {
-          notEmpty: {
-            message: 'Please enter your password'
-          },
-          stringLength: {
-            min: 8,
-            message: 'Password must be more than 8 characters'
-          }
-        }
-      },
-      confirm_password: {
-        validators: {
-          notEmpty: {
-            message: 'Please confirm password'
-          },
-          identical: {
-            compare: function () {
-              return addUserForm.querySelector('[name="user_password"]').value;
-            },
-            message: 'The password and its confirm are not the same'
-          },
-          stringLength: {
-            min: 8,
-            message: 'Password must be more than 8 characters'
-          }
-        }
-      },
-      user_photo : {
-      },
-      user_province: {
-          validators: {
-          notEmpty: {
-              message: 'Please select province name'
-          }
-        }
-      },
-      user_regency: {
-          validators: {
-          notEmpty: {
-              message: 'Please select regency name'
-          }
-        }
-      },
-      user_district: {
-          validators: {
-          notEmpty: {
-              message: 'Please select district name'
-          }
-        }
-      },
-      user_village: {
-          validators: {
-          notEmpty: {
-              message: 'Please select village name'
-          }
-        }
-      },
-    },
-    plugins: {
-      trigger: new FormValidation.plugins.Trigger(),
-      bootstrap5: new FormValidation.plugins.Bootstrap5({
-        // Use this for enabling/changing valid/invalid class
-        eleValidClass: '',
-        rowSelector: function rowSelector(field, ele) {
-          // field is the field name & ele is the field element
-          return '.mb-3';
-        }
-      }),
-      submitButton: new FormValidation.plugins.SubmitButton(),
-      autoFocus: new FormValidation.plugins.AutoFocus()
-    },
-    init: instance => {
-      instance.on('plugins.message.placed', function (e) {
-        if (e.element.parentElement.classList.contains('input-group')) {
-          e.element.parentElement.insertAdjacentElement('afterend', e.messageElement);
-        }
-      });
-    }
-  }).on('core.form.valid', function () {
-    var url = "pemilu/master-data/user/store";
-    var form_data = new FormData(addUserForm); 
-
-    $.ajax({
-      data: form_data,
-      url: baseUrl + url,
-      type: 'POST',
-      processData: false,
-      contentType: false,
-      success: function success(response) {
-        dt_ajax.draw();
-        modal_add_user.modal('hide');
-
-        if (response.status) {
-          Swal.fire({
-            icon: 'success',
-            title: response.message.title,
-            text: response.message.text,
-            customClass: {
-              confirmButton: 'btn btn-success'
-            }
-          });
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: response.message.title,
-            text: response.message.text,
-            customClass: {
-              confirmButton: 'btn btn-primary'
-            }
-          });
-        }
-      },
-      error: function error(err) {
-        modal_add_user.modal('hide');
-        Swal.fire({
-          title: 'Error!',
-          text: 'Internal server error.',
-          icon: 'error',
-          customClass: {
-            confirmButton: 'btn btn-primary'
-          }
-        });
-      }
-    });
+  $(document).on('click', '.show-more', function(e) {
+    e.preventDefault();
+    var $this = $(this);
+    var $shortDesc = $this.prev('.short-desc');
+    var $fullDesc = $shortDesc.next('.full-desc');
+    $shortDesc.hide();
+    $fullDesc.show();
+    $this.text('Show Less');
+    var row = dt_ajax.row($this.closest('tr')).data();
+    row.expanded = true; // Menandai bahwa deskripsi telah di-expand
+    dt_ajax.row($this.closest('tr')).data(row);
   });
   
-  var editUserForm = document.getElementById('formEditUser');
-  // edit user form validation
-  var fvEdit = FormValidation.formValidation(editUserForm, {
+  $(document).on('click', '.show-less', function(e) {
+    e.preventDefault();
+    var $this = $(this);
+    var $fullDesc = $this.prev('.full-desc');
+    var $shortDesc = $fullDesc.prev('.short-desc');
+    $fullDesc.hide();
+    $shortDesc.show();
+    $this.text('Show More');
+    var row = dt_ajax.row($this.closest('tr')).data();
+    row.expanded = false; // Menandai bahwa deskripsi telah di-collapse
+    dt_ajax.row($this.closest('tr')).data(row);
+  });
+  
+  // Add Form
+  var add_dpt_form = document.getElementById('formAddDpt');
+
+  // Caleg Form Validation
+  var fv = FormValidation.formValidation(add_dpt_form, {
     fields: {
-      user_email: {
+      dpt_nik: {
         validators: {
           notEmpty: {
-            message: 'Please enter your email'
-          },
-          emailAddress: {
-            message: 'Please enter valid email address'
-          }
-        }
-      }, 
-      user_ref_id: {
-        validators: {
-          notEmpty: {
-            message: 'The partner name is required'
+            message: 'Please enter NIK'
           }
         }
       },
-      user_nik: {
+      dpt_name: {
         validators: {
           notEmpty: {
-            message: 'Please enter your NIK'
-          }
-        }
-       },
-       user_uniq_name: {
-         validators: {
-           notEmpty: {
-             message: 'Please enter your full name'
-           }
-         }
-        },
-        user_no_hp: {
-         validators: {
-           notEmpty: {
-             message: 'Please enter mobile phone'
-           },
-           regexp: {
-             message: 'Please enter a valid user phone',
-             regexp: /^\+?[0-9]+$/,
-           }
-         }
-       },
-      role_id: {
-        validators: {
-          notEmpty: {
-            message: 'Please select role name'
+            message: 'Please enter name'
           }
         }
       },
-      user_photo : {
-      },
-      user_province: {
+      dpt_province: {
           validators: {
           notEmpty: {
               message: 'Please select province name'
           }
         }
       },
-      user_regency: {
+      dpt_regency: {
           validators: {
           notEmpty: {
               message: 'Please select regency name'
           }
         }
       },
-      user_district: {
+      dpt_district: {
           validators: {
           notEmpty: {
               message: 'Please select district name'
           }
         }
       },
-      user_village: {
+      dpt_village: {
           validators: {
           notEmpty: {
               message: 'Please select village name'
           }
         }
       },
+      tps_id: {
+          validators: {
+          notEmpty: {
+              message: 'Please select TPS'
+          }
+        }
+      }
     },
     plugins: {
       trigger: new FormValidation.plugins.Trigger(),
@@ -795,18 +486,21 @@ $(function () {
       autoFocus: new FormValidation.plugins.AutoFocus()
     }
   }).on('core.form.valid', function () {
-    var url = "pemilu/master-data/user/update/" + $('#formEditUser').attr('data-id');
-    var form_data = new FormData(editUserForm); 
+    // Adding tps when form successfully validate
+    if ($('#formAddDpt').data('method') == 'add') {
+      var url = "pendukung/dpt/store";
+    } else {
+      var url = "";
+    }
 
     $.ajax({
-      data: form_data,
+      data: $('#formAddDpt').serialize(),
       url: baseUrl + url,
       type: 'POST',
-      processData: false,
-      contentType: false,
       success: function success(response) {
         dt_ajax.draw();
-        modal_edit_user.modal('hide');
+        modal_add_dpt.modal('hide');
+
         if (response.status) {
           Swal.fire({
             icon: 'success',
@@ -816,9 +510,6 @@ $(function () {
               confirmButton: 'btn btn-success'
             }
           });
-
-           // Update user photo using the handlePhotoChange function
-           handlePhotoChange(response);
         } else {
           Swal.fire({
             icon: 'error',
@@ -831,7 +522,126 @@ $(function () {
         }
       },
       error: function error(err) {
-        modal_edit_user.modal('hide');
+        modal_add_dpt.modal('hide');
+        Swal.fire({
+          title: 'Error!',
+          text: 'Internal server error.',
+          icon: 'error',
+          customClass: {
+            confirmButton: 'btn btn-primary'
+          }
+        });
+      }
+    });
+  });
+  // End Add Form
+
+  var editDptForm = document.getElementById('formEditDpt');
+  // edit caleg form validation
+  var fvEdit = FormValidation.formValidation(editDptForm, {
+    fields: {
+      dpt_nik: {
+        validators: {
+          notEmpty: {
+            message: 'Please enter NIK'
+          }
+        }
+      },
+      dpt_name: {
+        validators: {
+          notEmpty: {
+            message: 'Please enter name'
+          }
+        }
+      },
+      dpt_province: {
+          validators: {
+          notEmpty: {
+              message: 'Please select province name'
+          }
+        }
+      },
+      dpt_regency: {
+          validators: {
+          notEmpty: {
+              message: 'Please select regency name'
+          }
+        }
+      },
+      dpt_district: {
+          validators: {
+          notEmpty: {
+              message: 'Please select district name'
+          }
+        }
+      },
+      dpt_village: {
+          validators: {
+          notEmpty: {
+              message: 'Please select village name'
+          }
+        }
+      },
+      tps_id: {
+          validators: {
+          notEmpty: {
+              message: 'Please select TPS'
+          }
+        }
+      }
+    },
+    plugins: {
+      trigger: new FormValidation.plugins.Trigger(),
+      bootstrap5: new FormValidation.plugins.Bootstrap5({
+        // Use this for enabling/changing valid/invalid class
+        eleValidClass: '',
+        rowSelector: function rowSelector(field, ele) {
+          // field is the field name & ele is the field element
+          return '.mb-3';
+        }
+      }),
+      submitButton: new FormValidation.plugins.SubmitButton(),
+      // Submit the form when all fields are valid
+      // defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
+      autoFocus: new FormValidation.plugins.AutoFocus()
+    }
+  }).on('core.form.valid', function () {
+
+    if ($('#formEditDpt').data('method') == 'edit') {
+      var url = "pendukung/dpt/update/" + $('#formEditDpt').attr('data-id');
+    } else {
+      var url = "";
+    }
+
+    $.ajax({
+      data: $('#formEditDpt').serialize(),
+      url: baseUrl + url,
+      type: 'POST',
+      success: function success(response) {
+        dt_ajax.draw();
+        modal_edit_dpt.modal('hide');
+        if (response.status) {
+          Swal.fire({
+            icon: 'success',
+            title: response.message.title,
+            text: response.message.text,
+            customClass: {
+              confirmButton: 'btn btn-success'
+            }
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: response.message.title,
+            text: response.message.text,
+            customClass: {
+              confirmButton: 'btn btn-primary'
+            }
+          });
+        }
+      },
+      error: function error(err) {
+        modal_edit_dpt.modal('hide');
         Swal.fire({
           title: 'Error!',
           text: 'Internal server error.',
@@ -844,43 +654,46 @@ $(function () {
     });
   });
   // End Form
-
-  // Edit Record
-  $(document).on('click', '#btn_user_edit', function () {
-    var user_id = $(this).data('id');
-
-    // empty image preview
-    $('#imagePreview').empty();
   
+  // Edit button handler
+  $(document).on('click', '#dropdownMenuEdit', function () {
+    var dpt_id = $(this).data('id');
+
     // get data
     $.ajax({
-      url: baseUrl + "pemilu/master-data/user/show/" + user_id,
+      url: baseUrl + "pendukung/dpt/show/" + dpt_id,
       type: 'GET',
       beforeSend: function(data) {
         window.Helpers.blockUIModalLoader(modal_class_loader);
       },
       success: function(response) {
-        if (response.data.user_status == 2) {
+        if (response.data.dpt_status == 2) {
           $('#editStatus').prop('checked', true);
         } else {
           $('#editStatus').prop('checked', false);
         }
-  
-        $('#edit_user_nik').val(response.data.user_nik);
-        $('#edit_user_uniq_name').val(response.data.user_uniq_name);
-        $('#edit_user_no_hp').val(response.data.user_no_hp);
-        $('#edit_user_email').val(response.data.user_email);
-        if (response.data.role) {
-          var option = new Option(response.data.role.role_name, response.data.role.role_id, true, true);
-          $('#edit_role').append(option).trigger('change');
+
+        $('#editNik').val(response.data.dpt_nik);
+        $('#editName').val(response.data.dpt_name);
+        
+        if (response.data.dpt_jenkel == 1) {
+            $('#addParamMan').prop('checked', true);
+        } else {
+            $('#addParamWoman').prop('checked', true);
         }
-  
+
+        if (response.data.tps) {
+          var tpsLabel = response.data.tps.tps_code + " - " + response.data.tps.tps_name;
+          var option = new Option(tpsLabel, response.data.tps.tps_id, true, true);
+          $('#editTps').append(option).trigger('change');
+        }        
+
         // Kosongkan dropdown "Province" sebelum menambahkan opsi-opsi baru
         $('#editProvince').empty();
 
         // Mendapatkan data provinces
         $.ajax({
-          url: baseUrl + 'pemilu/master-data/user/get-provinces',
+          url: baseUrl + 'pendukung/dpt/get-provinces',
           type: 'GET',
           dataType: 'json',
           success: function(provinceResponse) {
@@ -927,36 +740,24 @@ $(function () {
           var option = new Option(response.data.village.name, response.data.village.id, true, true);
           $('#editVillage').append(option).trigger('change');
         }
-  
-        // Display current photo
-        if (response.data.user_photo) {
-          var photoUrl = baseUrl + 'pemilu/master-data/user/uploads/' + response.data.user_id;
-          $('.current-photo').attr('src', photoUrl);
-        } else {
-          $('.current-photo').attr('src', '#');
-          $('.current-photo').attr('alt', 'No Photo');
-        }
-        // Set value of oldImage input
-        $('#oldImage').val(response.data.user_photo);
-  
+
         modal_class_loader.unblock();
       }
     });
-  
-    $('#editFormLabel > p').html('Edit User.');
-    $('#formEditUser').attr('data-method', 'edit');
-    $('#formEditUser').data('method', 'edit');
-    $('#formEditUser').attr('data-id', user_id);
-  
-    modal_edit_user.modal('show');
+
+    $('#editFormLabel > p').html('Edit DPT.');
+    $('#formEditDpt').attr('data-method', 'edit');
+    $('#formEditDpt').data('method', 'edit');
+    $('#formEditDpt').attr('data-id', dpt_id);
+    modal_edit_dpt.modal('show');
   });
   
   // Active / Deactive status button handler
   $(document).on('click', '.dropdownMenuStatusUpdate', function () {
-    var user_id = $(this).data('id'),
-      user_status = $(this).data('status');
+    var dpt_id = $(this).data('id'),
+      dpt_status = $(this).data('status');
 
-    if (user_status == 2) {
+    if (dpt_status == 2) {
       var confirmText = 'Yes, active it!',
         confirmStyle = 'btn btn-success me-3';
     } else {
@@ -978,9 +779,9 @@ $(function () {
     }).then(function (result) {
       if (result.value) {
         $.ajax({
-          data: {user_id: user_id, user_status: user_status},
+          data: {dpt_id: dpt_id, dpt_status: dpt_status},
           type: 'POST',
-          url: baseUrl + 'pemilu/master-data/user/update-status',
+          url: baseUrl + 'pendukung/dpt/update-status',
           success: function success(response) {
             dt_ajax.draw();
             Swal.fire({
@@ -1007,10 +808,10 @@ $(function () {
     });
   });
 
-  // Delete Record handler
-  $(document).on('click', '#btn_user_delete', function () {
-    var user_id = $(this).data('id');
-    // sweetalert for confirmation of delete
+  // Delete button handler
+  $(document).on('click', '#dropdownMenuDelete', function () {
+    var dpt_id = $(this).data('id');
+
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -1018,103 +819,67 @@ $(function () {
       showCancelButton: true,
       confirmButtonText: 'Yes, delete it!',
       customClass: {
-        confirmButton: 'btn btn-primary me-3',
+        confirmButton: 'btn btn-danger me-3',
         cancelButton: 'btn btn-label-secondary'
       },
       buttonsStyling: false
     }).then(function (result) {
       if (result.value) {
-        // delete the data
         $.ajax({
-          data: {user_id: user_id},
+          data: {dpt_id: dpt_id},
           type: 'POST',
-          url: baseUrl + 'pemilu/master-data/user/delete',
-          success: function () {
+          url: baseUrl + 'pendukung/dpt/delete',
+          success: function success(response) {
             dt_ajax.draw();
+            Swal.fire({
+              icon: 'success',
+              title: response.message.title,
+              text: response.message.text,
+              customClass: {
+                confirmButton: 'btn btn-success'
+              }
+            });
           },
-          error: function (error) {
-            console.log(error);
-          }
-        });
-
-        // success sweetalert
-        Swal.fire({
-          icon: 'success',
-          title: 'Deleted!',
-          text: 'The user has been deleted!',
-          customClass: {
-            confirmButton: 'btn btn-success'
-          }
-        });
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire({
-          title: 'Cancelled',
-          text: 'The User is not deleted!',
-          icon: 'error',
-          customClass: {
-            confirmButton: 'btn btn-success'
+          error: function error(_error) {
+            Swal.fire({
+              title: 'Error!',
+              text: 'Internal server error.',
+              icon: 'error',
+              customClass: {
+                confirmButton: 'btn btn-primary'
+              }
+            });
           }
         });
       }
     });
   });
-
-
-  modal_add_user.on('hidden.bs.modal', function () {
-    $('#addFormLabel > p').html('Add new User.');
-    $('#formAddUser').attr('data-method', 'add');
-    $('#formAddUser').data('method', 'add');
-    
-    $('#user_uniq_name').val(null);
-    $('#user_ref_id').val(null);
-    $('#role_id').val('').trigger('change');
-    $('#user_nik').val(null);
-    $('#user_no_hp').val(null);
-    $('#user_email').val(null);
-    $('#user_password').val(null);
-    $('#confirm_password').val(null);
-    $('#user_photo').val(null);
-    $('#user_province').val('').trigger('change');
-    $('#user_regency').val('').trigger('change');
-    $('#user_district').val('').trigger('change');
-    $('#user_village').val('').trigger('change');
-    // fv.resetForm(true);
-  });
-
-  modal_edit_user.on('hidden.bs.modal', function () {
-    // fvEdit.resetForm(true);
-    $('#file').val(null);
-    $('#imagePreview').empty();
-    $('#imagePreview').html('<img src="#" class="img-fluid" style="max-width: 100%; height: auto;">');
-    $('#imagePreview').css("background-image", "none");
-  });
-
-  // Image Preview
-  $(function() {
-      $("#file").on("change", function()
-      {
-          var files = !!this.files ? this.files : [];
-          if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
-          
-          if (/^image/.test( files[0].type)){ // only image file
-              var reader = new FileReader(); // instance of the FileReader
-              reader.readAsDataURL(files[0]); // read the local file
-              
-              reader.onloadend = function(){ // set image data as background of div
-                  $("#imagePreview").css("background-image", "url("+this.result+")");
-              }
-          }
-      });
-  });
   
-   // Select2 edit role handler
-   if (ac_edit_role.length) {
-    var $this = ac_edit_role;
+  // Clearing form data when modal hidden
+  modal_add_dpt.on('hidden.bs.modal', function () {
+    $('#addFormLabel > p').html('Add new DPT.');
+    $('#formAddDpt').attr('data-method', 'add');
+    $('#formAddDpt').data('method', 'add');
+
+    $('#addProvince').val('').trigger('change');
+    $('#addRegency').val('').trigger('change');
+    $('#addDistrict').val('').trigger('change');
+    $('#addVillage').val('').trigger('change');
+    fv.resetForm(true);
+  });
+
+  modal_edit_dpt.on('hidden.bs.modal', function () {
+    fvEdit.resetForm(true);
+  });
+
+  // Select2 edit tps handler
+  if (ac_edit_tps.length) {
+    var $this = ac_edit_tps;
     $this.wrap('<div class="position-relative"></div>').select2({
-      placeholder: 'Select role',
+      placeholder: 'Select TPS',
       minimumInputLength: 0,
       ajax: {
-        url: baseUrl + 'autocomplete/role/find',
+        url: baseUrl + 'autocomplete/tps/find',
         dataType: 'json',
         data: function (params) {
           return {
@@ -1134,7 +899,7 @@ $(function () {
 
   // Mengirim permintaan Ajax untuk mendapatkan data Province
   $.ajax({
-    url: baseUrl + 'pemilu/master-data/user/get-provinces',
+    url: baseUrl + 'pendukung/dpt/get-provinces',
     type: 'GET',
     dataType: 'json',
     success: function(response) {
@@ -1191,7 +956,7 @@ $(function () {
 
     // Mengirim permintaan Ajax untuk mendapatkan data Regency berdasarkan Province yang dipilih
     $.ajax({
-      url: baseUrl + 'pemilu/master-data/user/get-regencies',
+      url: baseUrl + 'pendukung/dpt/get-regencies',
       type: 'GET',
       data: { provinceId: provinceId },
       dataType: 'json',
@@ -1258,7 +1023,7 @@ $(function () {
 
     // Mengirim permintaan Ajax untuk mendapatkan data District berdasarkan Regency yang dipilih
     $.ajax({
-      url: baseUrl + 'pemilu/master-data/user/get-districts',
+      url: baseUrl + 'pendukung/dpt/get-districts',
       type: 'GET',
       data: { regencyId: regencyId },
       dataType: 'json',
@@ -1319,7 +1084,7 @@ $(function () {
 
     // Mengirim permintaan Ajax untuk mendapatkan data Village berdasarkan District yang dipilih
     $.ajax({
-      url: baseUrl + 'pemilu/master-data/user/get-villages',
+      url: baseUrl + 'pendukung/dpt/get-villages',
       type: 'GET',
       data: { districtId: districtId },
       dataType: 'json',
@@ -1361,146 +1126,4 @@ $(function () {
     });
   });
 
-   // Ambil elemen gambar dengan ID 'userPhoto' dan 'userPhotonav'
-   var userPhoto = document.getElementById('userPhoto');
-   var userPhotoNav = document.getElementById('userPhotoNav'); 
-
-   // Fungsi untuk mengganti atribut src elemen gambar
-   function changeUserPhoto(newPhotoUrl) {
-       userPhoto.src = newPhotoUrl;
-       userPhotoNav.src = newPhotoUrl;
-   }
-
-   // Ini akan dipanggil setelah permintaan perubahan foto berhasil
-   function handlePhotoChange(response) {
-       if (response.status) {
-           changeUserPhoto(response.newUserPhoto); // Panggil fungsi untuk mengganti foto
-       }
-   }
-
-   /*
-  * ket :
-  * change password user oleh administrator  
-  * dibawah ini merupakan code untuk ganti password
-  */
-   var changePasswordForm = document.getElementById('formChangePasswordByAdmin');
-
-    // Change Password Form Validation
-    var fv = FormValidation.formValidation(changePasswordForm, {
-      fields: {
-        change_password: {
-          validators: {
-            notEmpty: {
-              message: 'Please enter your new password'
-            },
-            stringLength: {
-              min: 8,
-              message: 'Password must be more than 8 characters'
-            }
-          }
-        },
-        change_password_confirmation: {
-          validators: {
-            notEmpty: {
-              message: 'Please confirm your new password'
-            },
-            identical: {
-              compare: function () {
-                return changePasswordForm.querySelector('[name="change_password"]').value;
-              },
-              message: 'The password and its confirm are not the same'
-            },
-            stringLength: {
-              min: 8,
-              message: 'Password must be more than 8 characters'
-            }
-          }
-        }
-      },
-      plugins: {
-        trigger: new FormValidation.plugins.Trigger(),
-        bootstrap5: new FormValidation.plugins.Bootstrap5({
-          // Use this for enabling/changing valid/invalid class
-          eleValidClass: '',
-          rowSelector: function rowSelector(field, ele) {
-            // field is the field name & ele is the field element
-            return '.mb-3';
-          }
-        }),
-        submitButton: new FormValidation.plugins.SubmitButton(),
-        autoFocus: new FormValidation.plugins.AutoFocus()
-      }
-    }).on('core.form.valid', function () {
-      
-      var url_change_pass = "pemilu/master-data/user/change-password/" + $('#modalChangePasswordByAdmin').attr('data-id');
-      
-      $.ajax({
-        data: $('#formChangePasswordByAdmin').serialize(),
-        url: baseUrl + url_change_pass,
-        type: 'POST',
-        success: function success(response) {
-          if (!response.status) {
-            Swal.fire({
-              icon: 'error',
-              title: response.message.title,
-              text: response.message.text,
-              customClass: {
-                confirmButton: 'btn btn-primary'
-              }
-            });
-          } else {
-            Swal.fire({
-              icon: 'success',
-              title: response.message.title,
-              text: response.message.text,
-              customClass: {
-                confirmButton: 'btn btn-success'
-              }
-            });
-          }
-        },
-        error: function error(err) {
-          Swal.fire({
-            title: 'Error!',
-            text: 'Internal server error.',
-            icon: 'error',
-            customClass: {
-              confirmButton: 'btn btn-primary'
-            }
-          });
-        }
-      });
-
-      $('#modalChangePasswordByAdmin').modal('hide');
-      // $('#formChangePasswordByAdmin')[0].reset();
-    });
-
-     // Change Password
-    $(document).on('click', '#btn_user_change_password', function () {
-      var user_id = $(this).data('id');
-      var user_name = $(this).data('name');
-
-      // get data
-      $.ajax({
-        url: baseUrl + "pemilu/master-data/user/show/" + user_id,
-        type: 'GET',
-        beforeSend: function(data) {
-          window.Helpers.blockUIModalLoader(modal_class_loader);
-        },
-        success: function(response) {
-          
-          $('#change_user_id').val(response.data.user_id);
-          modal_class_loader.unblock();
-        }
-      });
-
-      $('#addFormChangePassLabel > p').html('Change password <b>'+ user_name +'</b>');
-      $('#modalChangePasswordByAdmin').attr('data-method', 'change');
-      $('#modalChangePasswordByAdmin').data('method', 'change');
-      $('#modalChangePasswordByAdmin').attr('data-id', user_id);
-
-      modal_change_pass.modal('show');
-    });
-
- }); 
-
+});

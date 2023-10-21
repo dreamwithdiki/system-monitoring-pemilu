@@ -67,6 +67,63 @@ else {
 </div>
 <!--/ Cards with few info -->
 
+<div class="row g-4 mb-4">
+  <div class="col-sm-6 col-xl-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex align-items-start justify-content-between">
+          <div class="content-left">
+            <span>TAMANSARI</span>
+            <div class="d-flex align-items-end mt-2">
+              <h2 class="mb-0 me-2">{{ $total_dpt_tamansari }}</h2>
+            </div>
+            <small>Jumlah Dukungan Tamansari </small>
+          </div>
+          <span class="badge bg-label-primary rounded p-2">
+            <i class="fa fa-location-dot bx-sm"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex align-items-start justify-content-between">
+          <div class="content-left">
+            <span>CIBEREUM</span>
+            <div class="d-flex align-items-end mt-2">
+              <h2 class="mb-0 me-2">{{ $total_dpt_cibereum }}</h2>
+            </div>
+            <small>Jumlah Dukungan Cibereum</small>
+          </div>
+          <span class="badge bg-label-primary rounded p-2">
+            <i class="fa fa-location-dot bx-sm"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex align-items-start justify-content-between">
+          <div class="content-left">
+            <span>PURBARATU</span>
+            <div class="d-flex align-items-end mt-2">
+              <h2 class="mb-0 me-2">{{ $total_dpt_purbaratu }}</h2>
+            </div>
+            <small>Jumlah Dukungan Purbaratu</small>
+          </div>
+          <span class="badge bg-label-primary rounded p-2">
+            <i class="fa fa-location-dot bx-sm"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
   <!-- Cards with unicons & charts -->
 <div class="row">
   <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
@@ -93,7 +150,7 @@ else {
               <i class="fa fa-mars bx-sm"></i>
             </span>
           </div>
-          <span class="fw-semibold d-block mb-1">Total Laki-Laki</span>
+          <span class="fw-semibold d-block mb-1">Jumlah Dukungan Laki-Laki</span>
           <h2 class="card-title mb-2">{{ $total_dpt_man }}</h2>
         </div>
       </div>
@@ -108,7 +165,7 @@ else {
               <i class="fa fa-venus bx-sm"></i> 
             </span>
           </div>
-          <span class="fw-semibold d-block mb-1">Total Perempuan</span>
+          <span class="fw-semibold d-block mb-1">Jumlah Dukungan Perempuan</span>
           <h2 class="card-title mb-2">{{ $total_dpt_woman }}</h2>
         </div>
       </div>

@@ -31,28 +31,34 @@ class DataDpt extends Model
         $query->where('dpt_status',2);
     }
 
-    public function province()
+    public function kecamatan_ceklis()
     {
-        return $this->belongsTo(MasterProvinces::class, 'dpt_province', 'id');
-    }
-
-    public function regency()
-    {
-        return $this->belongsTo(MasterRegencies::class, 'dpt_regency', 'id');
-    }
-
-    public function district()
-    {
-        return $this->belongsTo(MasterDistricts::class, 'dpt_district', 'id');
-    }
-
-    public function village()
-    {
-        return $this->belongsTo(MasterVillages::class, 'dpt_village', 'id');
+        return $this->hasMany(KecamatanCeklisDpt::class, 'dpt_id');
     }
 
     public function tps()
     {
         return $this->belongsTo(DataTps::class, 'tps_id');
     }
+
+    // public function province()
+    // {
+    //     return $this->belongsTo(MasterProvinces::class, 'dpt_province', 'id');
+    // }
+
+    // public function regency()
+    // {
+    //     return $this->belongsTo(MasterRegencies::class, 'dpt_regency', 'id');
+    // }
+
+    // public function district()
+    // {
+    //     return $this->belongsTo(MasterDistricts::class, 'dpt_district', 'id');
+    // }
+
+    // public function village()
+    // {
+    //     return $this->belongsTo(MasterVillages::class, 'dpt_village', 'id');
+    // }
+
 }

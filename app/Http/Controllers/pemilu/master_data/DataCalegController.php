@@ -145,6 +145,8 @@ class DataCalegController extends Controller
             'caleg_no_urut_partai'  => 'required',
             'caleg_nama_partai'     => 'required',
             'caleg_no_urut_caleg'   => 'required',
+            'caleg_photo.*'         => 'nullable|file|mimes:jpeg,png,jpg',
+            'caleg_photo_partai.*'  => 'required|file|mimes:jpeg,png,jpg'
         ]);
   
         //  dd($validator->errors());
@@ -195,22 +197,22 @@ class DataCalegController extends Controller
             $filename_photo = 'default.jpeg';
         }
 
-        DataCaleg::create([
-            'caleg_status'        => $status,
-            'caleg_nik'           => $request->caleg_nik,
-            'caleg_name'          => $request->caleg_name,
-            'caleg_visi_misi'     => $request->caleg_visi_misi,
-            'caleg_no_urut_partai'=> $request->caleg_no_urut_partai,
-            'caleg_nama_partai'   => $request->caleg_nama_partai,
-            'caleg_no_urut_caleg' => $request->caleg_no_urut_caleg,
-            'caleg_photo'         => $filename,
-            'caleg_photo_partai'  => $filename_photo,
-            'caleg_created_by'    => session('user_id'),
-            'caleg_created_date'  => Carbon::now()->format('Y-m-d H:i:s'),
-        ]);
+        $dataCaleg = new DataCaleg();
+        $dataCaleg->caleg_status        = $status;
+        $dataCaleg->caleg_nik           = $request->caleg_nik;
+        $dataCaleg->caleg_name          = $request->caleg_name;
+        $dataCaleg->caleg_no_urut_partai= $request->caleg_no_urut_partai;
+        $dataCaleg->caleg_no_urut_caleg = $request->caleg_no_urut_caleg;
+        $dataCaleg->caleg_nama_partai   = $request->caleg_nama_partai;
+        $dataCaleg->caleg_photo         = $filename;
+        $dataCaleg->caleg_photo_partai  = $filename_photo;
+        $dataCaleg->caleg_visi_misi     = $request->caleg_visi_misi;
+        $dataCaleg->caleg_created_by    = session('user_id');
+        $dataCaleg->caleg_created_date  = Carbon::now()->format('Y-m-d H:i:s');
+        $dataCaleg->save();
 
         $kecamatan_type_data = $request->kecamatan_type;
-        $caleg_id     = $request->caleg_id;
+        $caleg_id            = $dataCaleg->caleg_id;
         
         // Menyimpan data checklist kecamatan yang dipilih 
         foreach ($kecamatan_type_data as $check) {
@@ -225,8 +227,10 @@ class DataCalegController extends Controller
               
               KecamatanCeklis::create(
                   [
-                      'caleg_id'     => $caleg_id,
-                      'kecamatan_id' => $checklist_kec_object->kecamatan_id,
+                      'caleg_id'               => $caleg_id,
+                      'kecamatan_id'           => $checklist_kec_object->kecamatan_id,
+                      'kecamatan_ceklis_created_by'   => session('user_id'),
+                      'kecamatan_ceklis_created_date' => now()->format('Y-m-d H:i:s')
                   ],
                   $checklist_group_data
               );
@@ -234,7 +238,11 @@ class DataCalegController extends Controller
           }
       }
 
-        return response()->json(['status' => true, 'message' => ['title' => 'Successfully created!', 'text' => 'Caleg ' . $request->caleg_name . ' created successfully!']]);
+      return response()->json([
+          'status' => true,
+          'message' => ['title' => 'Successfully created!', 'text' => 'Caleg ' . $request->caleg_name . ' created successfully!'],
+          'data' => $checklist_group_data
+      ]);
     }
 
     /**
@@ -245,9 +253,8 @@ class DataCalegController extends Controller
      */
     public function show($id)
     {
-        $caleg = DataCaleg::with('kecamatan')->where('caleg_id', Crypt::decrypt($id))->first();
+        $caleg = DataCaleg::with('kecamatan_ceklis')->where('caleg_id', Crypt::decrypt($id))->first();
         if($caleg) {
-          $caleg->detail = KecamatanCeklis::with('checklist_kec')->where('caleg_id', '=', $id)->get();
             return response()->json(['status' => true, 'data' => $caleg]);
         } else {
             return response()->json(['status' => false, 'data' => []]);
@@ -284,10 +291,14 @@ class DataCalegController extends Controller
          $this->validate($request, [
             'caleg_nik'             => 'required|max:16',
             'caleg_name'            => 'required|max:255',
+            'edit_kecamatan_type'   => 'required|array|min:1',
+            'edit_kecamatan_type.*' => 'integer',
             'caleg_visi_misi'       => 'required',
             'caleg_no_urut_partai'  => 'required',
             'caleg_nama_partai'     => 'required',
             'caleg_no_urut_caleg'   => 'required',
+            'caleg_photo.*'         => 'nullable|file|mimes:jpeg,png,jpg',
+            'caleg_photo_partai.*'  => 'nullable|file|mimes:jpeg,png,jpg'
           ]);
   
           // caleg Status
@@ -338,14 +349,14 @@ class DataCalegController extends Controller
                 Storage::disk('public')->delete('caleg_partai_uploads/' . $oldImage);
             }
             // Compress the image and save it
-            $filename = Carbon::now()->format('Hisu_').'caleg_partai'.($request->caleg_id).'.'.$image->getClientOriginalExtension();
-            $compressedImage = Image::make($image)->resize(300, 300, function ($constraint) {
-                $constraint->aspectRatio();
+            $filename_photo = Carbon::now()->format('Hisu_').'caleg_partai'.($request->caleg_id).'.'.$image->getClientOriginalExtension();
+            $compressedImage = Image::make($image)->resize(300, 300, function ($constraint_photo) {
+                $constraint_photo->aspectRatio();
             });
-            Storage::disk('public')->put('caleg_uploads/'.$timeNow.'/'.$filename, $compressedImage->encode());
+            Storage::disk('public')->put('caleg_partai_uploads/'.$timeNow.'/'.$filename_photo, $compressedImage->encode());
 
             // Update the caleg_photo_partai column only if the photo is changed
-            $cal->caleg_photo_partai = $filename;
+            $cal->caleg_photo_partai = $filename_photo;
         }
           
           $cal->caleg_status            = $status;
@@ -359,35 +370,40 @@ class DataCalegController extends Controller
           $cal->caleg_updated_date      = Carbon::now()->format('Y-m-d H:i:s');
           $cal->save();
 
-          $kecamatan_type_data = $request->kecamatan_type;
-          $caleg_id     = $request->caleg_id;
+          $kecamatan_type_data = $request->edit_kecamatan_type;
+          $caleg_id     = $cal->caleg_id;
 
-          // Menghapus data checklist visual yang tidak dipilih kembali
+          // Menghapus data checklist kec. yang tidak dipilih kembali
           KecamatanCeklis::where('caleg_id', $caleg_id)->whereNotIn('kecamatan_id', $kecamatan_type_data)->delete();
 
-          // Menyimpan atau memperbarui data checklist visual yang dipilih kembali
+          // Menyimpan atau memperbarui data checklist kec. yang dipilih kembali
           foreach ($kecamatan_type_data as $check) {
-              $checklist_visual_object = Kecamatan::where('kecamatan_id', $check)->first();
-              if (!empty($checklist_visual_object)) {
-                  $checklist_group_data = [
-                      'caleg_id'                                  => $caleg_id,
-                      'kecamatan_id'                              => $checklist_visual_object->kecamatan_id,
-                      'visit_type_visit_visual_type_created_by'   => session('user_id'),
-                      'visit_type_visit_visual_type_created_date' => now()->format('Y-m-d H:i:s')
-                  ];
-                  
-                  KecamatanCeklis::updateOrCreate(
-                      [
-                          'caleg_id' => $caleg_id,
-                          'kecamatan_id' => $checklist_visual_object->kecamatan_id,
-                      ],
-                      $checklist_group_data
-                  );
+            $checklist_kec_object = Kecamatan::where('kecamatan_id', $check)->first();
+            if (!empty($checklist_kec_object)) {
+                $checklist_group_data = [
+                    'caleg_id'               => $caleg_id,
+                    'kecamatan_id'           => $checklist_kec_object->kecamatan_id,
+                    'kecamatan_ceklis_created_by'   => session('user_id'),
+                    'kecamatan_ceklis_created_date' => now()->format('Y-m-d H:i:s')
+                ];
                 
-              }
-          }
+                 // Update or insert the record based on caleg_id and kecamatan_id
+                KecamatanCeklis::updateOrInsert(
+                    [
+                        'caleg_id'               => $caleg_id,
+                        'kecamatan_id'           => $checklist_kec_object->kecamatan_id,
+                    ],
+                    $checklist_group_data
+                );
+              
+            }
+        }
           
-          return response()->json(['status' => true, 'message' => ['title' => 'Successfully Updated!', 'text' => 'Caleg ' . $request->caleg_name . ' updated successfully!']]);
+        return response()->json([
+            'status' => true,
+            'message' => ['title' => 'Successfully created!', 'text' => 'Caleg ' . $request->caleg_name . ' updated successfully!'],
+            'data' => $checklist_group_data
+        ]);
     }
 
     /**
@@ -400,6 +416,9 @@ class DataCalegController extends Controller
     {
         $part = DataCaleg::where('caleg_id', Crypt::decrypt($request->caleg_id))->first();
         if ($part) {
+            // Menghapus data checklist kecamatan jika datanya di hapus
+            KecamatanCeklis::where('caleg_id', $part->caleg_id)->delete();
+
             $dir = Carbon::parse($part->caleg_created_date)->format('Ymd');
             // photo caleg
             $file_path = $dir.'/'.$part->caleg_photo;
@@ -443,23 +462,23 @@ class DataCalegController extends Controller
       return $response;
     }
 
-    public function show_upload_caleg_partai($caleg_id)
+    public function show_upload_caleg_partai($caleg_partai_id)
     {
-      $caleg = DataCaleg::find(Crypt::decrypt($caleg_id));
-      if (!$caleg) {
+      $caleg_partai = DataCaleg::find(Crypt::decrypt($caleg_partai_id));
+      if (!$caleg_partai) {
         abort(404);
       }
 
-      $dir = Carbon::parse($caleg->caleg_created_date)->format('Ymd');
-      $file_path = $dir.'/'.$caleg->caleg_photo_partai;
+      $dir_file = Carbon::parse($caleg_partai->caleg_created_date)->format('Ymd');
+      $file_path_partai = $dir_file.'/'.$caleg_partai->caleg_photo_partai;
 
-      $path = storage_path('app/public/caleg_partai_uploads/'.$file_path);
-      if (!File::exists($path)) {
-        $path = public_path('assets/upload/user/default.jpeg');
+      $path_partai = storage_path('app/public/caleg_partai_uploads/'.$file_path_partai);
+      if (!File::exists($path_partai)) {
+        $path_partai = public_path('assets/upload/user/default.jpeg');
       }
 
-      $file = File::get($path);
-      $type = File::mimeType($path);
+      $file = File::get($path_partai);
+      $type = File::mimeType($path_partai);
       $response = response($file, 200);
       $response->header("Content-Type", $type);
 

@@ -72,9 +72,19 @@ $(function () {
             }
           }
         },
-        { data: 'caleg_no_urut_partai', orderable: false },
+        { 
+          data: 'caleg_no_urut_partai', orderable: false ,
+          render: function(data, type, row) {
+              return '<span class="badge badge-center rounded-pill bg-secondary">' + data + '</span>';
+          }
+        },
         { data: 'caleg_nama_partai', orderable: false },
-        { data: 'caleg_no_urut_caleg', orderable: false },
+        { 
+          data: 'caleg_no_urut_caleg', orderable: false ,
+          render: function(data, type, row) {
+              return '<span class="badge badge-center rounded-pill bg-secondary">' + data + '</span>';
+          }
+        },
         {
           data: 'caleg_photo',
           render: function(data, type, row, meta) {
@@ -83,7 +93,7 @@ $(function () {
               var caleg_files = data.split(',');
               for (var i = 0; i < caleg_files.length; i++) {
                 var url = baseUrl + 'pemilu/master-data/caleg/uploads/' + row.caleg_id;
-                url = url.replace(':filename', caleg_files[i]);
+                url = url.replace(':filename_photo', caleg_files[i]);
                 images += '<img src="' + url + '" width="50px" height="50px" class="rounded-circle" />';
               }
               return images;
@@ -95,22 +105,22 @@ $(function () {
         },
         {
           data: 'caleg_photo_partai',
-          render: function(data, type, row, meta) {
-            if (data !== "" && data !== null && data !== undefined) {
-              var images = '';
-              var caleg_files = data.split(',');
-              for (var i = 0; i < caleg_files.length; i++) {
-                var url = baseUrl + 'pemilu/master-data/caleg/upload-partai/' + row.caleg_id;
-                url = url.replace(':filename', caleg_files[i]);
-                images += '<img src="' + url + '" width="50px" height="50px" class="rounded-circle" />';
+          render: function(dataku, type, row, meta) {
+            if (dataku !== "" && dataku !== null && dataku !== undefined) {
+              var imagesPartai = '';
+              var caleg_partai_files = dataku.split(',');
+              for (var i = 0; i < caleg_partai_files.length; i++) {
+                var url_partai = baseUrl + 'pemilu/master-data/caleg/uploads_partai/' + row.caleg_id;
+                url_partai = url_partai.replace(':filename_partai', caleg_partai_files[i]);
+                imagesPartai += '<img src="' + url_partai + '" width="50px" height="50px" class="rounded-circle" />';
               }
-              return images;
+              return imagesPartai;
             } else {
               return 'No Photo';
             }
           },
           orderable: false
-        },
+        },        
         { data: 'caleg_status', orderable: false }
       ],
       columnDefs: [
@@ -218,6 +228,20 @@ $(function () {
             }
           }
       },
+      caleg_no_urut_partai: {
+        validators: {
+            notEmpty: {
+              message: 'Please enter No urut partai'
+            }
+          }
+      },
+      caleg_no_urut_caleg: {
+        validators: {
+            notEmpty: {
+              message: 'Please enter No urut caleg'
+            }
+          }
+      },
       'kecamatan_type[]': {
           validators: {
               notEmpty: {
@@ -238,7 +262,14 @@ $(function () {
               message: 'Please enter nama partai'
           }
         }
-      }
+      },
+      caleg_photo_partai: {
+        validators: {
+            notEmpty: {
+                message: 'Please choose the photo partai'
+            }
+        }
+     }    
     },
     plugins: {
       trigger: new FormValidation.plugins.Trigger(),
@@ -284,7 +315,7 @@ $(function () {
             }
           });
 
-          var checkedKecamatan = response.data.kecmatan_id;
+          var checkedKecamatan = response.data.kecamatan_id;
           console.log(checkedKecamatan);
           $('.checkbox-item-modal-add-kecamatan').prop('checked', false); // Deselect all checkboxes
           for (var i = 0; i < checkedKecamatan.length; i++) {
@@ -336,6 +367,20 @@ $(function () {
             }
           }
       },
+      caleg_no_urut_partai: {
+        validators: {
+            notEmpty: {
+              message: 'Please enter No urut partai'
+            }
+          }
+      },
+      caleg_no_urut_caleg: {
+        validators: {
+            notEmpty: {
+              message: 'Please enter No urut caleg'
+            }
+          }
+      },
       'kecamatan_type[]': {
           validators: {
               notEmpty: {
@@ -356,7 +401,9 @@ $(function () {
               message: 'Please enter nama partai'
           }
         }
-      }
+      },
+      caleg_photo_partai: {
+     }   
     },
     plugins: {
       trigger: new FormValidation.plugins.Trigger(),
@@ -401,12 +448,11 @@ $(function () {
             }
           });
 
-          var checkedKecamatan = response.data.kecmatan_id;
-          console.log(checkedKecamatan);
+          var checkedKecamatan = response.data.kecamatan_id;
           $('.checkbox-item-modal-edit-kecamatan').prop('checked', false); // Deselect all checkboxes
           for (var i = 0; i < checkedKecamatan.length; i++) {
               var checkId = checkedKecamatan[i];
-              $('#kecamatan_type_' + checkId).prop('checked', true); // Check checkboxes based on saved data
+              $('#edit_kecamatan_type_' + checkId).prop('checked', true); // Check checkboxes based on saved data
           }
 
         } else {
@@ -456,8 +502,10 @@ $(function () {
 
         $('#editName').val(response.data.caleg_name);
         $('#editNIK').val(response.data.caleg_nik);
+        $('#editNomorUrutPartai').val(response.data.caleg_no_urut_partai);
+        $('#editNomorUrutCaleg').val(response.data.caleg_no_urut_caleg);
 
-        $.each(response.data.detail, function (index, val) {
+        $.each(response.data.kecamatan_ceklis, function (index, val) {
           tmp_id = val.kecamatan_id;
           $('#edit_kecamatan_type_' + tmp_id).prop('checked', true);
         })
@@ -472,8 +520,8 @@ $(function () {
 
          // Display current photo partai
          if (response.data.caleg_photo_partai) {
-          var photoUrl = baseUrl + 'pemilu/master-data/caleg_partai/uploads/' + caleg_id + '?' + Date.now();
-          $('.current-photo-partai').attr('src', photoUrl);
+          var photoUrlPartai = baseUrl + 'pemilu/master-data/caleg/uploads_partai/' + caleg_id + '?' + Date.now();
+          $('.current-photo-partai').attr('src', photoUrlPartai);
         }
         // Set value of oldImage Partai input
         $('#oldImagePartai').val(response.data.caleg_photo_partai);
@@ -599,11 +647,6 @@ $(function () {
     $('#addFormLabel > p').html('Add new caleg.');
     $('#formAddCaleg').attr('data-method', 'add');
     $('#formAddCaleg').data('method', 'add');
-
-    $('#addProvince').val('').trigger('change');
-    $('#addRegency').val('').trigger('change');
-    $('#addDistrict').val('').trigger('change');
-    $('#addVillage').val('').trigger('change');
     fv.resetForm(true);
   });
 
@@ -613,6 +656,11 @@ $(function () {
     $('#imagePreview').empty();
     $('#imagePreview').html('<img src="#" class="img-fluid" style="max-width: 100%; height: auto;">');
     $('#imagePreview').css("background-image", "none");
+
+    $('#caleg_photo_partai').val(null);
+    $('#imagePreviewPartai').empty();
+    $('#imagePreviewPartai').html('<img src="#" class="img-fluid" style="max-width: 100%; height: auto;">');
+    $('#imagePreviewPartai').css("background-image", "none");
   });
 
   // Image Preview
@@ -633,23 +681,41 @@ $(function () {
       });
   });
 
+  // Image Preview Partai
+  $(function() {
+    $("#caleg_photo_partai").on("change", function()
+    {
+        var files = !!this.files ? this.files : [];
+        if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
+        
+        if (/^image/.test( files[0].type)){ // only image file
+            var reader = new FileReader(); // instance of the FileReader
+            reader.readAsDataURL(files[0]); // read the local file
+            
+            reader.onloadend = function(){ // set image data as background of div
+                $("#imagePreviewPartai").css("background-image", "url("+this.result+")");
+            }
+        }
+    });
+});
+
   // Get the checkbox
-  var checkboxVisual = document.getElementById("checkbox");
+  var checkboxKecamatan = document.getElementById("checkbox");
   
   // Get the close button
-  var closeVisual = document.getElementsByClassName("btn-close")[0];
+  var closeKec = document.getElementsByClassName("btn-close")[0];
 
   // When the user clicks on the close button, clear the checkbox
-  closeVisual.onclick = function() {
+  closeKec.onclick = function() {
     modal_add_caleg.style.display = "none";
-    checkboxVisual.checked = false;
+    checkboxKecamatan.checked = false;
   }
 
   // When the user clicks anywhere outside of the modal, close it and clear the checkbox
   window.onclick = function(event) {
     if (event.target == modal_add_caleg) {
       modal_add_caleg.style.display = "none";
-      checkboxVisual.checked = false;
+      checkboxKecamatan.checked = false;
     }
   }
 

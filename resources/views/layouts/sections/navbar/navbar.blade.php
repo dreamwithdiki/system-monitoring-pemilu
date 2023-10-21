@@ -549,8 +549,8 @@ $navbarDetached = ($navbarDetached ?? '');
                 message: 'The password and its confirm are not the same'
               },
               stringLength: {
-                min: 6,
-                message: 'Password must be more than 6 characters'
+                min: 8,
+                message: 'Password must be more than 8 characters'
               }
             }
           }

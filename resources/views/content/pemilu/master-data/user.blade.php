@@ -36,13 +36,22 @@
 <script src="{{asset('js/pemilu/master-data/users.js')}}"></script>
 
 <script>
-  // untuk karakter hanya angka.
-  function hanyaAngka(evt) {
-      var charCode = (evt.which) ? evt.which : event.keyCode
-      if (charCode > 31 && (charCode < 48 || charCode > 57))
-
-          return false;
-      return true;
+  function hanyaAngka(event) {
+    // Mendapatkan kode tombol yang ditekan
+    var charCode = (event.which) ? event.which : event.keyCode;
+    
+    // Memastikan hanya karakter angka yang diperbolehkan
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      return false;
+    }
+    
+    // Memeriksa panjang input
+    var input = event.target.value;
+    if (input.length >= 16) {
+      return false;
+    }
+    
+    return true;
   }
 </script>
 @endsection
@@ -135,7 +144,7 @@
             <div class="row g-2">
                 <div class="col mb-3">
                   <label for="user_nik" class="form-label">NIK <span style='color:red'>*</span></label>
-                  <input type="text" id="user_nik" name="user_nik" class="form-control" placeholder="Enter NIK" onkeypress="return hanyaAngka(event)" @required(true)>
+                  <input type="text" id="user_nik" name="user_nik" class="form-control" placeholder="Enter NIK" onkeypress="return hanyaAngka(event)" max="16" @required(true)>
                 </div>
             </div>
             <div class="row g-2">
@@ -145,7 +154,7 @@
                 </div>
                 <div class="col mb-3">
                   <label for="user_no_hp" class="form-label">Telepon <span style='color:red'>*</span></label>
-                  <input type="text" id="user_no_hp" name="user_no_hp" class="form-control" placeholder="Enter Phone" onkeypress="return hanyaAngka(event)" @required(true)>
+                  <input type="text" id="user_no_hp" name="user_no_hp" class="form-control" placeholder="Enter Phone" onkeypress="return hanyaAngka(event)" max="16" @required(true)>
                 </div>
             </div>
             <div class="row g-2">
@@ -258,7 +267,7 @@
             <div class="row g-2">
                 <div class="col mb-3">
                   <label for="edit_user_nik" class="form-label">NIK <span style='color:red'>*</span></label>
-                  <input type="text" id="edit_user_nik" name="user_nik" class="form-control" placeholder="Enter NIK" onkeypress="return hanyaAngka(event)" @required(true)>
+                  <input type="text" id="edit_user_nik" name="user_nik" class="form-control" placeholder="Enter NIK" onkeypress="return hanyaAngka(event)" max="16" @required(true)>
                 </div>
             </div>
             <div class="row g-2">
@@ -268,7 +277,7 @@
                 </div>
                 <div class="col mb-3">
                   <label for="edit_user_no_hp" class="form-label">Telepon <span style='color:red'>*</span></label>
-                  <input type="text" id="edit_user_no_hp" name="user_no_hp" class="form-control" placeholder="Enter Phone" onkeypress="return hanyaAngka(event)" @required(true)>
+                  <input type="text" id="edit_user_no_hp" name="user_no_hp" class="form-control" placeholder="Enter Phone" onkeypress="return hanyaAngka(event)" max="16" @required(true)>
                 </div>
             </div>
             <div class="row g-2">
@@ -338,4 +347,49 @@
     </div>
   </div>
 </div>
+
+<!-- Modal Change Password -->
+<div class="modal fade" id="modalChangePasswordByAdmin" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-xs" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="formChangePasswordByAdmin" data-method="change">
+        <div class="modal-body">
+          <div id="addFormChangePassLabel" class="text-center mb-4">
+            <h3><span><i class="tf-icons bx bxs-lock-open bx-sm me-sm-2"></i>Change Password<span><i class="tf-icons bx bxs-lock-open bx-sm ms-sm-2"></i></h3>
+            <p>change your password with a new one.</p>
+          </div>
+          <div class="m-4">
+            <div class="row form-password-toggle">
+              <div class="col mb-3">
+                <input type="hidden" id="change_user_id" name="user_id">
+                <label for="changePassword" class="form-label">New Password <span style='color:red'>*</span></label>
+                <div class="input-group input-group-merge">
+                  <input type="password" id="changePassword" name="change_password" class="form-control pass-maxlength" maxlength="255" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" @required(true)>
+                  <span class="input-group-text cursor-pointer" id="changePassword"><i class="bx bx-hide"></i></span>
+                </div>
+              </div>
+            </div>
+            <div class="row form-password-toggle">
+              <div class="col mb-3">
+                <label for="changePasswordConfirmation" class="form-label">Confirm Password <span style='color:red'>*</span></label>
+                <div class="input-group input-group-merge">
+                  <input type="password" id="changePasswordConfirmation" name="change_password_confirmation" class="form-control pass-maxlength" maxlength="255" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" @required(true)>
+                  <span class="input-group-text cursor-pointer" id="changePasswordConfirmation"><i class="bx bx-hide"></i></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!--/ Modal Change Password -->
 @endsection
