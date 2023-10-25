@@ -3,8 +3,8 @@
   return [
     "creatorName" => "Dev Diki",
     "creatorUrl" => "https://github.com/dev-diki",
-    "templateName" => "System Monitoring",
-    "templateSuffix" => "Sys Monitoring",
+    "templateName" => "SIM",
+    "templateSuffix" => "Sistem Monitoring Pemenangan",
     "templateVersion" => "1.0.0",
     "templateFree" => false,
     "templateDescription" => "Most Powerful & Comprehensive Bootstrap 5 HTML Admin Dashboard Template built for developers!",

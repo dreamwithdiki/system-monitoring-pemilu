@@ -38,11 +38,11 @@ $customizerHidden = 'customizer-hide';
           <div class="app-brand justify-content-center">
             <a href="{{url('/')}}" class="app-brand-link gap-2">
               {{-- <span class="app-brand-logo demo">@include('_partials.macros',["width"=>25,"withbg"=>'#696cff'])</span> --}}
-              <span class="app-brand-text demo text-body fw-bolder">{{config('variables.templateName')}}</span>
+              <span class="app-brand-text demo text-body fw-bolder" style="text-transform: capitalize;">{{config('variables.templateName')}}</span>
             </a>
           </div>
           <!-- /Logo -->
-          <h4 class="mb-2">Welcome to {{config('variables.templateName')}}!</h4>
+          <h4 class="mb-2">Welcome to {{config('variables.templateSuffix')}}!</h4>
           <p class="mb-4">Please sign-in to your account</p>
 
             @error('user_login')

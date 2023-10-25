@@ -22,7 +22,7 @@ if(session('role_id') == 1) {
     <a href="{{url('/')}}" class="app-brand-link">
       <span>
         {{-- <img src="{{asset('assets/img/branding/LogoNavbarVA.webp')}}" class="img-fluid" alt="Logo"> --}}
-        <span class="app-brand-text demo menu-text fw-bold ms-2">Sys Monitoring</span>
+        <span class="app-brand-text demo menu-text fw-bold ms-2" style="text-transform: capitalize;">PACALEG</span>
       </span>
     </a>
 

@@ -40,9 +40,18 @@
     },
     {
       "url": "/pendukung/dpt",
-      "name": "Data Pendukung",
-      "icon": "menu-icon tf-icons fa fa-address-card ",
+      "name": "Data Dukungan",
+      "icon": "menu-icon tf-icons fa fa-address-card", 
       "slug": "pendukung-dpt"
+    },
+    {
+      "menuHeader": "Pengaduan"
+    },
+    {
+      "url": "/pengaduan/manage",
+      "name": "List Pengaduan",
+      "icon": "menu-icon tf-icons fa fa-tasks", 
+      "slug": "pengaduan-chat"
     }
   ]
 }

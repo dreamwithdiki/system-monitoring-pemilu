@@ -98,6 +98,20 @@ else {
   // Refresh the latest data every 30 seconds (adjust the interval as needed)
   setInterval(updateLatestCaleg, 30000);
 </script>
+<!--Start of Tawk.to Script-->
+{{-- <script type="text/javascript">
+
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/653699aff2439e1631e791b6/1hdekglue';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script--> --}}
 @endsection
 
 @section('content')
@@ -112,7 +126,7 @@ else {
         <div class="col-sm-7">
           <div class="card-body">
             <h5 class="card-title text-primary">Hello {{ session('user_uniq_name') }}, {{ $result }}</h5>
-            <p class="mb-4">Welcome back to <span class="fw-bold">Monitoring</span>.</p>
+            <p class="mb-4">Welcome back to <span class="fw-bold">SIM PACALEG</span>.</p>
           </div>
         </div>
       </div>

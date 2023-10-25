@@ -111,7 +111,7 @@ else {
         <div class="col-sm-7">
           <div class="card-body">
             <h5 class="card-title text-primary">Hello {{ session('user_uniq_name') }}, {{ $result }}</h5>
-            <p class="mb-4">Welcome back to <span class="fw-bold">Monitoring</span>.</p>
+            <p class="mb-4">Welcome back to <span class="fw-bold">SIM PACALEG</span>.</p>
           </div>
         </div>
       </div>

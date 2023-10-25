@@ -35,6 +35,21 @@
         "slug": "pendukung-dpt"
       },
       {
+        "menuHeader": "Pengaduan"
+      },
+      {
+        "url": "/pengaduan/chat",
+        "name": "Pengaduan - Chat",
+        "icon": "menu-icon tf-icons fa fa-message", 
+        "slug": "pengaduan-chat"
+      },
+      {
+        "url": "/pengaduan/manage",
+        "name": "Pengaduan - Manage",
+        "icon": "menu-icon tf-icons fa fa-tasks", 
+        "slug": "pengaduan-chat"
+      },
+      {
         "menuHeader": "Settings"
       },
       {

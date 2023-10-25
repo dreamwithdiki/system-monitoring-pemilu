@@ -129,6 +129,33 @@ Route::group(['middleware' => 'check.tokey'], function () use ($controller_path)
 
     });
 
+    // PENGADUAN
+    Route::prefix('pengaduan')->group(function () use ($controller_path) {
+        $path_pengaduan = $controller_path . '\pengaduan';
+        // Chat
+        Route::prefix('chat')->group(function () use ($path_pengaduan) {
+            Route::get('/', $path_pengaduan . '\PengaduanChatController@index')->name('chat');
+            Route::get('get', $path_pengaduan . '\PengaduanChatController@datatable');
+            Route::get('show/{id}', $path_pengaduan . '\PengaduanChatController@show');
+            Route::post('store', $path_pengaduan . '\PengaduanChatController@store');
+            Route::post('update/{id}', $path_pengaduan . '\PengaduanChatController@update');
+            Route::post('update-status', $path_pengaduan . '\PengaduanChatController@statusUpdate');
+            Route::post('delete', $path_pengaduan . '\PengaduanChatController@delete');
+        });
+
+        // Manage
+        Route::prefix('manage')->group(function () use ($path_pengaduan) {
+            Route::get('/', $path_pengaduan . '\PengaduanManageController@index')->name('manage');
+            Route::get('get', $path_pengaduan . '\PengaduanManageController@datatable');
+            Route::get('show/{id}', $path_pengaduan . '\PengaduanManageController@show');
+            Route::post('store', $path_pengaduan . '\PengaduanManageController@store');
+            Route::post('update/{id}', $path_pengaduan . '\PengaduanManageController@update');
+            Route::post('update-status', $path_pengaduan . '\PengaduanManageController@statusUpdate');
+            Route::post('delete', $path_pengaduan . '\PengaduanManageController@delete');
+        });
+
+    });
+
     // Settings
     Route::prefix('settings')->group(function () use ($controller_path) {
         $path_settings = $controller_path . '\settings';
