@@ -63,6 +63,9 @@ class DataCalegController extends Controller
             $dir = $request->input('order.0.dir');
     
             if (empty($request->input('search.value'))) {
+              $order = 'caleg_id'; 
+              $dir = 'desc';
+
               $caleg = DataCaleg::where('caleg_status', '!=', 5)
                 ->offset($start)
                 ->limit($limit)

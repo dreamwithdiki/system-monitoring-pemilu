@@ -24,10 +24,6 @@
 <script src="{{asset('assets/vendor/libs/flatpickr/flatpickr.js')}}"></script>
 <script src="{{asset('assets/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.js')}}"></script>
 <script src="{{asset('assets/vendor/libs/jquery-repeater/jquery-repeater.js')}}"></script>
-<!-- Include jQuery UI Autocomplete JS -->
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-<!-- Include jQuery UI Autocomplete CSS -->
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 @endsection
 
 @section('page-script')
@@ -52,9 +48,9 @@
     <div class="card">
       <form id="formAddPengaduan" data-method="add">
         <div class="card-header sticky-element bg-label-secondary d-flex justify-content-sm-between align-items-sm-center flex-column flex-sm-row">
-          <h5 class="card-title mb-sm-0 me-2">Pengaduan Bar</h5>
+          <h5 class="card-title mb-sm-0 me-2">Complaint Bar</h5>
           <div class="action-btns">
-            <a href="/pengaduan/pengaduan-manage" class="btn btn-label-secondary me-3"><span class="align-middle"> Cancel</span></a>
+            <a href="/pengaduan/manage" class="btn btn-label-secondary me-3"><span class="align-middle"> Cancel</span></a>
             <button type="submit" id="pengaduan_submit" class="btn btn-primary">Submit</button>
           </div>
         </div>
@@ -73,12 +69,12 @@
               <div class="row gy-3">
                 <div class="col-md-12">
                   <label class="form-label" for="pengaduan_note">Note <span style='color:red'>*</span></label>
-                  <textarea id="autosize-note" rows="5" name="pengaduan_note" class="form-control note-maxlength" maxlength="500"></textarea>
+                  <textarea id="autosize-note" rows="5" name="pengaduan_note" class="form-control note-maxlength" maxlength="1000"></textarea>
                 </div>
               </div>
               <div class="pt-4">
                 <button type="submit" class="btn btn-primary me-sm-3 me-1" id="pengaduan_submit">Submit</button>
-                <a href="/pengaduan/pengaduan-manage" class="btn btn-label-secondary">Cancel</a>
+                <a href="/pengaduan/manage" class="btn btn-label-secondary">Cancel</a>
               </div>
             </div>
           </div>

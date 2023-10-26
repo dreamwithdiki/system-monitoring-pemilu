@@ -152,20 +152,24 @@ $(function () {
             try {
                 var answerButton = '';
                 var editButton = '';
+                var deleteButton = '';
 
                 if (row.role_id === 1 && !row.pengaduan_answer) {
                   answerButton =  '<button id="btn_answer" class="btn btn-sm btn-icon btn-primary mx-1" data-id="' + row.pengaduan_id + '" data-role_id="' + row.role_id + '" data-name="' + row.user_name + '"  data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true" title="Answer ' + row.role_name + '"><i class="bx bx-chat me-1"></i></button>';
                 }
 
                 if (row.role_id >= 2 && row.role_id <= 4) {
+                    deleteButton = '<button id="btn_delete" class="btn btn-sm btn-icon btn-danger mx-1" data-id="' + row.pengaduan_id + '" data-role_id="' + row.role_id + '" data-name="' + row.user_name + '"  data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true" title="Delete"><i class="bx bx-trash me-1"></i></button>';
                     // Menampilkan tombol Edit jika pengaduan_answer adalah NULL (kosong) dan pengaduan_status adalah 1
                     if (!row.pengaduan_answer && row.pengaduan_status == 1) {
                         editButton = '<a id="dropdownMenuEdit" data-id="' + row.pengaduan_id + '" data-role_id="' + row.role_id + '" data-name="' + row.user_name + '"  class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit me-1"></i> Edit</a>';
                     }
+                    
                 }
       
                 return (
                   '<div class="d-inline-block text-nowrap">' +
+                  deleteButton +
                   answerButton +
                   '<button class="btn btn-sm btn-icon btn-info dropdown-toggle hide-arrow mx-1" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>' +
                   '<div class="dropdown-menu">' +
@@ -380,7 +384,7 @@ $(function () {
         
         if (role_id == 1) {
             $('#autosize-answer').val(response.data.pengaduan_answer);
-            $('#autosize-note').val(''); // Kosongkan note field
+            $('#autosize-note').val(response.data.pengaduan_note);
         } else {
             $('#autosize-note').val(response.data.pengaduan_note);
             $('#autosize-answer').val(''); // Kosongkan answer field
@@ -424,7 +428,7 @@ $(function () {
         
         if (role_id === 1) {
             $('#autosize-answer').val(response.data.pengaduan_answer);
-            $('#autosize-note').val(''); // Kosongkan note field
+            $('#autosize-note').val(response.data.pengaduan_note);
         }
         
         modal_class_loader.unblock();
@@ -443,20 +447,8 @@ $(function () {
     modal_edit_pengaduan.modal('show');
   });
 
-  // Assign status visit order
-  $(document).on('click', '#dropdownMenuAssign', function () {
-    var pengaduan_id = $(this).data('id');
-
-    $('#partner').removeClass('d-none');
-    $('#title-header').text("Assign Visit Order");
-    $('#desc-header').text('assign.');
-    $('#formChangeStatus').attr('data-id', pengaduan_id);
-    $('#formChangeStatus').attr('data-status', 2);
-    modal_change_status.modal('show');
-  });
-
   // Delete status visit order
-  $(document).on('click', '#dropdownMenuDelete', function () {
+  $(document).on('click', '#btn_delete', function () {
     var pengaduan_id = $(this).data('id');
 
     Swal.fire({
@@ -619,9 +611,9 @@ $(function () {
   function getStatusDot(status) {
     switch (status) {
       case 1:
-        return ['timeline-point-success', 'Terkirim'];
+        return ['timeline-point-info', 'Terkirim'];
       case 2:
-        return ['timeline-point-info', 'Terjawab & Selesai'];
+        return ['timeline-point-success', 'Terjawab & Selesai'];
       case 3:
         return ['timeline-point-danger', 'Deleted'];
       default:
@@ -638,7 +630,7 @@ $(function () {
           return '<span class="badge bg-label-success me-1">Pesan Terkirim</span>';
         }
       case 2:
-        return '<span class="badge bg-label-info me-1">Terjawab & Selesai</span>';
+        return '<span class="badge bg-label-success me-1">Terjawab & Selesai</span>';
       case 5:
         return '<span class="badge bg-label-danger me-1">Deleted</span>';
       default:

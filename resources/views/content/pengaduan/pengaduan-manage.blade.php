@@ -149,7 +149,7 @@
 
               <!-- History -->
               <div id="history" class="content">
-                <div id="editFormLabel" class="text-center mb-4">
+                <div id="historyFormLabel" class="text-center mb-4">
                   <h3><span>History Pengaduan<span></h3>
                   <p>history.</p>
                 </div>
@@ -201,13 +201,17 @@
                     @if(session('role_id') == 1)
                         <!-- Tampilan untuk role_id 1 -->
                         <div class="col-md-12">
+                            <label class="form-label" for="pengaduan_note">Isi Pengaduan <span style='color:red'>*</span></label>
+                            <textarea id="autosize-note" rows="5" name="pengaduan_note" class="form-control" maxlength="1000" placeholder="Pengaduan" @readonly(true)></textarea>
+                        </div>
+                        <div class="col-md-12">
                             <label class="form-label" for="pengaduan_answer">Jawaban <span style='color:red'>*</span></label>
                             <textarea id="autosize-answer" rows="5" name="pengaduan_answer" class="form-control answer-maxlength" maxlength="1000" placeholder="Answer"></textarea>
                         </div>
                     @else
                         <!-- Tampilan untuk role_id 2, 3, 4 -->
                         <div class="col-md-12">
-                            <label class="form-label" for="pengaduan_note">Note</label>
+                            <label class="form-label" for="pengaduan_note">Note <span style='color:red'>*</span></label>
                             <textarea id="autosize-note" rows="5" name="pengaduan_note" class="form-control note-maxlength" maxlength="1000" placeholder="Tuliskan Pengaduan"></textarea>
                         </div>
                     @endif

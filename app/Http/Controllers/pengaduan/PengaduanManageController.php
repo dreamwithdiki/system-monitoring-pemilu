@@ -26,23 +26,6 @@ class PengaduanManageController extends Controller
         }
     }
 
-     /**
-     * save data to sys_pengaduan_history
-     * 
-     */
-    private function pengaduan_history($pengaduanId, $historyDesc, $createBy, $status)
-    {
-        $pengaduan_history = PengaduanHistory::create([
-            'pengaduan_id'                   => $pengaduanId,
-            'pengaduan_status'               => $status,
-            'pengaduan_history_desc'         => $historyDesc,
-            'pengaduan_history_created_by'   => $createBy,
-            'pengaduan_history_created_date' => Carbon::now()->format('Y-m-d H:i:s'),
-        ]);
-
-        $pengaduan_history->save();
-    }
-
     public function datatable(Request $request)
     {
         $role_id = session('role_id');
@@ -69,6 +52,9 @@ class PengaduanManageController extends Controller
         $dir = $request->input('order.0.dir');
 
         if (empty($request->input('search.value'))) {
+            $order = 'pengaduan_id'; 
+            $dir = 'desc'; 
+
             // Logika berdasarkan role_id
             if ($role_id == 1) {
                 // Jika role_id adalah 1, tampilkan semua data
@@ -244,9 +230,6 @@ class PengaduanManageController extends Controller
             ]);
     
             $pengaduan_history->save();
-
-            // Save the history for status 'Answered'
-            // $this->pengaduan_history($pengaduanId, $pengaduanStatus, $statusHistoryDescAnswered, $createdBy); // Status code 2 for 'answered'
         } else {
             $pengaduan->pengaduan_note = $request->pengaduan_note;
         }
@@ -281,8 +264,17 @@ class PengaduanManageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function delete(Request $request)
     {
-        //
+        $pengaduan = Pengaduan::where('pengaduan_id', Crypt::decrypt($request->pengaduan_id))->first();
+        if ($pengaduan) {
+            $pengaduan->pengaduan_status        = '5';
+            $pengaduan->pengaduan_deleted_by    = session('user_id');
+            $pengaduan->pengaduan_deleted_date  = Carbon::now()->format('Y-m-d H:i:s');
+            $pengaduan->save();
+            return response()->json(['status' => true, 'message' => ['title' => 'Pengaduan Deleted!', 'text' => 'Pengaduan ' . $request->pengaduan_number . ' has been deleted!']]);
+        } else {
+            return response()->json(['status' => false, 'message' => ['title' => 'Pengaduan not Deleted!', 'text' => 'Pengaduan ' . $request->pengaduan_number . ' not deleted!']]);
+        }
     }
 }

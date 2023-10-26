@@ -72,6 +72,9 @@ class UserController extends Controller
             $dir = $request->input('order.0.dir');
     
             if (empty($request->input('search.value'))) {
+                $order = 'user_id'; 
+                $dir = 'desc';
+
                 $users = User::where('user_id', '!=', 2) 
                     ->offset($start)
                     ->limit($limit)

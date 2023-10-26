@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="{{asset('assets/vendor/libs/sweetalert2/sweetalert2.css')}}" />
 <link rel="stylesheet" href="{{asset('assets/vendor/libs/select2/select2.css')}}" />
 <link rel="stylesheet" href="{{asset('assets/vendor/libs/spinkit/spinkit.css')}}" />
+<link rel="stylesheet" href="{{asset('assets/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.css')}}" />
 @endsection
 
 @section('vendor-script')
@@ -18,9 +19,12 @@
 <script src="{{asset('assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js')}}"></script>
 <script src="{{asset('assets/vendor/libs/sweetalert2/sweetalert2.js')}}"></script>
 <script src="{{asset('assets/vendor/libs/select2/select2.js')}}"></script>
+<script src="{{asset('assets/vendor/libs/autosize/autosize.js')}}"></script>
 <script src="{{asset('assets/vendor/libs/cleavejs/cleave.js')}}"></script>
 <script src="{{asset('assets/vendor/libs/cleavejs/cleave-phone.js')}}"></script>
 <script src="{{asset('assets/vendor/libs/block-ui/block-ui.js')}}"></script>
+<script src="{{asset('assets/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.js')}}"></script>
+<script src="{{asset('assets/vendor/libs/jquery-repeater/jquery-repeater.js')}}"></script>
 @endsection
 
 @section('page-script')
@@ -88,6 +92,9 @@
           <th>NIK</th>
           <th>Nama</th>
           <th>Jenis Kelamin</th>
+          <th>Alamat</th>
+          <th>RT</th>
+          <th>RW</th>
           <th>Provinsi</th>
           <th>Kabupaten</th>
           <th>Kecamatan</th>
@@ -176,6 +183,22 @@
                     </div>
                   </div>
                 </div>
+            </div>
+            <div class="row g2">
+              <div class="col-md-12">
+                <label class="form-label" for="dpt_address">Alamat <span style='color:red'>*</span></label>
+                <textarea id="autosize-address" rows="5" name="dpt_address" class="form-control address-maxlength" maxlength="255"></textarea>
+              </div>
+            </div>
+            <div class="row g2">
+              <div class="col-xl mb-3">
+                <label for="addRT" class="form-label">RT <span style='color:red'>*</span></label>
+                <input type="number" id="addRT" name="dpt_rt" class="form-control" placeholder="Enter RT" min="0" max="999" @required(true) >
+              </div>
+              <div class="col-xl mb-3">
+                <label for="addRW" class="form-label">RW <span style='color:red'>*</span></label>
+                <input type="number" id="addRW" name="dpt_rw" class="form-control" placeholder="Enter RW" min="0" max="999" @required(true)>
+              </div>
             </div>
             <div class="row g2">
               <div class="col-xl mb-3">
@@ -298,6 +321,22 @@
                   </div>
                 </div>
             </div>
+            <div class="row gy-3">
+              <div class="col-md-12">
+                <label class="form-label" for="dpt_address">Alamat <span style='color:red'>*</span></label>
+                <textarea id="edit-autosize-address" rows="5" name="dpt_address" class="form-control address-maxlength" maxlength="255"></textarea>
+              </div>
+            </div>
+            <div class="row g2">
+              <div class="col-xl mb-3">
+                <label for="editRT" class="form-label">RT <span style='color:red'>*</span></label>
+                <input type="number" id="editRT" name="dpt_rt" class="form-control" placeholder="Enter RT" min="0" max="999" @required(true) >
+              </div>
+              <div class="col-xl mb-3">
+                <label for="editRW" class="form-label">RW <span style='color:red'>*</span></label>
+                <input type="number" id="editRW" name="dpt_rw" class="form-control" placeholder="Enter RW" min="0" max="999" @required(true)>
+              </div>
+            </div>
             <div class="row g-2">
               <div class="col-xl mb-3">
                 <label class="form-label" for="editProvince">Provinsi <span style='color:red'>*</span></label>
@@ -378,6 +417,22 @@
               <div class="col-xl mb-3">
                 <label for="detTps" class="form-label">TPS</label>
                 <h6 id="detTps"></h6>
+              </div>
+            </div>
+            <div class="row g-2">
+              <div class="col-xl mb-3">
+                <label for="detRT" class="form-label">RT (Rukun Tetangga)</label>
+                <h6 id="detRT"></h6>
+              </div>
+              <div class="col-xl mb-3">
+                <label for="detRW" class="form-label">RW (Rukun Warga)</label>
+                <h6 id="detRW"></h6>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl mb-3">
+                <label for="detAddress" class="form-label">Alamat</label>
+                <h6 id="detAddress"></h6>
               </div>
             </div>
             <div class="row g-2">

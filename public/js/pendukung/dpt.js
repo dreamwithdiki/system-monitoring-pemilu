@@ -21,6 +21,20 @@ $(function () {
     }
   });
 
+   // textarea
+   const textarea = document.querySelector('#autosize-address');
+   const textareaAddress = document.querySelector('#edit-autosize-address');
+
+   // Autosize
+   // --------------------------------------------------------------------
+   if (textarea) {
+     autosize(textarea);
+   }
+
+   if (textareaAddress) {
+    autosize(textareaAddress);
+  }
+
    // Select2 tps handler
    if (ac_tps.length) {
     var $this = ac_tps;
@@ -323,6 +337,26 @@ $(function () {
           },
           orderable: false
         },
+        {
+          data: 'dpt_address',
+          render: function (data, type, row) {
+            if (data) {
+              var expanded = row.expanded ? row.expanded : false;
+
+              if (!expanded) {
+                var shortDesc = data.length > 25 ? data.substr(0, 25) + '...' : data;
+                var showMoreHtml = data.length > 25 ? '<a href="javascript:void(0);" class="show-more">Show More</a>' : '';
+                return '<div style="white-space: pre-wrap;" class="short-desc">' + shortDesc + '</div>' + showMoreHtml;
+              } else {
+                return '<div style="white-space: pre-wrap;" class="full-desc">' + data + '</div><a href="javascript:void(0);" class="show-less">Show Less</a>';
+              }
+            } else {
+              return '-';
+            }
+          }
+        },
+        { data: 'dpt_rt' },
+        { data: 'dpt_rw' },
         { data: 'dpt_province' },
         { data: 'dpt_regency' },
         { data: 'dpt_district' },
@@ -332,7 +366,7 @@ $(function () {
       ],
       columnDefs: [
         {
-          targets: 9,
+          targets: 12,
           searchable: false,
           orderable: false,
           render: function (data, type, row, meta) {
@@ -344,7 +378,7 @@ $(function () {
           }
         },
         {
-          targets: 10,
+          targets: 13,
           searchable: false,
           orderable: false,
           render: function (data, type, row, meta) {
@@ -443,6 +477,27 @@ $(function () {
           }
         }
       },
+      dpt_address: {
+        validators: {
+          notEmpty: {
+            message: 'Please enter address'
+          }
+        }
+      },
+      dpt_rt: {
+        validators: {
+          notEmpty: {
+            message: 'Please enter RT'
+          }
+        }
+      },
+      dpt_rw: {
+        validators: {
+          notEmpty: {
+            message: 'Please enter RW'
+          }
+        }
+      },
       dpt_province: {
           validators: {
           notEmpty: {
@@ -484,9 +539,14 @@ $(function () {
       bootstrap5: new FormValidation.plugins.Bootstrap5({
         // Use this for enabling/changing valid/invalid class
         eleValidClass: '',
-        rowSelector: function rowSelector(field, ele) {
+        rowSelector: function (field, ele) {
           // field is the field name & ele is the field element
-          return '.mb-3';
+          switch (field) {
+            case 'dpt_address':
+              return '.col-md-12';
+            default:
+              return '.mb-3';
+          }
         }
       }),
       submitButton: new FormValidation.plugins.SubmitButton(),
@@ -567,6 +627,27 @@ $(function () {
           }
         }
       },
+      dpt_address: {
+        validators: {
+          notEmpty: {
+            message: 'Please enter address'
+          }
+        }
+      },
+      dpt_rt: {
+        validators: {
+          notEmpty: {
+            message: 'Please enter RT'
+          }
+        }
+      },
+      dpt_rw: {
+        validators: {
+          notEmpty: {
+            message: 'Please enter RW'
+          }
+        }
+      },
       dpt_province: {
           validators: {
           notEmpty: {
@@ -608,9 +689,14 @@ $(function () {
       bootstrap5: new FormValidation.plugins.Bootstrap5({
         // Use this for enabling/changing valid/invalid class
         eleValidClass: '',
-        rowSelector: function rowSelector(field, ele) {
+        rowSelector: function (field, ele) {
           // field is the field name & ele is the field element
-          return '.mb-3';
+          switch (field) {
+            case 'dpt_address':
+              return '.col-md-12';
+            default:
+              return '.mb-3';
+          }
         }
       }),
       submitButton: new FormValidation.plugins.SubmitButton(),
@@ -711,6 +797,11 @@ $(function () {
           setSelectedClientParam(2); // Store selected value to localStorage
         }
 
+        $('.dpt_address').val(response.data.dpt_address);
+        $('#editRT').val(response.data.dpt_rt);
+        $('#editRW').val(response.data.dpt_rw);
+        $('#edit-address').val(response.data.dpt_address);
+
         if (response.data.tps) {
           var tpsLabel = response.data.tps.tps_code + " - " + response.data.tps.tps_name;
           var option = new Option(tpsLabel, response.data.tps.tps_id, true, true);
@@ -807,6 +898,9 @@ $(function () {
           $('#detNik').text(response.data.dpt_nik);
           $('#detNama').text(response.data.dpt_name);
           $('#detJenkel').text(response.data.dpt_jenkel == 1 ? 'Laki-Laki' : 'Perempuan');
+          $('#detAddress').text(response.data.dpt_address);
+          $('#detRT').text(response.data.dpt_rt);
+          $('#detRW').text(response.data.dpt_rw);
           $('#detProvince').text(response.data.province.name);
           $('#detRegency').text(response.data.regency.name);
           $('#detDistrict').text(response.data.district.name);
@@ -1207,6 +1301,27 @@ $(function () {
         }
       }
     });
+  });
+
+   // address-maxlength & repeater (jquery)
+   $(function () {
+    var maxlengthInput = $('.address-maxlength');
+
+    // Address Max Length
+    // --------------------------------------------------------------------
+    if (maxlengthInput.length) {
+      maxlengthInput.each(function () {
+        $(this).maxlength({
+          warningClass: 'label label-success bg-success text-white',
+          limitReachedClass: 'label label-danger',
+          separator: ' out of ',
+          preText: 'You typed ',
+          postText: ' chars available.',
+          validate: true,
+          threshold: +this.getAttribute('maxlength')
+        });
+      });
+    }
   });
 
 });

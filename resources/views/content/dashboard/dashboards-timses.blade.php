@@ -153,7 +153,7 @@ s0.parentNode.insertBefore(s1,s0);
             <div class="d-flex align-items-end mt-2">
               <h2 class="mb-0 me-2">{{ $total_dpt_tamansari }}</h2>
             </div>
-            <small>Jumlah Dukungan Tamansari </small>
+            <small>Jumlah Suara </small>
           </div>
           <span class="badge bg-label-primary rounded p-2">
             <i class="fa fa-location-dot bx-sm"></i>
@@ -171,7 +171,7 @@ s0.parentNode.insertBefore(s1,s0);
             <div class="d-flex align-items-end mt-2">
               <h2 class="mb-0 me-2">{{ $total_dpt_cibereum }}</h2>
             </div>
-            <small>Jumlah Dukungan Cibereum</small>
+            <small>Jumlah Suara</small>
           </div>
           <span class="badge bg-label-primary rounded p-2">
             <i class="fa fa-location-dot bx-sm"></i>
@@ -189,7 +189,7 @@ s0.parentNode.insertBefore(s1,s0);
             <div class="d-flex align-items-end mt-2">
               <h2 class="mb-0 me-2">{{ $total_dpt_purbaratu }}</h2>
             </div>
-            <small>Jumlah Dukungan Purbaratu</small>
+            <small>Jumlah Suara</small>
           </div>
           <span class="badge bg-label-primary rounded p-2">
             <i class="fa fa-location-dot bx-sm"></i>
@@ -262,7 +262,7 @@ s0.parentNode.insertBefore(s1,s0);
               <i class="fa fa-envelope bx-sm"></i> 
             </span>
           </div>
-          <span class="fw-semibold d-block mb-1">Total Jumlah Pemilih</span>
+          <span class="fw-semibold d-block mb-1">Total Suara Caleg</span>
           <h2 class="card-title mb-2">{{ $totalSuaraCaleg }}</h2>
         </div>
       </div>

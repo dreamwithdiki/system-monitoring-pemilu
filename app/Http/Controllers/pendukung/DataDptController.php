@@ -43,11 +43,14 @@ class DataDptController extends Controller
           1 => 'dpt_nik',
           2 => 'dpt_name',
           3 => 'dpt_jenkel',
-          4 => 'dpt_province',
-          5 => 'dpt_regency',
-          6 => 'dpt_district',
-          7 => 'dpt_village',
-          8 => 'tps_id', // diambil dari data TPS (sesuai dengan Kecamatan dan kelurahan)
+          4 => 'dpt_address',
+          5 => 'dpt_rt',
+          6 => 'dpt_rw',
+          7 => 'dpt_province',
+          8 => 'dpt_regency',
+          9 => 'dpt_district',
+          10 => 'dpt_village',
+          11 => 'tps_id', // diambil dari data TPS (sesuai dengan Kecamatan dan kelurahan)
         ];
 
         $search = [];
@@ -63,6 +66,9 @@ class DataDptController extends Controller
             $dir = $request->input('order.0.dir');
     
             if (empty($request->input('search.value'))) {
+              $order = 'dpt_id'; 
+              $dir = 'desc';
+
               // Logika berdasarkan role_id
               if ($role_id == 1) {
                   // Jika role_id adalah 1, tampilkan semua data
@@ -132,6 +138,9 @@ class DataDptController extends Controller
             $nestedData['dpt_nik']          = $dpt->dpt_nik;
             $nestedData['dpt_name']         = $dpt->dpt_name;
             $nestedData['dpt_jenkel']       = $dpt->dpt_jenkel;
+            $nestedData['dpt_address']      = $dpt->dpt_address;
+            $nestedData['dpt_rt']           = $dpt->dpt_rt;
+            $nestedData['dpt_rw']           = $dpt->dpt_rw;
             $nestedData['dpt_province']     = $dpt->province->name;
             $nestedData['dpt_regency']      = $dpt->regency->name;
             $nestedData['dpt_district']     = $dpt->district->name;
@@ -172,6 +181,9 @@ class DataDptController extends Controller
             'dpt_nik'          => 'required|max:16',
             'dpt_name'         => 'required|max:255',
             'dpt_jenkel'       => 'required',
+            'dpt_address'      => 'required|max:255',
+            'dpt_rt'           => 'required',
+            'dpt_rw'           => 'required',
             'dpt_province'     => 'required',
             'dpt_regency'      => 'required',
             'tps_id'           => 'required'
@@ -198,6 +210,9 @@ class DataDptController extends Controller
             'dpt_nik'         => $request->dpt_nik,
             'dpt_name'        => $request->dpt_name,
             'dpt_jenkel'      => $request->dpt_jenkel,
+            'dpt_address'     => $request->dpt_address,
+            'dpt_rt'          => $request->dpt_rt,
+            'dpt_rw'          => $request->dpt_rw,
             'dpt_province'    => $request->dpt_province,
             'dpt_regency'     => $request->dpt_regency,
             'dpt_district'    => $request->dpt_district,
@@ -258,6 +273,9 @@ class DataDptController extends Controller
             'dpt_nik'          => 'required|max:16',
             'dpt_name'         => 'required|max:255',
             'dpt_jenkel'       => 'required',
+            'dpt_address'      => 'required|max:255',
+            'dpt_rt'           => 'required',
+            'dpt_rw'           => 'required',
             'dpt_province'     => 'required',
             'dpt_regency'      => 'required',
             'tps_id'           => 'required'
@@ -278,6 +296,9 @@ class DataDptController extends Controller
           $data_dpt->dpt_nik               = $request->dpt_nik;
           $data_dpt->dpt_name              = $request->dpt_name;
           $data_dpt->dpt_jenkel            = $request->dpt_jenkel;
+          $data_dpt->dpt_address           = $request->dpt_address;
+          $data_dpt->dpt_rt                = $request->dpt_rt;
+          $data_dpt->dpt_rw                = $request->dpt_rw;
           $data_dpt->dpt_province          = $request->dpt_province;
           $data_dpt->dpt_regency           = $request->dpt_regency;
           $data_dpt->dpt_district          = $request->dpt_district;

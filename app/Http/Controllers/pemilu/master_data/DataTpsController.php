@@ -189,6 +189,9 @@ class DataTpsController extends Controller
             $dir = $request->input('order.0.dir');
     
             if (empty($request->input('search.value'))) {
+                $order = 'tps_id'; 
+                $dir = 'desc';
+
                // Logika berdasarkan role_id
                if ($role_id == 1) {
                   // Jika role_id adalah 1, tampilkan semua data
