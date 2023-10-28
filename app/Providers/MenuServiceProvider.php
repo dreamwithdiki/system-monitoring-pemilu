@@ -33,8 +33,10 @@ class MenuServiceProvider extends ServiceProvider
     $verticalMenuTimdptData = json_decode($timdptMenuJson);
     $saksiMenuJson = file_get_contents(base_path('resources/menu/saksi.json'));
     $verticalMenuSaksiData = json_decode($saksiMenuJson);
+    $monitoringMenuJson = file_get_contents(base_path('resources/menu/monitoring.json'));
+    $verticalMenuMonitoringData = json_decode($monitoringMenuJson);
 
     // Share all menuData to all the views
-    \View::share('menuData', [$verticalMenuData, $horizontalMenuData, $verticalMenuTimsesData, $verticalMenuTimdptData, $verticalMenuSaksiData ]); 
+    \View::share('menuData', [$verticalMenuData, $horizontalMenuData, $verticalMenuTimsesData, $verticalMenuTimdptData, $verticalMenuSaksiData, $verticalMenuMonitoringData ]); 
   }
 }

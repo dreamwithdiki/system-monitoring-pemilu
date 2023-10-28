@@ -74,9 +74,15 @@
       <h5 class="card-title mb-0 pt-2"><span><i class="tf-icons bx bx-id-card bx-sm me-sm-2"></i>DPT Table</h5>
     </div>
     <div class="text-end pt-3 pt-md-0">
+      @if(session('role_id') == 1)
+      <a id="dropdownMenuExcel" href="/pendukung/dpt/excel" class="btn btn-success"><span><i class="fa fa-file-excel me-sm-2"></i></span> Print Excel</a>
+      @endif
+
+      @if(session('role_id') == 1 || session('role_id') == 2 || session('role_id') == 3 || session('role_id') == 4)
       <button class="btn btn-primary fw-bold" type="button" data-bs-toggle="modal" data-bs-target="#modalAddDpt">
         <span><i class="tf-icons bx bx-plus-medical me-sm-2"></i> <span class="d-none d-sm-inline-block">Add DPT</span></span>
       </button>
+      @endif
     </div>
   </div>
   <div class="card-datatable text-nowrap">

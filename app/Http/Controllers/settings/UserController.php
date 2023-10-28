@@ -27,7 +27,7 @@ class UserController extends Controller
         if(session('role_id') == 1){
           return view('content.settings.user');
         } else {
-          if(session('role_id') == 2 || session('role_id') == 3 || session('role_id') == 4) {
+          if(session('role_id') == 2 || session('role_id') == 3 || session('role_id') == 4 || session('role_id') == 5) {
             // Membuat objek Carbon dari string tanggal dan waktu
             $created_date = Carbon::parse(session('user_created_date'));
             // Mengubah format menjadi "d F Y \j\a\m H:i:s"

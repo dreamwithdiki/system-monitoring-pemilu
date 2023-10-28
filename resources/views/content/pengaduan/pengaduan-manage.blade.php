@@ -209,7 +209,7 @@
                             <textarea id="autosize-answer" rows="5" name="pengaduan_answer" class="form-control answer-maxlength" maxlength="1000" placeholder="Answer"></textarea>
                         </div>
                     @else
-                        <!-- Tampilan untuk role_id 2, 3, 4 -->
+                        <!-- Tampilan untuk role_id 2, 3, 4, 5 -->
                         <div class="col-md-12">
                             <label class="form-label" for="pengaduan_note">Note <span style='color:red'>*</span></label>
                             <textarea id="autosize-note" rows="5" name="pengaduan_note" class="form-control note-maxlength" maxlength="1000" placeholder="Tuliskan Pengaduan"></textarea>

@@ -18,7 +18,7 @@ class PengaduanChatController extends Controller
      */
     public function index()
     {
-        if (session('role_id') == 2 || session('role_id') == 3 || session('role_id') == 4) {
+        if (session('role_id') == 2 || session('role_id') == 3 || session('role_id') == 4 || session('role_id') == 5) {
             return view('content.pengaduan.pengaduan-chat', [
                 'code_number' => $this->generateUniqueCode('SIM'),
             ]);

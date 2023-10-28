@@ -32,13 +32,12 @@ else {
 @endsection
 
 @section('vendor-script')
-<script src="{{asset('assets/vendor/libs/sweetalert2/sweetalert2.js')}}"></script>
 <script src="{{asset('assets/vendor/libs/apex-charts/apexcharts.js')}}"></script>
+<script src="{{asset('assets/vendor/libs/chartjs/chartjs.js')}}"></script>
+<script src="{{asset('assets/vendor/libs/moment/moment.js')}}"></script>
 @endsection
 
 @section('page-script')
-<script src="{{asset('assets/js/cards-statistics.js')}}"></script>
-
 <script>
   function updateLatestCaleg() {
       $.ajax({
@@ -68,23 +67,25 @@ else {
                   }
 
                   latestCalegCard.html(`
-                    <div class="card-header flex-grow-0">
-                      <div class="d-flex">
-                        <div class="avatar flex-shrink-0 me-3">
-                          <img src="${photoUrl}" alt="Caleg Photo" class="rounded-circle">
-                        </div>
-                        <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-1">
-                          <div class="me-2">
-                            <h5 class="mb-0">${data.caleg_name}</h5>
-                            <small class="text-muted">${data.caleg_nama_partai}</small>
+                    <div class="col-lg-6 col-md-12 col-6 mb-4">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="card-title d-flex align-items-start justify-content-between">
+                            <img src="${photoUrlPartai}" height="140" width="100%" alt="Caleg Photo">
                           </div>
+                          <span>Nama Partai : ${data.caleg_nama_partai}</span>
                         </div>
                       </div>
                     </div>
-                    <img class="img-fluid" src="${photoUrlPartai}" alt="Partai Photo" />
-                    <div class="featured-date mt-n4 ms-4 bg-white rounded w-px-50 shadow text-center p-1">
-                      <h5 class="mb-0 text-dark">{{ $total_caleg_is_active }}</h5>
-                      <span class="text-primary">Caleg</span>
+                    <div class="col-lg-6 col-md-12 col-6 mb-4">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="card-title d-flex align-items-start justify-content-between">
+                            <img src="${photoUrl}" height="140" width="100%" alt="Partai Photo">
+                          </div>
+                          <span>Nama Caleg : ${data.caleg_name}</span>
+                        </div>
+                      </div>
                     </div>
                   `);
               }
@@ -98,23 +99,119 @@ else {
   // Refresh the latest data every 30 seconds (adjust the interval as needed)
   setInterval(updateLatestCaleg, 30000);
 </script>
-<!--Start of Tawk.to Script-->
-{{-- <script type="text/javascript">
 
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/653699aff2439e1631e791b6/1hdekglue';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
+<!-- Bar chart -->
+<script>
+  var data = @json($data_chart_bar_tps); // Menyediakan data dari controller
+
+  var ctx = document.getElementById('barChartKecamatan').getContext('2d');
+  var myChart;
+
+  function updateChart(district) {
+      var filteredData = data.filter(function(item) {
+          return district === '' || item.district.name === district;
+      });
+
+      if (myChart) {
+          myChart.destroy();
+      }
+
+      myChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: filteredData.map(function(item) {
+                  return item.village.name;
+              }),
+              datasets: [{
+                  label: 'Nilai Suara',
+                  data: filteredData.map(function(item) {
+                      return item.tps_suara_caleg;
+                  }),
+                  backgroundColor: 'rgba(112, 173, 71, 255)',
+                  borderColor: 'rgba(75, 192, 192, 1',
+                  borderWidth: 1
+              }]
+          },
+          options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+          }
+      });
+  }
+
+  document.getElementById('district').addEventListener('change', function() {
+      var selectedDistrict = this.value;
+      updateChart(selectedDistrict);
+  });
+
+  // Memuat grafik awal dengan semua data
+  updateChart('');
 </script>
-<!--End of Tawk.to Script--> --}}
+
+<script>
+  const doughnutChart = document.getElementById('doughnutChartDPT');
+
+  let borderColor, axisColor;
+
+  if (isDarkStyle) {
+    borderColor = '#444564'; //theme border color
+    tickColor = '#a3a4cc'; // x & y axis tick color
+  } else {
+    borderColor = '#eceef1'; // $gray-100 for light
+    tickColor = '#697a8d'; // x & y axis tick color\
+  }
+
+  var totalDptMan = @json($total_dpt_man);
+  var totalDptWoman = @json($total_dpt_woman);
+
+  if (doughnutChart) {
+    const doughnutChartVar = new Chart(doughnutChart, {
+      type: 'doughnut',
+      data: {
+        labels: ['Laki-Laki', 'Perempuan'],
+        datasets: [
+          {
+            data: [totalDptMan, totalDptWoman],
+            backgroundColor: ['#696cff', '#71dd37'],
+            borderWidth: 0,
+            pointStyle: 'rectRounded'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        animation: {
+          duration: 500
+        },
+        cutout: '80%',
+        plugins: {
+          legend: {
+            display: true,
+            // position: 'left',
+          },
+          tooltip: {
+            enabled: true,
+            callbacks: {
+              label: function (context) {
+                const label = context.label || '';
+                const value = context.parsed;
+                return label + ': ' + value + ' Orang';
+              }
+            },
+          },
+        }
+      }
+    });
+  }
+</script>
+
 @endsection
 
 @section('content')
+
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Dashboard /</span> Dashboard
 </h4>
 
@@ -127,16 +224,22 @@ s0.parentNode.insertBefore(s1,s0);
           <div class="card-body">
             <h5 class="card-title text-primary">Hello {{ session('user_uniq_name') }}, {{ $result }}</h5>
             <p class="mb-4">Welcome back to <span class="fw-bold">SIM PACALEG</span>.</p>
+            <span>"Sistem Monitoring Pemenangan Calon Legislatif"</span>
+          </div>
+        </div>
+        <div class="col-sm-5 text-center text-sm-left">
+          <div class="card-body pb-0 px-0 px-md-4">
+            <img src="{{asset('assets/img/illustrations/man-with-laptop-'.$configData['style'].'.png')}}" height="140" alt="View Badge User" data-app-dark-img="illustrations/man-with-laptop-dark.png" data-app-light-img="illustrations/man-with-laptop-light.png">
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="col-md-6 col-lg-4 mb-4">
-    <div class="card h-100" id="latestCalegCard">
+  <div class="col-lg-4 col-md-4 order-1">
+    <div class="row" id="latestCalegCard">
         <!-- Content will be updated here -->
-      </div>
+    </div>
   </div>
 
 </div>
@@ -199,73 +302,143 @@ s0.parentNode.insertBefore(s1,s0);
   </div>
 </div>
 
-  <!-- Cards with unicons & charts -->
 <div class="row">
-  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title d-flex align-items-start justify-content-between">
-            <span class="badge bg-label-primary rounded p-2">
-              <i class="fa fa-headset bx-sm"></i>
-            </span>
+   <div class="col-12 col-md-12 col-lg-8">
+    <div class="row">
+      <div class="col-sm-3 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title d-flex align-items-start justify-content-between">
+              <span class="badge bg-label-primary rounded p-2">
+                <i class="fa fa-user-plus bx-sm"></i>
+              </span>
+            </div>
+            <span class="fw-semibold d-block mb-1">Total Dukungan</span>
+            <h2 class="card-title mb-2">{{ $total_dpt_is_active }}</h2>
           </div>
-          <span class="fw-semibold d-block mb-1">Total Dukungan</span>
-          <h2 class="card-title mb-2">{{ $total_dpt_is_active }}</h2>
         </div>
       </div>
+
+      <div class="col-sm-3 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title d-flex align-items-start justify-content-between">
+              <span class="badge bg-label-warning rounded p-2">
+                <i class="fa fa-user-xmark bx-sm"></i>
+              </span>
+            </div>
+            <span class="fw-semibold d-block mb-1">Data Potensial</span>
+            <h2 class="card-title mb-2">{{ $total_dpt_is_deactive }}</h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-3 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title d-flex align-items-start justify-content-between">
+              <span class="badge bg-label-info rounded p-2">
+                <i class="fa fa-gift bx-sm"></i> 
+              </span>
+            </div>
+            <span class="fw-semibold d-block mb-1">Total Suara Partai</span>
+            <h2 class="card-title mb-2">{{ $totalSuaraPartai }}</h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-3 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title d-flex align-items-start justify-content-between">
+              <span class="badge bg-label-primary rounded p-2">
+                <i class="fa fa-envelope bx-sm"></i> 
+              </span>
+            </div>
+            <span class="fw-semibold d-block mb-1">Total Suara Caleg</span>
+            <h2 class="card-title mb-2">{{ $totalSuaraCaleg }}</h2>
+          </div>
+        </div>
+      </div>
+      
+
+      <div class="col-sm-4 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title d-flex align-items-start justify-content-between">
+              <span class="badge bg-label-danger rounded p-2">
+                <i class="fa fa-users bx-sm"></i>
+              </span>
+            </div>
+            <span class="fw-semibold d-block mb-1">Total Users</span>
+            <h2 class="card-title mb-2">{{ $total_users_is_active }}</h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-4 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title d-flex align-items-start justify-content-between">
+              <span class="badge bg-label-primary rounded p-2">
+                <i class="fa fa-person bx-sm"></i>
+              </span>
+            </div>
+            <span class="fw-semibold d-block mb-1">Jumlah Dukungan Laki-Laki</span>
+            <h2 class="card-title mb-2">{{ $total_dpt_man }}</h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-4 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title d-flex align-items-start justify-content-between">
+              <span class="badge bg-label-success rounded p-2">
+                <i class="fa fa-person-dress bx-sm"></i> 
+              </span>
+            </div>
+            <span class="fw-semibold d-block mb-1">Jumlah Dukungan Perempuan</span>
+            <h2 class="card-title mb-2">{{ $total_dpt_woman }}</h2>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title d-flex align-items-start justify-content-between">
-            <span class="badge bg-label-primary rounded p-2">
-              <i class="fa fa-mars bx-sm"></i>
-            </span>
+
+  <div class="col-md-6 col-lg-4 mb-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-lg-10">
+            <canvas id="doughnutChartDPT"></canvas>
           </div>
-          <span class="fw-semibold d-block mb-1">Jumlah Dukungan Laki-Laki</span>
-          <h2 class="card-title mb-2">{{ $total_dpt_man }}</h2>
         </div>
       </div>
+    </div>
   </div>
-  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title d-flex align-items-start justify-content-between">
-            <span class="badge bg-label-success rounded p-2">
-              <i class="fa fa-venus bx-sm"></i> 
-            </span>
-          </div>
-          <span class="fw-semibold d-block mb-1">Jumlah Dukungan Perempuan</span>
-          <h2 class="card-title mb-2">{{ $total_dpt_woman }}</h2>
+
+</div>
+
+<div class="row mt-3">
+  <div class="col-xl-12 col-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+            <div class="col-xl-6 mx-auto">
+                <label for="district" class="form-label">Pilih Kecamatan:</label>
+                <select id="district" class="form-select">
+                    <option value="">Semua Kecamatan</option>
+                    @foreach ($data_districts as $district)
+                        <option value="{{ $district }}">{{ $district }}</option>
+                    @endforeach
+                </select>
+            </div>
         </div>
+        <canvas id="barChartKecamatan" width="400" height="200"></canvas>
       </div>
-  </div>
-  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title d-flex align-items-start justify-content-between">
-            <span class="badge bg-label-info rounded p-2">
-              <i class="fa fa-gift bx-sm"></i> 
-            </span>
-          </div>
-          <span class="fw-semibold d-block mb-1">Total Suara Partai</span>
-          <h2 class="card-title mb-2">{{ $totalSuaraPartai }}</h2>
-        </div>
-      </div>
-  </div>
-  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title d-flex align-items-start justify-content-between">
-            <span class="badge bg-label-primary rounded p-2">
-              <i class="fa fa-envelope bx-sm"></i> 
-            </span>
-          </div>
-          <span class="fw-semibold d-block mb-1">Total Suara Caleg</span>
-          <h2 class="card-title mb-2">{{ $totalSuaraCaleg }}</h2>
-        </div>
-      </div>
+    </div>
   </div>
 </div>
-<!--/ Cards with unicons & charts -->
+
 @endsection

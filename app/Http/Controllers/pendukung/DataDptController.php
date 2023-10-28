@@ -15,6 +15,7 @@ use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 
 class DataDptController extends Controller
 {
@@ -25,7 +26,7 @@ class DataDptController extends Controller
      */
     public function index()
     {
-        if(session('role_id') == 1 || session('role_id') == 2 || session('role_id') == 3 || session('role_id') == 4){
+        if(session('role_id') == 1 || session('role_id') == 2 || session('role_id') == 3 || session('role_id') == 4 || session('role_id') == 5){
             return view('content.pendukung.dpt');
             } else {
             return view('content.pages.pages-misc-not-authorized');
@@ -70,7 +71,7 @@ class DataDptController extends Controller
               $dir = 'desc';
 
               // Logika berdasarkan role_id
-              if ($role_id == 1) {
+              if ($role_id == 1 || $role_id == 5) {
                   // Jika role_id adalah 1, tampilkan semua data
                   $totalData = DataDpt::where('dpt_status', '!=', 5)->count();
                   $totalFiltered = $totalData;
@@ -135,6 +136,7 @@ class DataDptController extends Controller
           foreach ($data_dpt as $dpt) {
             $nestedData['no']               = ++$no;
             $nestedData['dpt_id']           = Crypt::encrypt($dpt->dpt_id);
+            $nestedData['role_id']          = $role_id;
             $nestedData['dpt_nik']          = $dpt->dpt_nik;
             $nestedData['dpt_name']         = $dpt->dpt_name;
             $nestedData['dpt_jenkel']       = $dpt->dpt_jenkel;
@@ -387,4 +389,23 @@ class DataDptController extends Controller
      /**
      * End Display data to provinces, regencies, districts and village
      */
+
+    //  print excel
+     public function printExcelDpt()
+      {
+        $data_dpt = DataDpt::with('province', 'regency', 'district', 'village', 'tps', 'user', 'role')->where('dpt_status', '!=', 5)->get();
+
+        // Generate HTML untuk file Excel
+        $html = view('content.pendukung.excel.dpt-excel', compact('data_dpt'))->render();
+
+        $date = Carbon::now()->format('Y-m-d H:i:s');
+        // Atur header untuk file Excel
+        $headers = [
+            'Content-Type' => 'application/ms-excel',
+            'Content-Disposition' => 'attachment; filename=Data DPT - "'.$date.'".xls',
+        ];
+
+        // Return respons HTTP
+        return Response::make($html, 200)->withHeaders($headers);
+      }
 }

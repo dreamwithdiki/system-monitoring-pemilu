@@ -125,6 +125,7 @@ Route::group(['middleware' => 'check.tokey'], function () use ($controller_path)
             Route::post('update/{id}', $path_pendukung . '\DataDptController@update');
             Route::post('update-status', $path_pendukung . '\DataDptController@statusUpdate');
             Route::post('delete', $path_pendukung . '\DataDptController@delete');
+            Route::get('excel', $path_pendukung . '\DataDptController@printExcelDpt');
         });
 
     });

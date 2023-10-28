@@ -19,7 +19,7 @@ class PengaduanManageController extends Controller
      */
     public function index()
     {
-        if (session('role_id') == 1 || session('role_id') == 2 || session('role_id') == 3 || session('role_id') == 4) {
+        if (session('role_id') == 1 || session('role_id') == 2 || session('role_id') == 3 || session('role_id') == 4 || session('role_id') == 5) {
         return view('content.pengaduan.pengaduan-manage');
         } else {
         return view('content.pages.pages-misc-not-authorized');
@@ -125,16 +125,6 @@ class PengaduanManageController extends Controller
                 $nestedData['pengaduan_created_by']  = $row->user->user_uniq_name;
                 $nestedData['pengaduan_answer']      = $row->pengaduan_answer;
                 $nestedData['pengaduan_status']      = $row->pengaduan_status;
-
-                // Add a custom message based on role_id and pengaduan_status
-                // if ($role_id == 1 && $row->pengaduan_status == 1) {
-                //     $nestedData['custom_message'] = '<span class="badge bg-label-info me-1">Pesan Baru</span>';
-                // } elseif (in_array($role_id, [2, 3, 4]) && $row->pengaduan_status == 1) {
-                //     $nestedData['custom_message'] = '<span class="badge bg-label-success me-1">Pesan Terkirim</span>';
-                // } else {
-                //     $nestedData['custom_message'] = "";
-                // }
-                
                 $data[] = $nestedData;
             }
         }

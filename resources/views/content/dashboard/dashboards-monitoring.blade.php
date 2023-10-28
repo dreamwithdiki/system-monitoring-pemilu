@@ -24,7 +24,7 @@ else {
 
 @extends('layouts/layoutMaster')
 
-@section('title', 'Dashboard - Timses')
+@section('title', 'Dashboard - Tim Monitoring')
 
 @section('vendor-style')
 <link rel="stylesheet" href="{{asset('assets/vendor/libs/sweetalert2/sweetalert2.css')}}" />

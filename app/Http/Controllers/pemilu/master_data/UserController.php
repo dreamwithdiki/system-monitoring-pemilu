@@ -31,7 +31,7 @@ class UserController extends Controller
         if(session('role_id') == 1){
           return view('content.pemilu.master-data.user');
         } else {
-          if(session('role_id') == 2 || session('role_id') == 3 || session('role_id') == 4) {
+          if(session('role_id') == 2 || session('role_id') == 3 || session('role_id') == 4 || session('role_id') == 5) {
             // Membuat objek Carbon dari string tanggal dan waktu
             $created_date = Carbon::parse(session('user_created_date'));
             // Mengubah format menjadi "d F Y \j\a\m H:i:s"
@@ -72,8 +72,8 @@ class UserController extends Controller
             $dir = $request->input('order.0.dir');
     
             if (empty($request->input('search.value'))) {
-                $order = 'user_id'; 
-                $dir = 'desc';
+                // $order = 'user_id'; 
+                // $dir = 'desc';
 
                 $users = User::where('user_id', '!=', 2) 
                     ->offset($start)

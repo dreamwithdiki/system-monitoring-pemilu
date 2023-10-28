@@ -381,22 +381,50 @@ $(function () {
           targets: 13,
           searchable: false,
           orderable: false,
+          // render: function (data, type, row, meta) {
+          //     return '' +
+          //     '<div class="d-inline-block text-nowrap">' +
+          //         '<button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>' +
+          //         '<div class="dropdown-menu">' +
+          //             '<a id="dropdownMenuEdit" data-id="' + row.dpt_id + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit me-1"></i> Edit</a>' +
+          //             '<div class="dropdown-divider"></div>' +
+          //             '<a id="dropdownMenuDetail" data-id="' + row.dpt_id + '" data-name="' + row.dpt_name + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-detail me-1"></i> Detail</a>' +
+          //             '<div class="dropdown-divider"></div>' +
+          //             '<a id="dropdownMenuActivate" data-id="' + row.dpt_id + '" data-status="2" class="dropdown-item dropdownMenuStatusUpdate" href="javascript:void(0);"><i class="bx bx-check me-1"></i> Activate</a>' +
+          //             '<a id="dropdownMenuDeactivate" data-id="' + row.dpt_id + '" data-status="1" class="dropdown-item dropdownMenuStatusUpdate" href="javascript:void(0);"><i class="bx bx-x me-1"></i> Deactivate</a>' +
+          //             '<div class="dropdown-divider"></div>' +
+          //             '<a id="dropdownMenuDelete" data-id="' + row.dpt_id + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Delete</a>' +
+          //         '</div>' +
+          //     '</div>';
+          // }
+
           render: function (data, type, row, meta) {
-              return '' +
+            let dropdownMenu = '<div class="dropdown-menu">';
+            
+            if (row.role_id === 5) {
+              // Role_id is 5, only show the "Detail" option
+              dropdownMenu += '<a id="dropdownMenuDetail" data-id="' + row.dpt_id + '" data-name="' + row.dpt_name + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-detail me-1"></i> Detail</a>';
+            } else {
+              // For other role_ids, show the full dropdown menu
+              dropdownMenu += '<a id="dropdownMenuEdit" data-id="' + row.dpt_id + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit me-1"></i> Edit</a>' +
+                '<div class="dropdown-divider"></div>' +
+                '<a id="dropdownMenuDetail" data-id="' + row.dpt_id + '" data-name="' + row.dpt_name + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-detail me-1"></i> Detail</a>' +
+                '<div class="dropdown-divider"></div>' +
+                '<a id="dropdownMenuActivate" data-id="' + row.dpt_id + '" data-status="2" class="dropdown-item dropdownMenuStatusUpdate" href="javascript:void(0);"><i class="bx bx-check me-1"></i> Activate</a>' +
+                '<a id="dropdownMenuDeactivate" data-id="' + row.dpt_id + '" data-status="1" class="dropdown-item dropdownMenuStatusUpdate" href="javascript:void(0);" style="padding-left: 20px;"><i class="bx bx-x me-1"></i> Deactivate</a>' +
+                '<div class="dropdown-divider"></div>' +
+                '<a id="dropdownMenuDelete" data-id="' + row.dpt_id + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Delete</a>';
+            }
+          
+            dropdownMenu += '</div>';
+            
+            return '' +
               '<div class="d-inline-block text-nowrap">' +
-                  '<button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>' +
-                  '<div class="dropdown-menu">' +
-                      '<a id="dropdownMenuEdit" data-id="' + row.dpt_id + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit me-1"></i> Edit</a>' +
-                      '<div class="dropdown-divider"></div>' +
-                      '<a id="dropdownMenuDetail" data-id="' + row.dpt_id + '" data-name="' + row.dpt_name + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-detail me-1"></i> Detail</a>' +
-                      '<div class="dropdown-divider"></div>' +
-                      '<a id="dropdownMenuActivate" data-id="' + row.dpt_id + '" data-status="2" class="dropdown-item dropdownMenuStatusUpdate" href="javascript:void(0);"><i class="bx bx-check me-1"></i> Activate</a>' +
-                      '<a id="dropdownMenuDeactivate" data-id="' + row.dpt_id + '" data-status="1" class="dropdown-item dropdownMenuStatusUpdate" href="javascript:void(0);"><i class="bx bx-x me-1"></i> Deactivate</a>' +
-                      '<div class="dropdown-divider"></div>' +
-                      '<a id="dropdownMenuDelete" data-id="' + row.dpt_id + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Delete</a>' +
-                  '</div>' +
+              '<button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>' +
+              dropdownMenu +
               '</div>';
-          }
+          }          
+        
         }
       ],
       order: [[0, 'asc']],
