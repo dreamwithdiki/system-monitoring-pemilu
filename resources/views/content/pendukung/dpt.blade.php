@@ -52,6 +52,44 @@
     return true;
   }
 </script>
+
+<script>
+  $('.btn_download').on('click', function(event) {
+      event.preventDefault();
+      Swal.fire({
+          title: "Download Template?",
+          text: "Download template import data DPT",
+          icon: "info",
+          showCancelButton: true,
+          confirmButtonClass: "btn btn-info w-md mt-2",
+          cancelButtonClass: "btn btn-danger w-md mt-2",
+          cancelButtonColor: "#f46a6a",
+          confirmButtonText: "Ya",
+          cancelButtonText: "Tidak",
+          closeOnConfirm: false,
+          closeOnCancel: false
+      }).then(function(t) {
+          if (t.value) {
+              Swal.fire({
+                  title: "Download Berhasil !",
+                  text: "Template Data DPT",
+                  confirmButtonColor: "#34c38f",
+                  icon: "success"
+              }).then(function(t) {
+                  window.location.href = "{{ asset('assets/import/example_format_data_dpt.xlsx') }}"
+              })
+          } else if (t.dismiss === Swal.DismissReason.cancel) {
+              Swal.fire({
+                  title: "Download Dibatalkan",
+                  text: "Template DPT batal di download :(",
+                  showConfirmButton: false,
+                  timer: 2000,
+                  icon: "warning"
+              });
+          }
+      });
+  });
+</script>
 @endsection
 
 @section('content')
@@ -74,12 +112,18 @@
       <h5 class="card-title mb-0 pt-2"><span><i class="tf-icons bx bx-id-card bx-sm me-sm-2"></i>DPT Table</h5>
     </div>
     <div class="text-end pt-3 pt-md-0">
+
+      @if(session('role_id') == 1 || session('role_id') == 2 || session('role_id') == 3)
+      <button class="btn btn-outline-success btn-sm btn-responsive px-3 waves-light waves-effect btn_download"><span><i class="tf-icons fa fa-download me-sm-2"></i><span class="d-none d-sm-inline-block"> Download template Excel</span></span></button>
+      <button class="btn btn-outline-info btn-sm btn-responsive px-3 waves-light waves-effect" data-bs-toggle="modal" data-animation="bounce" data-bs-target=".modal-import"><span><i class="tf-icons fa fa-file-excel me-sm-2"></i><span class="d-none d-sm-inline-block"> Import</span></span></button>
+      @endif
+      
       @if(session('role_id') == 1)
-      <a id="dropdownMenuExcel" href="/pendukung/dpt/excel" class="btn btn-success"><span><i class="fa fa-file-excel me-sm-2"></i></span> Print Excel</a>
+      <a id="dropdownMenuExcel" href="/pendukung/dpt/excel" class="btn btn-success btn-sm"><span><i class="tf-icons fa fa-file-excel me-sm-2"></i> <span class="d-none d-sm-inline-block">Print Excel</span></span></a>
       @endif
 
       @if(session('role_id') == 1 || session('role_id') == 2 || session('role_id') == 3 || session('role_id') == 4)
-      <button class="btn btn-primary fw-bold" type="button" data-bs-toggle="modal" data-bs-target="#modalAddDpt">
+      <button class="btn btn-primary fw-bold btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#modalAddDpt">
         <span><i class="tf-icons bx bx-plus-medical me-sm-2"></i> <span class="d-none d-sm-inline-block">Add DPT</span></span>
       </button>
       @endif
@@ -480,4 +524,29 @@
   </div>
 </div>
 <!--/ Modal Detail DPT -->
+
+<!-- Modal Import Excel DPT -->
+<div class="modal fade modal-import" id="modalImportDpt" tabindex="-1" role="dialog" aria-labelledby="myImportModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+          <div class="modal-header text-white bg-primary">
+              <h5 class="modal-title align-self-center text-white" id="myImportModalLabel">Import format xls,xlsx,csv,ods</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="formImportDpt" data-method="import">
+                <div class="form-group">
+                  <div class="col-xl mb-3">
+                    <label for="import_excel">Choose file</label>
+                    <input type="file" class="form-control" id="file" name="file">
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm w-100 mt-3">Import</button>
+            </form>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!--/ Modal Import Excel DPT -->
 @endsection

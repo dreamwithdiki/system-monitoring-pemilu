@@ -1,7 +1,7 @@
 <?php
   // Variables
   return [
-    "creatorName" => "Dev Diki",
+    "creatorName" => "TIM IT DEV",
     "creatorUrl" => "https://github.com/dev-diki",
     "templateName" => "SIM",
     "templateSuffix" => "Sistem Monitoring Pemenangan",

@@ -27,7 +27,6 @@ Route::group(['middleware' => 'check.tokey'], function () use ($controller_path)
     Route::get('/get-latest-caleg', $controller_path . '\dashboard\DashboardController@getLatestCaleg');
     Route::get('/uploads/{caleg_id}', $controller_path . '\dashboard\DashboardController@show_upload_caleg'); 
     Route::get('/uploads_partai/{caleg_partai_id}', $controller_path . '\dashboard\DashboardController@show_upload_caleg_partai'); 
-    Route::get('/filter-year-month/{year}/{month}', $controller_path . '\dashboard\DashboardController@filter_year_month');
     Route::post('/change-password', $controller_path . '\auth\LoginController@change_password')->name('change-password');
 
     // Master Data Autocomplete
@@ -126,6 +125,7 @@ Route::group(['middleware' => 'check.tokey'], function () use ($controller_path)
             Route::post('update-status', $path_pendukung . '\DataDptController@statusUpdate');
             Route::post('delete', $path_pendukung . '\DataDptController@delete');
             Route::get('excel', $path_pendukung . '\DataDptController@printExcelDpt');
+            Route::post('import', $path_pendukung . '\DataDptController@import');
         });
 
     });

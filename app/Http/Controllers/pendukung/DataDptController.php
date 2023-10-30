@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\pendukung;
 
 use App\Http\Controllers\Controller;
+use App\Imports\DptImport;
 use App\Models\DataDpt;
 use Illuminate\Http\Request;
 use App\Models\MasterDistricts;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DataDptController extends Controller
 {
@@ -408,4 +410,32 @@ class DataDptController extends Controller
         // Return respons HTTP
         return Response::make($html, 200)->withHeaders($headers);
       }
+
+      // import excel file
+      // public function import(Request $request)
+      // {
+      //     $this->validate($request, [
+      //         'file' => 'required|mimes:xls,xlsx,csv,ods'
+      //     ]);
+
+      //     Excel::import(new DptImport, $request->file);
+      //     return response()->json(['status' => true, 'message' => ['title' => 'Successfully imported!', 'text' => 'Successfully import DPT!']]);
+      // }
+
+      public function import(Request $request)
+      {
+          try {
+              $this->validate($request, [
+                  'file' => 'required|mimes:xls,xlsx,csv,ods',
+              ]);
+
+              Excel::import(new DptImport, $request->file);
+
+              return response()->json(['status' => true, 'message' => ['title' => 'Successfully imported!', 'text' => 'Successfully import DPT!']]);
+          } catch (\Illuminate\Validation\ValidationException $e) {
+              // Handle the case where NIK already exists
+              return response()->json(['status' => false, 'message' => ['title' => 'NIK Already Exists', 'text' => 'Beberapa NIK sudah ada. periksa kembali']]);
+          }
+      }
+
 }

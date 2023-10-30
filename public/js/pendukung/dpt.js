@@ -10,6 +10,7 @@ $(function () {
   var modal_add_dpt      = $('#modalAddDpt');
   var modal_edit_dpt     = $('#modalEditDpt');
   var modal_detail_dpt   = $('#modalDetailDpt');
+  var modal_import_dpt   = $('#modalImportDpt');
   var ac_tps             = $('.ac_tps');
   var ac_edit_tps        = $('.ac_edit_tps');
   var modal_class_loader = $('.modal-block-loader');
@@ -956,6 +957,116 @@ $(function () {
       modal_detail_dpt.modal('show');
     });
     
+
+    // Import Form
+  var import_dpt_form = document.getElementById('formImportDpt');
+
+  // Caleg Form Validation
+  var fv = FormValidation.formValidation(import_dpt_form, {
+    fields: {
+      file: {
+        validators: {
+          notEmpty: {
+            message: 'Please select file format .xls,.xlsx,.csv,.ods'
+          },
+          file: {
+              extension: 'xls,xlsx,csv,ods',
+              type: 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,application/vnd.oasis.opendocument.spreadsheet',
+              message: 'Please select a file in .xls, .xlsx, .csv, or .ods format.'
+          }
+        }
+      }
+    },
+    plugins: {
+      trigger: new FormValidation.plugins.Trigger(),
+      bootstrap5: new FormValidation.plugins.Bootstrap5({
+        // Use this for enabling/changing valid/invalid class
+        eleValidClass: '',
+        rowSelector: function rowSelector(field, ele) {
+          // field is the field name & ele is the field element
+          return '.mb-3';
+        }
+      }),
+      submitButton: new FormValidation.plugins.SubmitButton(),
+      // Submit the form when all fields are valid
+      // defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
+      autoFocus: new FormValidation.plugins.AutoFocus()
+    }
+  }).on('core.form.valid', function () {
+    // Import tps when form successfully validate
+    if ($('#formImportDpt').data('method') == 'import') {
+      var url = "pendukung/dpt/import";
+    } else {
+      var url = "";
+    }
+
+    var form_data = new FormData(import_dpt_form); 
+      $.ajax({
+        data: form_data,
+        url: baseUrl + url,
+        type: 'POST',
+        processData: false,
+        contentType: false,
+        success: function success(response) {
+            dt_ajax.draw();
+            modal_import_dpt.modal('hide');
+    
+            if (response.status) {
+                Swal.fire({
+                    icon: 'success',
+                    title: response.message.title,
+                    text: response.message.text,
+                    customClass: {
+                        confirmButton: 'btn btn-success'
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: response.message.title,
+                    text: response.message.text,
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    }
+                });
+            }
+        },
+        error: function error(err) {
+          modal_import_dpt.modal('hide');
+          if (err.responseJSON.status === false) {
+              if (err.responseJSON.message.title === 'NIK Already Exists') {
+                  Swal.fire({
+                      icon: 'warning',
+                      title: err.responseJSON.message.title,
+                      text: err.responseJSON.message.text,
+                      customClass: {
+                          confirmButton: 'btn btn-primary'
+                      }
+                  });
+              } else if (err.responseJSON.message.title === 'The file must be a file of type: xls, xlsx, csv, ods.') {
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'File Format Error',
+                      text: 'Please select a file in .xls, .xlsx, .csv, or .ods format.',
+                      customClass: {
+                          confirmButton: 'btn btn-primary'
+                      }
+                  });
+              } else {
+                  Swal.fire({
+                      title: 'Error!',
+                      text: 'Internal server error.',
+                      icon: 'error',
+                      customClass: {
+                          confirmButton: 'btn btn-primary'
+                      }
+                  });
+              }
+          }
+      }      
+    });  
+  });
+  // End Import Form
   
   // Active / Deactive status button handler
   $(document).on('click', '.dropdownMenuStatusUpdate', function () {
