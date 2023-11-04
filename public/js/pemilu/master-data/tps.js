@@ -27,7 +27,7 @@ $(function () {
       placeholder: 'Select saksi',
       minimumInputLength: 0,
       ajax: {
-        url: baseUrl + 'autocomplete/role/find-saksi',
+        url: baseUrl + 'autocomplete/user/find-saksi',
         dataType: 'json',
         data: function (params) {
           return {
@@ -1004,7 +1004,7 @@ $(function () {
       placeholder: 'Select saksi',
       minimumInputLength: 0,
       ajax: {
-        url: baseUrl + 'autocomplete/role/find-saksi',
+        url: baseUrl + 'autocomplete/user/find-saksi',
         dataType: 'json',
         data: function (params) {
           return {

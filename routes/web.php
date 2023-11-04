@@ -32,7 +32,7 @@ Route::group(['middleware' => 'check.tokey'], function () use ($controller_path)
     // Master Data Autocomplete
     Route::prefix('autocomplete')->group(function () use ($controller_path) {
         Route::get('role/find', $controller_path . '\settings\RoleController@find');
-        Route::get('role/find-saksi', $controller_path . '\settings\RoleController@find_saksi');
+        Route::get('user/find-saksi', $controller_path . '\settings\UserController@find_saksi');
         Route::get('tps/find', $controller_path . '\pemilu\master_data\DataTpsController@find');
     });
 

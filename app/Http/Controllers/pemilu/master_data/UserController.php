@@ -62,7 +62,8 @@ class UserController extends Controller
         ];
 
         $search = [];
-        $totalData = User::count();
+        // $totalData = User::count();
+        $totalData = User::where('user_id', '!=', 2)->count();
         $totalFiltered = $totalData;
 
         if (!empty($request->input())) {

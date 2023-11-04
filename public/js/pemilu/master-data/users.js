@@ -492,18 +492,26 @@ $(function () {
       order: [[0, 'asc']],
       dom: '<"row"<"col-sm-12 col-md-6"l>><"table-responsive"t><"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
       drawCallback: function (settings) {
-          // Cek jumlah data yang ditampilkan setelah DataTable digambar
           var api = this.api();
           var rowCount = api.rows().count();
-
+      
           if (rowCount === 0) {
-              // Sembunyikan elemen pagination jika tidak ada data
               $('.dataTables_paginate').hide();
           } else {
-              // Tampilkan elemen pagination jika ada data
               $('.dataTables_paginate').show();
+      
+              // Filter and hide rows with user_id === 2
+              api.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                  var data = this.data();
+                  var user_id = data.user_id;
+      
+                  // Check if user_id is 2 and hide the row
+                  if (user_id === 2) {
+                      this.nodes().to$().hide();
+                  }
+              });
           }
-      }
+      }    
     });
   }
 
@@ -994,27 +1002,23 @@ $(function () {
         // Tanggal awal dalam format 'YYYY-MM-DD HH:MM:SS'
         var tanggalAwal = response.data.user_last_login;
 
-        // Parse tanggal awal menjadi objek Date
-        var tanggalObj = new Date(tanggalAwal);
-
-        // Objek konfigurasi untuk format yang diinginkan
-        var options = {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-        };
-
-        // Buat objek Intl.DateTimeFormat dengan konfigurasi
-        var formatter = new Intl.DateTimeFormat('id-ID', options); // 'id-ID' adalah kode bahasa Indonesia
-
-        // Format tanggal menggunakan objek formatter
-        var tanggalHasil = formatter.format(tanggalObj);
-
-        // Tampilkan hasil di elemen HTML dengan id 'detlastLogin'
-        $('#detlastLogin').text(tanggalHasil);
+        if (tanggalAwal) {
+          var tanggalObj = new Date(tanggalAwal);
+          var options = {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+          };
+          var formatter = new Intl.DateTimeFormat('id-ID', options);
+          var tanggalHasil = formatter.format(tanggalObj);
+          $('#detlastLogin').text(tanggalHasil);
+        } else {
+          // Tampilkan pesan atau lakukan tindakan lain jika user_last_login kosong atau null
+          $('#detlastLogin').text('Tidak ada data login terakhir');
+        }
         
         var statusText = response.data.user_status === 1 ? '<span class="badge bg-danger">Deactive</span>' : '<span class="badge bg-success">Active</span>';
         $('#detStatus').html(statusText);

@@ -45,6 +45,27 @@ class UserController extends Controller
         }
     }
 
+    public function find_saksi(Request $request)
+    {
+      $search = $request->search;
+      $roles = User::orderby('user_id', 'DESC')
+        ->select('user_id', 'user_uniq_name')
+        ->where('user_uniq_name', 'like', '%' . $search . '%')
+        ->where('role_id', '=', 4) // cari saksi
+        ->isActive()
+        ->get();
+
+      $response = array();
+      foreach ($roles as $role) {
+        $response[] = array(
+          "id"    => $role->user_id,
+          "text"  => $role->user_uniq_name
+        );
+      }
+
+      return response()->json($response);
+    }
+
     public function datatable(Request $request)
     {
         $columns = [
