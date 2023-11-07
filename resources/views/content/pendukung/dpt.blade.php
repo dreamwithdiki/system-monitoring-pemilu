@@ -526,9 +526,9 @@
 <!--/ Modal Detail DPT -->
 
 <!-- Modal Import Excel DPT -->
-<div class="modal fade modal-import" id="modalImportDpt" tabindex="-1" role="dialog" aria-labelledby="myImportModalLabel" aria-hidden="true">
+<div class="modal fade modal-import" id="modalImportDpt" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-sm">
-      <div class="modal-content">
+      <div class="modal-content modal-block-loader">
           <div class="modal-header text-white bg-primary">
               <h5 class="modal-title align-self-center text-white" id="myImportModalLabel">Import format xls,xlsx,csv,ods</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -541,7 +541,7 @@
                     <input type="file" class="form-control" id="file" name="file">
                   </div>
                 </div>
-                <button type="submit" class="btn btn-primary btn-sm w-100 mt-3">Import</button>
+                <button type="submit" class="btn btn-primary btn-sm w-100 mt-3" id="import_excel_coy">Import</button>
             </form>
           </div>
       </div>

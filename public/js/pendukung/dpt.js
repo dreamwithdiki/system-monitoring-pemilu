@@ -934,7 +934,14 @@ $(function () {
           $('#detRegency').text(response.data.regency.name);
           $('#detDistrict').text(response.data.district.name);
           $('#detVillage').text(response.data.village.name);
-          $('#detTps').text(response.data.tps.tps_code + " - " + response.data.tps.tps_name);
+          
+          // $('#detTps').text(response.data.tps.tps_code + " - " + response.data.tps.tps_name);
+
+          // mengunakan operator nullish coalescing (??) jika ada yang null
+          const tpsCode = response.data.tps?.tps_code ?? "-";
+          const tpsName = response.data.tps?.tps_name ?? "-";
+
+          $('#detTps').text(tpsCode + " - " + tpsName);
 
           var statusText = response.data.dpt_status === 1 ? '<span class="badge bg-danger">Deactive</span>' : '<span class="badge bg-success">Active</span>';
           $('#detStatus').html(statusText);
@@ -968,11 +975,6 @@ $(function () {
         validators: {
           notEmpty: {
             message: 'Please select file format .xls,.xlsx,.csv,.ods'
-          },
-          file: {
-              extension: 'xls,xlsx,csv,ods',
-              type: 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,application/vnd.oasis.opendocument.spreadsheet',
-              message: 'Please select a file in .xls, .xlsx, .csv, or .ods format.'
           }
         }
       }
@@ -993,6 +995,12 @@ $(function () {
       autoFocus: new FormValidation.plugins.AutoFocus()
     }
   }).on('core.form.valid', function () {
+
+    var btn_submit = document.querySelectorAll("#import_excel_coy");
+    for (let i = 0; i < btn_submit.length; i++) {
+      btn_submit[i].setAttribute('disabled', true);
+    }
+
     // Import tps when form successfully validate
     if ($('#formImportDpt').data('method') == 'import') {
       var url = "pendukung/dpt/import";
@@ -1020,6 +1028,10 @@ $(function () {
                         confirmButton: 'btn btn-success'
                     }
                 });
+
+                for (let i = 0; i < btn_submit.length; i++) {
+                  btn_submit[i].removeAttribute('disabled');
+                }
             } else {
                 Swal.fire({
                     icon: 'error',

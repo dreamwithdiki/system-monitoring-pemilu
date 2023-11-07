@@ -149,7 +149,10 @@ class DataDptController extends Controller
             $nestedData['dpt_regency']      = $dpt->regency->name;
             $nestedData['dpt_district']     = $dpt->district->name;
             $nestedData['dpt_village']      = $dpt->village->name;
-            $nestedData['tps_name']         = $dpt->tps->tps_code .'-'. $dpt->tps->tps_name;
+            // $nestedData['tps_name']         = $dpt->tps->tps_code .'-'. $dpt->tps->tps_name;
+            $tps_code = $dpt->tps->tps_code ?? '-';
+            $tps_name = $dpt->tps->tps_name ?? '-';
+            $nestedData['tps_name'] = $tps_code . '-' . $tps_name;
             $nestedData['dpt_status']       = $dpt->dpt_status;
             $data[] = $nestedData;
           }

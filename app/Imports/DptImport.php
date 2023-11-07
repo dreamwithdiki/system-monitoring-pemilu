@@ -31,12 +31,12 @@ class DptImport implements ToModel, WithHeadingRow, WithUpserts, WithUpsertColum
     {
         return new DataDpt([
             'dpt_status'        => $row['dpt_status'],
-            // 'dpt_nik'           => $row['dpt_nik'],
-            'dpt_nik' => [
-                'required',
-                Rule::unique('sys_dpt', 'dpt_nik')->where('dpt_status', request()->input('dpt_status')),
-                'digits:16', // Added validation for 16-digit NIK
-            ],
+            'dpt_nik'           => $row['dpt_nik'],
+            // 'dpt_nik' => [
+            //     'required',
+            //     Rule::unique('sys_dpt', 'dpt_nik')->where('dpt_status', request()->input('dpt_status')),
+            //     'digits:16', // Added validation for 16-digit NIK
+            // ],
             'dpt_name'          => $row['dpt_name'],
             'dpt_jenkel'        => $row['dpt_jenkel'],
             'dpt_address'       => $row['dpt_address'],
@@ -63,7 +63,7 @@ class DptImport implements ToModel, WithHeadingRow, WithUpserts, WithUpsertColum
             'dpt_address'   => 'required',
             'dpt_rt'        => 'required',
             'dpt_rw'        => 'required',
-            'tps_id'        => 'required',
+            // 'tps_id'        => 'required',
             'dpt_province'  => 'required',
             'dpt_regency'   => 'required',
             'dpt_district'  => 'required',

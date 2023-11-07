@@ -349,7 +349,7 @@ $(function () {
                 }
                 return images;
               } else {
-                return 'No Photo';
+                return 'No Docs';
               }
             },
             orderable: false

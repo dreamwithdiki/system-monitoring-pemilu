@@ -985,10 +985,16 @@ $(function () {
         }    
       
         $('#detRole').html(roleName);
-        $('#detProvince').text(response.data.province.name);
-        $('#detRegency').text(response.data.regency.name);
-        $('#detDistrict').text(response.data.district.name);
-        $('#detVillage').text(response.data.village.name);
+  
+        const detProvince = response.data.province?.name ?? "-";
+        const detRegency  = response.data.regency?.name ?? "-";
+        const detDistrict = response.data.district?.name ?? "-";
+        const detVillage  = response.data.village?.name ?? "-";
+
+        $('#detProvince').text(detProvince);
+        $('#detRegency').text(detRegency);
+        $('#detDistrict').text(detDistrict);
+        $('#detVillage').text(detVillage);
 
         // Display current photo
         if (response.data.user_photo) {

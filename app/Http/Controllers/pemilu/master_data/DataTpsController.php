@@ -264,7 +264,8 @@ class DataTpsController extends Controller
             $nestedData['tps_regency']      = $tps->regency->name;
             $nestedData['tps_district']     = $tps->district->name;
             $nestedData['tps_village']      = $tps->village->name;
-            $nestedData['role_name']        = $tps->role->role_name;
+            // $nestedData['role_name']        = $tps->role->role_name;
+            $nestedData['role_name'] = $tps->role->role_name ?? '-'; // menggunakan operator null coalescing (??) :
             $nestedData['tps_suara_caleg']  = $tps->tps_suara_caleg;
             $nestedData['tps_suara_partai'] = $tps->tps_suara_partai;
             $nestedData['tps_docs']         = $tps->tps_docs;
