@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Validation\ValidationException;
 
 class DataDptController extends Controller
 {
@@ -102,30 +103,50 @@ class DataDptController extends Controller
 
             } else {
               $search = $request->input('search.value');
-    
-              $data_dpt = DataDpt::with('province', 'regency', 'district', 'village', 'tps')->where('dpt_nik', 'LIKE', "%{$search}%")
-                ->where('dpt_status', '!=', 5)
-                ->orWhere('dpt_name', 'LIKE', "%{$search}%")
-                ->orWhereRelation('province', 'name', 'LIKE', "%{$search}%")
-                ->orWhereRelation('district', 'name', 'LIKE', "%{$search}%")
-                ->orWhereRelation('regency', 'name', 'LIKE', "%{$search}%")
-                ->orWhereRelation('village', 'name', 'LIKE', "%{$search}%")
-                ->orWhereRelation('tps', 'tps_name', 'LIKE', "%{$search}%")
-                ->offset($start)
-                ->limit($limit)
-                ->orderBy($order, $dir)
-                ->get();
-    
-              $totalFiltered = DataDpt::with('province', 'regency', 'district', 'village', 'tps')->where('dpt_nik', 'LIKE', "%{$search}%")
-                ->where('dpt_status', '!=', 5)
-                ->orWhere('dpt_name', 'LIKE', "%{$search}%")
-                ->orWhereRelation('province', 'name', 'LIKE', "%{$search}%")
-                ->orWhereRelation('district', 'name', 'LIKE', "%{$search}%")
-                ->orWhereRelation('regency', 'name', 'LIKE', "%{$search}%")
-                ->orWhereRelation('village', 'name', 'LIKE', "%{$search}%")
-                ->orWhereRelation('tps', 'tps_name', 'LIKE', "%{$search}%")
-                ->count();
-            }
+          
+              $data_dpt = DataDpt::with('province', 'regency', 'district', 'village', 'tps')
+                  ->where(function ($query) use ($role_id) {
+                      // Tambahkan kondisi role_id dalam pencarian
+                      if ($role_id == 1 || $role_id == 5) {
+                          // Tidak ada kondisi role_id tambahan untuk role 1 dan 5
+                      } elseif ($role_id >= 2 && $role_id <= 4) {
+                          // Tambahkan kondisi untuk memeriksa role_id yang sesuai
+                          $query->where('role_id', $role_id);
+                      }
+                  })
+                  ->where('dpt_nik', 'LIKE', "%{$search}%")
+                  ->where('dpt_status', '!=', 5)
+                  ->orWhere('dpt_name', 'LIKE', "%{$search}%")
+                  ->orWhereRelation('province', 'name', 'LIKE', "%{$search}%")
+                  ->orWhereRelation('district', 'name', 'LIKE', "%{$search}%")
+                  ->orWhereRelation('regency', 'name', 'LIKE', "%{$search}%")
+                  ->orWhereRelation('village', 'name', 'LIKE', "%{$search}%")
+                  ->orWhereRelation('tps', 'tps_name', 'LIKE', "%{$search}%")
+                  ->offset($start)
+                  ->limit($limit)
+                  ->orderBy($order, $dir)
+                  ->get();
+          
+              $totalFiltered = DataDpt::with('province', 'regency', 'district', 'village', 'tps')
+                  ->where(function ($query) use ($role_id) {
+                      // Tambahkan kondisi role_id dalam pencarian
+                      if ($role_id == 1 || $role_id == 5) {
+                          // Tidak ada kondisi role_id tambahan untuk role 1 dan 5
+                      } elseif ($role_id >= 2 && $role_id <= 4) {
+                          // Tambahkan kondisi untuk memeriksa role_id yang sesuai
+                          $query->where('role_id', $role_id);
+                      }
+                  })
+                  ->where('dpt_nik', 'LIKE', "%{$search}%")
+                  ->where('dpt_status', '!=', 5)
+                  ->orWhere('dpt_name', 'LIKE', "%{$search}%")
+                  ->orWhereRelation('province', 'name', 'LIKE', "%{$search}%")
+                  ->orWhereRelation('district', 'name', 'LIKE', "%{$search}%")
+                  ->orWhereRelation('regency', 'name', 'LIKE', "%{$search}%")
+                  ->orWhereRelation('village', 'name', 'LIKE', "%{$search}%")
+                  ->orWhereRelation('tps', 'tps_name', 'LIKE', "%{$search}%")
+                  ->count();
+          }
         } else {
           $start = 0;  
           $data_dpt = DataDpt::with('province', 'regency', 'district', 'village', 'tps')->where('dpt_status', '!=', 5)->get();
@@ -440,5 +461,46 @@ class DataDptController extends Controller
               return response()->json(['status' => false, 'message' => ['title' => 'NIK Already Exists', 'text' => 'Beberapa NIK sudah ada. periksa kembali']]);
           }
       }
+
+
+      // public function import(Request $request)
+      // {
+      //     try {
+      //         $this->validate($request, [
+      //             'file' => 'required|mimes:xls,xlsx,csv,ods',
+      //         ]);
+
+      //         Excel::import(new DptImport, $request->file);
+
+      //         return response()->json(['status' => true, 'message' => ['title' => 'Successfully imported!', 'text' => 'Successfully import DPT!']]);
+      //     } catch (ValidationException $e) {
+      //         // Handle the case where NIK already exists
+      //         $errorMessage = $e->getMessage();
+
+      //         if (strpos($errorMessage, 'unique:sys_dpt,dpt_nik') !== false) {
+      //             // Extract NIK from the error message
+      //             preg_match('/unique:sys_dpt,dpt_nik/', $errorMessage, $matches, PREG_OFFSET_CAPTURE);
+      //             $startPosition = $matches[0][1];
+      //             $endPosition = strpos($errorMessage, 'unique:sys_dpt,dpt_nik', $startPosition + 1);
+      //             $subString = substr($errorMessage, $startPosition, $endPosition - $startPosition);
+      //             $nik = substr($subString, strrpos($subString, ' ') + 1);
+
+      //             // Get the line number
+      //             $lineNumber = $e->getTrace()[0]['line'];
+
+      //             return response()->json(['status' => false, 'message' => [
+      //                 'title' => 'NIK Already Exists',
+      //                 'text' => 'NIK ' . $nik . ' already exists. Error on line ' . $lineNumber,
+      //             ]]);
+      //         }
+
+      //         // Handle other validation errors
+      //         return response()->json(['status' => false, 'message' => [
+      //             'title' => 'Validation Error',
+      //             'text' => $e->getMessage(),
+      //         ]]);
+      //     }
+      // }
+
 
 }

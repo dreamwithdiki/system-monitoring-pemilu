@@ -53,110 +53,6 @@ class DataTpsController extends Controller
       return response()->json($response);
     }
 
-    // public function datatable(Request $request)
-    // {
-    //     $columns = [
-    //       0 => 'tps_id',
-    //       1 => 'tps_code',
-    //       2 => 'tps_name',
-    //       3 => 'tps_address',
-    //       4 => 'tps_province',
-    //       5 => 'tps_regency',
-    //       6 => 'tps_district',
-    //       7 => 'tps_village',
-    //       8 => 'tps_saksi', // buat status 4 = saksi
-    //       9 => 'tps_suara_caleg',
-    //       9 => 'tps_suara_partai',
-    //       9 => 'tps_docs',
-    //     ];
-
-    //     $search = [];
-    //     $totalData = DataTps::with('province', 'regency', 'district', 'village', 'role')->where('tps_status', '!=', 5)->count();
-    //     $totalFiltered = $totalData;
-
-    //     if (!empty($request->input())) {
-    //         $limit = $request->input('length');
-    //         $start = $request->input('start');
-    //         $order = $columns[$request->input('order.0.column')];
-    //         $dir = $request->input('order.0.dir');
-    
-    //         if (empty($request->input('search.value'))) {
-    //           $data_tps = DataTps::where('tps_status', '!=', 5)
-    //             ->offset($start)
-    //             ->limit($limit)
-    //             ->orderBy($order, $dir)
-    //             ->get();
-    //         } else {
-    //           $search = $request->input('search.value');
-    
-    //           $data_tps = DataTps::with('province', 'regency', 'district', 'village', 'role')->where('tps_code', 'LIKE', "%{$search}%")
-    //             ->where('tps_status', '!=', 5)
-    //             ->orWhere('tps_name', 'LIKE', "%{$search}%")
-    //             ->orWhereRelation('province', 'name', 'LIKE', "%{$search}%")
-    //             ->orWhereRelation('district', 'name', 'LIKE', "%{$search}%")
-    //             ->orWhereRelation('regency', 'name', 'LIKE', "%{$search}%")
-    //             ->orWhereRelation('village', 'name', 'LIKE', "%{$search}%")
-    //             ->orWhereRelation('role', 'role_name', 'LIKE', "%{$search}%")
-    //             ->offset($start)
-    //             ->limit($limit)
-    //             ->orderBy($order, $dir)
-    //             ->get();
-    
-    //           $totalFiltered = DataTps::with('province', 'regency', 'district', 'village', 'role')->where('tps_code', 'LIKE', "%{$search}%")
-    //             ->where('tps_status', '!=', 5)
-    //             ->orWhere('tps_name', 'LIKE', "%{$search}%")
-    //             ->orWhereRelation('province', 'name', 'LIKE', "%{$search}%")
-    //             ->orWhereRelation('district', 'name', 'LIKE', "%{$search}%")
-    //             ->orWhereRelation('regency', 'name', 'LIKE', "%{$search}%")
-    //             ->orWhereRelation('village', 'name', 'LIKE', "%{$search}%")
-    //             ->orWhereRelation('role', 'role_name', 'LIKE', "%{$search}%")
-    //             ->count();
-    //         }
-    //     } else {
-    //       $start = 0;  
-    //       $data_tps = DataTps::with('province', 'regency', 'district', 'village', 'role')->where('tps_status', '!=', 5)->get();
-    //     }
-
-    //     $data = [];
-
-    //     if (!empty($data_tps)) {
-    //       $no = $start;
-    //       foreach ($data_tps as $tps) {
-    //         $nestedData['no']               = ++$no;
-    //         $nestedData['tps_id']           = Crypt::encrypt($tps->tps_id);
-    //         $nestedData['tps_code']         = $tps->tps_code;
-    //         $nestedData['tps_name']         = $tps->tps_name;
-    //         $nestedData['tps_address']      = $tps->tps_address;
-    //         $nestedData['tps_province']     = $tps->province->name;
-    //         $nestedData['tps_regency']      = $tps->regency->name;
-    //         $nestedData['tps_district']     = $tps->district->name;
-    //         $nestedData['tps_village']      = $tps->village->name;
-    //         $nestedData['role_name']        = $tps->role->role_name;
-    //         $nestedData['tps_suara_caleg']  = $tps->tps_suara_caleg;
-    //         $nestedData['tps_suara_partai'] = $tps->tps_suara_partai;
-    //         $nestedData['tps_docs']         = $tps->tps_docs;
-    //         $nestedData['tps_status']       = $tps->tps_status;
-    //         $data[] = $nestedData;
-    //       }
-    //     }
-
-    //     if ($data) {
-    //       return response()->json([
-    //         'draw' => intval($request->input('draw')),
-    //         'recordsTotal' => intval($totalData),
-    //         'recordsFiltered' => intval($totalFiltered),
-    //         'code' => 200,
-    //         'data' => $data,
-    //       ]);
-    //     } else {
-    //       return response()->json([
-    //         'message' => 'Internal Server Error',
-    //         'code' => 500,
-    //         'data' => [],
-    //       ]);
-    //     }
-    // }
-
     public function datatable(Request $request)
     {
 
@@ -221,30 +117,50 @@ class DataTpsController extends Controller
               }
             } else {
               $search = $request->input('search.value');
-    
-              $data_tps = DataTps::with('province', 'regency', 'district', 'village', 'role')->where('tps_code', 'LIKE', "%{$search}%")
-                ->where('tps_status', '!=', 5)
-                ->orWhere('tps_name', 'LIKE', "%{$search}%")
-                ->orWhereRelation('province', 'name', 'LIKE', "%{$search}%")
-                ->orWhereRelation('district', 'name', 'LIKE', "%{$search}%")
-                ->orWhereRelation('regency', 'name', 'LIKE', "%{$search}%")
-                ->orWhereRelation('village', 'name', 'LIKE', "%{$search}%")
-                ->orWhereRelation('role', 'role_name', 'LIKE', "%{$search}%")
-                ->offset($start)
-                ->limit($limit)
-                ->orderBy($order, $dir)
-                ->get();
-    
-              $totalFiltered = DataTps::with('province', 'regency', 'district', 'village', 'role')->where('tps_code', 'LIKE', "%{$search}%")
-                ->where('tps_status', '!=', 5)
-                ->orWhere('tps_name', 'LIKE', "%{$search}%")
-                ->orWhereRelation('province', 'name', 'LIKE', "%{$search}%")
-                ->orWhereRelation('district', 'name', 'LIKE', "%{$search}%")
-                ->orWhereRelation('regency', 'name', 'LIKE', "%{$search}%")
-                ->orWhereRelation('village', 'name', 'LIKE', "%{$search}%")
-                ->orWhereRelation('role', 'role_name', 'LIKE', "%{$search}%")
-                ->count();
-            }
+          
+              $data_tps = DataTps::with('province', 'regency', 'district', 'village', 'role')
+                  ->where(function ($query) use ($role_id) {
+                      // Tambahkan kondisi role_id dalam pencarian
+                      if ($role_id == 1 || $role_id == 5) {
+                          // Tidak ada kondisi role_id tambahan untuk role 1 dan 5
+                      } elseif ($role_id >= 2 && $role_id <= 4) {
+                          // Tambahkan kondisi untuk memeriksa role_id yang sesuai
+                          $query->where('role_id', $role_id);
+                      }
+                  })
+                  ->where('tps_code', 'LIKE', "%{$search}%")
+                  ->where('tps_status', '!=', 5)
+                  ->orWhere('tps_name', 'LIKE', "%{$search}%")
+                  ->orWhereRelation('province', 'name', 'LIKE', "%{$search}%")
+                  ->orWhereRelation('district', 'name', 'LIKE', "%{$search}%")
+                  ->orWhereRelation('regency', 'name', 'LIKE', "%{$search}%")
+                  ->orWhereRelation('village', 'name', 'LIKE', "%{$search}%")
+                  ->orWhereRelation('role', 'role_name', 'LIKE', "%{$search}%")
+                  ->offset($start)
+                  ->limit($limit)
+                  ->orderBy($order, $dir)
+                  ->get();
+          
+                 $totalFiltered = DataTps::with('province', 'regency', 'district', 'village', 'role')
+                  ->where(function ($query) use ($role_id) {
+                      // Tambahkan kondisi role_id dalam pencarian
+                      if ($role_id == 1 || $role_id == 5) {
+                          // Tidak ada kondisi role_id tambahan untuk role 1 dan 5
+                      } elseif ($role_id >= 2 && $role_id <= 4) {
+                          // Tambahkan kondisi untuk memeriksa role_id yang sesuai
+                          $query->where('role_id', $role_id);
+                      }
+                  })
+                  ->where('tps_code', 'LIKE', "%{$search}%")
+                  ->where('tps_status', '!=', 5)
+                  ->orWhere('tps_name', 'LIKE', "%{$search}%")
+                  ->orWhereRelation('province', 'name', 'LIKE', "%{$search}%")
+                  ->orWhereRelation('district', 'name', 'LIKE', "%{$search}%")
+                  ->orWhereRelation('regency', 'name', 'LIKE', "%{$search}%")
+                  ->orWhereRelation('village', 'name', 'LIKE', "%{$search}%")
+                  ->orWhereRelation('role', 'role_name', 'LIKE', "%{$search}%")
+                  ->count();
+          }
         } else {
           $start = 0;  
           $data_tps = DataTps::with('province', 'regency', 'district', 'village', 'role')->where('tps_status', '!=', 5)->get();
