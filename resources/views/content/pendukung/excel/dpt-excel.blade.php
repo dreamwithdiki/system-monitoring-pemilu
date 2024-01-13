@@ -9,6 +9,10 @@
 		<td colspan="2">Print On</td>
 		<td colspan="4">: {{ date('Y-m-d H:i:s') }}</td>
 	</tr>
+    <tr>
+		<td colspan="2">Print By</td>
+		<td colspan="4">: {{ session('user_uniq_name') }}</td>
+	</tr>
 	<tr>
 		<td colspan="6">&nbsp;</td>
 	</tr>
@@ -49,7 +53,13 @@
                 <td height="80">{{ $dpt->regency->name }}</td>
                 <td height="80">{{ $dpt->district->name }}</td>
                 <td height="80">{{ $dpt->village->name }}</td>
-                <td height="80">{{ $dpt->tps->tps_code .'-'. $dpt->tps->tps_name; }}</td>
+
+                @php
+                $tps_code = $dpt->tps->tps_code ?? '-';
+                $tps_name = $dpt->tps->tps_name ?? '-';
+                @endphp
+
+                <td height="80">{{ $tps_code .'-'. $tps_name; }}</td>
                 <td height="80">{{ $dpt->role->role_name }}</td>
                 <td height="80">{{ $dpt->dpt_status == 2 ? 'Active' : 'Deactive' }}</td>
             </tr>

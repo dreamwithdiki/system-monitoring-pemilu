@@ -29,7 +29,7 @@ class DataCalegController extends Controller
     {
         if(session('role_id') == 1){
           $ceklisKecamatan = Kecamatan::orderby('kecamatan_name', 'ASC')->isActive()->get();
-          
+
           return view('content.pemilu.master-data.caleg', [
             'ceklisKecamatan'=> $ceklisKecamatan
           ]);
@@ -61,9 +61,9 @@ class DataCalegController extends Controller
             $start = $request->input('start');
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
-    
+
             if (empty($request->input('search.value'))) {
-              $order = 'caleg_id'; 
+              $order = 'caleg_id';
               $dir = 'desc';
 
               $caleg = DataCaleg::where('caleg_status', '!=', 5)
@@ -73,7 +73,7 @@ class DataCalegController extends Controller
                 ->get();
             } else {
               $search = $request->input('search.value');
-    
+
               $caleg = DataCaleg::where('caleg_nik', 'LIKE', "%{$search}%")
                 ->where('caleg_status', '!=', 5)
                 ->orWhere('caleg_name', 'LIKE', "%{$search}%")
@@ -82,7 +82,7 @@ class DataCalegController extends Controller
                 ->limit($limit)
                 ->orderBy($order, $dir)
                 ->get();
-    
+
               $totalFiltered = DataCaleg::where('caleg_nik', 'LIKE', "%{$search}%")
                 ->where('caleg_status', '!=', 5)
                 ->orWhere('caleg_name', 'LIKE', "%{$search}%")
@@ -90,7 +90,7 @@ class DataCalegController extends Controller
                 ->count();
             }
         } else {
-          $start = 0;  
+          $start = 0;
           $caleg = DataCaleg::where('caleg_status', '!=', 5)->get();
         }
 
@@ -151,14 +151,14 @@ class DataCalegController extends Controller
             'caleg_photo.*'         => 'nullable|file|mimes:jpeg,png,jpg',
             'caleg_photo_partai.*'  => 'required|file|mimes:jpeg,png,jpg'
         ]);
-  
+
         //  dd($validator->errors());
         // dd($request->all());
-  
+
         if ($validator->fails()) {
         return response()->json(['status' => false, 'message' => ['title' => 'Validation data required', 'text' => 'Please fill all the field']]);
         }
-        
+
         // caleg Status
         $status = !empty($request->caleg_status) && $request->caleg_status == 'on' ? 2 : 1;
 
@@ -179,7 +179,17 @@ class DataCalegController extends Controller
             $compressedImage = Image::make($image)->resize(300, 300, function ($constraint) {
                 $constraint->aspectRatio();
             });
-            Storage::disk('public')->put('caleg_uploads/'.$timeNow.'/'.$filename, $compressedImage->encode());
+            // Storage::disk('public')->put('caleg_uploads/'.$timeNow.'/'.$filename, $compressedImage->encode());
+
+            // Ensure the directory exists
+            $targetDirectory = public_path('assets/upload/caleg_photo/'.$timeNow);
+            if (!file_exists($targetDirectory)) {
+                // Create the directory if it doesn't exist
+                mkdir($targetDirectory, 0755, true);
+            }
+
+            // Move the file to the desired directory
+            $compressedImage->save($targetDirectory.'/'.$filename);
         } else {
             // If no photo is uploaded, use default.jpeg
             $filename = 'default.jpeg';
@@ -194,7 +204,18 @@ class DataCalegController extends Controller
             $compressedImage = Image::make($image)->resize(300, 300, function ($constraint) {
                 $constraint->aspectRatio();
             });
-            Storage::disk('public')->put('caleg_partai_uploads/'.$timeNow.'/'.$filename_photo, $compressedImage->encode());
+            // Storage::disk('public')->put('caleg_partai_uploads/'.$timeNow.'/'.$filename_photo, $compressedImage->encode());
+
+            // Ensure the directory exists
+            $targetDirectory = public_path('assets/upload/caleg_photo_partai/'.$timeNow);
+            if (!file_exists($targetDirectory)) {
+                // Create the directory if it doesn't exist
+                mkdir($targetDirectory, 0755, true);
+            }
+
+            // Move the file to the desired directory
+            $compressedImage->save($targetDirectory.'/'.$filename_photo);
+
         } else {
             // If no photo is uploaded, use default.jpeg
             $filename_photo = 'default.jpeg';
@@ -216,8 +237,8 @@ class DataCalegController extends Controller
 
         $kecamatan_type_data = $request->kecamatan_type;
         $caleg_id            = $dataCaleg->caleg_id;
-        
-        // Menyimpan data checklist kecamatan yang dipilih 
+
+        // Menyimpan data checklist kecamatan yang dipilih
         foreach ($kecamatan_type_data as $check) {
           $checklist_kec_object = Kecamatan::where('kecamatan_id', $check)->first();
           if (!empty($checklist_kec_object)) {
@@ -227,7 +248,7 @@ class DataCalegController extends Controller
                   'kecamatan_created_by'   => session('user_id'),
                   'kecamatan_created_date' => now()->format('Y-m-d H:i:s')
               ];
-              
+
               KecamatanCeklis::create(
                   [
                       'caleg_id'               => $caleg_id,
@@ -237,7 +258,7 @@ class DataCalegController extends Controller
                   ],
                   $checklist_group_data
               );
-            
+
           }
       }
 
@@ -303,65 +324,89 @@ class DataCalegController extends Controller
             'caleg_photo.*'         => 'nullable|file|mimes:jpeg,png,jpg',
             'caleg_photo_partai.*'  => 'nullable|file|mimes:jpeg,png,jpg'
           ]);
-  
+
           // caleg Status
           $status = !empty($request->caleg_status) && $request->caleg_status == 'on' ? 2 : 1;
-          
+
           // caleg nik check duplicate entry
           $nik_exist = DataCaleg::where('caleg_nik', $request->caleg_nik)->where('caleg_id', '!=', Crypt::decrypt($id))->exists();
           if ($nik_exist) {
             return response()->json(['status' => false, 'message' => ['title' => 'Duplicate Entry', 'text' => 'NIK already registered on another caleg!']]);
           }
-  
+
           $cal = DataCaleg::where('caleg_id', Crypt::decrypt($id))->first();
-          
+
           $timeNow = Carbon::now()->format('Ymd');
           if ($request->hasFile('caleg_photo')) {
               $image = $request->file('caleg_photo');
 
               // Get the old image path from the database
-              $dir = Carbon::parse($cal->caleg_created_date)->format('Ymd');
+              $calegDate = !empty($cal->caleg_updated_date) ? $cal->caleg_updated_date : $cal->caleg_created_date;
+              $dir = Carbon::parse($calegDate)->format('Ymd');
               $oldImage = $dir.'/'.$cal->caleg_photo;
 
-              // Check if the old image is not the default image and exists in the storage
-              if ($oldImage != 'default.jpeg' && Storage::disk('public')->exists('caleg_uploads/' . $oldImage)) {
-                  // Unlink (delete) the old image
-                  Storage::disk('public')->delete('caleg_uploads/' . $oldImage);
-              }
-              // Compress the image and save it
-              $filename = Carbon::now()->format('Hisu_').'caleg'.($request->caleg_id).'.'.$image->getClientOriginalExtension();
-              $compressedImage = Image::make($image)->resize(300, 300, function ($constraint) {
-                  $constraint->aspectRatio();
-              });
-              Storage::disk('public')->put('caleg_uploads/'.$timeNow.'/'.$filename, $compressedImage->encode());
+             // Check if the old image is not the default image and exists in the public directory
+            $oldImagePath = public_path('assets/upload/caleg_uploads/'.$oldImage);
+            if ($cal->caleg_photo != 'default.jpeg' && file_exists($oldImagePath)) {
+                // Unlink (delete) the old image
+                unlink($oldImagePath);
+            }
 
-              // Update the caleg_photo column only if the photo is changed
-              $cal->caleg_photo = $filename;
+            // Compress the new image and save it
+            $filename = Carbon::now()->format('Hisu_').'caleg'.($request->caleg_id).'.'.$image->getClientOriginalExtension();
+            $compressedImage = Image::make($image)->resize(300, 300, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+
+            // Ensure the directory exists
+            $targetDirectory = public_path('assets/upload/caleg_uploads/'.$timeNow);
+            if (!file_exists($targetDirectory)) {
+                // Create the directory if it doesn't exist
+                mkdir($targetDirectory, 0755, true);
+            }
+
+            // Move the file to the desired directory
+            $compressedImage->save($targetDirectory.'/'.$filename);
+
+            // Update the caleg_photo column only if the photo is changed
+            $cal->caleg_photo = $filename;
           }
 
           if ($request->hasFile('caleg_photo_partai')) {
             $image = $request->file('caleg_photo_partai');
 
             // Get the old image path from the database
-            $dir = Carbon::parse($cal->caleg_created_date)->format('Ymd');
+            $calegDate = !empty($cal->caleg_updated_date) ? $cal->caleg_updated_date : $cal->caleg_created_date;
+            $dir = Carbon::parse($calegDate)->format('Ymd');
             $oldImage = $dir.'/'.$cal->caleg_photo_partai;
 
-            // Check if the old image is not the default image and exists in the storage
-            if ($oldImage != 'default.jpeg' && Storage::disk('public')->exists('caleg_partai_uploads/' . $oldImage)) {
+            // Check if the old image is not the default image and exists in the public directory
+            $oldImagePath = public_path('assets/upload/caleg_partai_uploads/'.$oldImage);
+            if ($cal->caleg_photo_partai != 'default.jpeg' && file_exists($oldImagePath)) {
                 // Unlink (delete) the old image
-                Storage::disk('public')->delete('caleg_partai_uploads/' . $oldImage);
+                unlink($oldImagePath);
             }
-            // Compress the image and save it
-            $filename_photo = Carbon::now()->format('Hisu_').'caleg_partai'.($request->caleg_id).'.'.$image->getClientOriginalExtension();
-            $compressedImage = Image::make($image)->resize(300, 300, function ($constraint_photo) {
-                $constraint_photo->aspectRatio();
+
+            // Compress the new image and save it
+            $filename_photo = Carbon::now()->format('Hisu_').'caleg'.($request->caleg_id).'.'.$image->getClientOriginalExtension();
+            $compressedImage = Image::make($image)->resize(300, 300, function ($constraint) {
+                $constraint->aspectRatio();
             });
-            Storage::disk('public')->put('caleg_partai_uploads/'.$timeNow.'/'.$filename_photo, $compressedImage->encode());
+
+            // Ensure the directory exists
+            $targetDirectory = public_path('assets/upload/caleg_partai_uploads/'.$timeNow);
+            if (!file_exists($targetDirectory)) {
+                // Create the directory if it doesn't exist
+                mkdir($targetDirectory, 0755, true);
+            }
+
+            // Move the file to the desired directory
+            $compressedImage->save($targetDirectory.'/'.$filename_photo);
 
             // Update the caleg_photo_partai column only if the photo is changed
             $cal->caleg_photo_partai = $filename_photo;
         }
-          
+
           $cal->caleg_status            = $status;
           $cal->caleg_nik               = $request->caleg_nik;
           $cal->caleg_name              = $request->caleg_name;
@@ -389,7 +434,7 @@ class DataCalegController extends Controller
                     'kecamatan_ceklis_created_by'   => session('user_id'),
                     'kecamatan_ceklis_created_date' => now()->format('Y-m-d H:i:s')
                 ];
-                
+
                  // Update or insert the record based on caleg_id and kecamatan_id
                 KecamatanCeklis::updateOrInsert(
                     [
@@ -398,10 +443,10 @@ class DataCalegController extends Controller
                     ],
                     $checklist_group_data
                 );
-              
+
             }
         }
-          
+
         return response()->json([
             'status' => true,
             'message' => ['title' => 'Successfully created!', 'text' => 'Caleg ' . $request->caleg_name . ' updated successfully!'],
@@ -424,11 +469,36 @@ class DataCalegController extends Controller
 
             $dir = Carbon::parse($part->caleg_created_date)->format('Ymd');
             // photo caleg
-            $file_path = $dir.'/'.$part->caleg_photo;
-            Storage::disk('public')->delete('caleg_uploads/' . $file_path);
+            // $file_path = $dir.'/'.$part->caleg_photo;
+            // Storage::disk('public')->delete('caleg_uploads/' . $file_path);
+
+            // Get the old image path from the database
+            $calegDate = !empty($part->caleg_updated_date) ? $part->caleg_updated_date : $part->caleg_created_date;
+            $dir = Carbon::parse($calegDate)->format('Ymd');
+            $oldImage = $dir.'/'.$part->caleg_photo;
+
+            // Check if the old image is not the default image and exists in the public directory
+            $file_path = public_path('assets/upload/caleg_uploads/'.$oldImage);
+            if ($part->caleg_photo != 'default.jpeg' && file_exists($file_path)) {
+                // Unlink (delete) the old image
+                unlink($file_path);
+            }
+
             // photo partai
-            $file_path_partai = $dir.'/'.$part->caleg_photo_partai;
-            Storage::disk('public')->delete('caleg_partai_uploads/' . $file_path_partai);
+            // $file_path_partai = $dir.'/'.$part->caleg_photo_partai;
+            // Storage::disk('public')->delete('caleg_partai_uploads/' . $file_path_partai);
+
+            // Get the old image path from the database
+            $calegDate = !empty($part->caleg_updated_date) ? $part->caleg_updated_date : $part->caleg_created_date;
+            $dir = Carbon::parse($calegDate)->format('Ymd');
+            $oldImage = $dir.'/'.$part->caleg_photo_partai;
+
+            // Check if the old image is not the default image and exists in the public directory
+            $file_path_partai = public_path('assets/upload/caleg_partai_uploads/'.$oldImage);
+            if ($part->caleg_photo_partai != 'default.jpeg' && file_exists($file_path_partai)) {
+                // Unlink (delete) the old image
+                unlink($file_path_partai);
+            }
 
             $part->caleg_status        = '5';
             $part->caleg_photo         = 'default.jpeg';
@@ -449,10 +519,15 @@ class DataCalegController extends Controller
         abort(404);
       }
 
-      $dir = Carbon::parse($caleg->caleg_created_date)->format('Ymd');
-      $file_path = $dir.'/'.$caleg->caleg_photo;
+      // $dir = Carbon::parse($caleg->caleg_created_date)->format('Ymd');
+      // $file_path = $dir.'/'.$caleg->caleg_photo;
 
-      $path = storage_path('app/public/caleg_uploads/'.$file_path);
+      // $path = storage_path('app/public/caleg_uploads/'.$file_path);
+       // Update the path to the new directory
+
+      $calegDate = !empty($caleg->caleg_updated_date) ? $caleg->caleg_updated_date : $caleg->caleg_created_date;
+      $timeNow = Carbon::parse($calegDate)->format('Ymd');
+      $path = public_path('assets/upload/caleg_uploads/'.$timeNow.'/'.$caleg->caleg_photo);
       if (!File::exists($path)) {
         $path = public_path('assets/upload/user/default.jpeg');
       }
@@ -472,10 +547,14 @@ class DataCalegController extends Controller
         abort(404);
       }
 
-      $dir_file = Carbon::parse($caleg_partai->caleg_created_date)->format('Ymd');
-      $file_path_partai = $dir_file.'/'.$caleg_partai->caleg_photo_partai;
+      // $dir_file = Carbon::parse($caleg_partai->caleg_created_date)->format('Ymd');
+      // $file_path_partai = $dir_file.'/'.$caleg_partai->caleg_photo_partai;
 
-      $path_partai = storage_path('app/public/caleg_partai_uploads/'.$file_path_partai);
+      // $path_partai = storage_path('app/public/caleg_partai_uploads/'.$file_path_partai);
+
+      $calegDate = !empty($caleg_partai->caleg_updated_date) ? $caleg_partai->caleg_updated_date : $caleg_partai->caleg_created_date;
+      $timeNow = Carbon::parse($calegDate)->format('Ymd');
+      $path_partai = public_path('assets/upload/caleg_partai_uploads/'.$timeNow.'/'.$caleg_partai->caleg_photo_partai);
       if (!File::exists($path_partai)) {
         $path_partai = public_path('assets/upload/user/default.jpeg');
       }

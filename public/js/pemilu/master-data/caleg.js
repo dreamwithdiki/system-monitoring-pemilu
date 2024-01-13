@@ -12,7 +12,7 @@ $(function () {
   var modal_detail_caleg   = $('#modalDetailCaleg');
   var modal_class_loader = $('.modal-block-loader');
   var typingTimer;
-  
+
   $.ajaxSetup({
     headers: {
       'X-CSRF-TOKEN': CSRF_TOKEN
@@ -60,7 +60,7 @@ $(function () {
           render: function(data, type, row) {
             if (data) {
               var expanded = row.expanded ? row.expanded : false;
-        
+
               if (!expanded) {
                 var shortDesc = data.length > 30 ? data.substr(0, 30) + '...' : data;
                 var showMoreHtml = data.length > 30 ? '<a href="javascript:void(0);" class="show-more">Show More</a>' : '';
@@ -73,14 +73,14 @@ $(function () {
             }
           }
         },
-        { 
+        {
           data: 'caleg_no_urut_partai', orderable: false ,
           render: function(data, type, row) {
               return '<span class="badge badge-center rounded-pill bg-secondary">' + data + '</span>';
           }
         },
         { data: 'caleg_nama_partai', orderable: false },
-        { 
+        {
           data: 'caleg_no_urut_caleg', orderable: false ,
           render: function(data, type, row) {
               return '<span class="badge badge-center rounded-pill bg-secondary">' + data + '</span>';
@@ -121,7 +121,7 @@ $(function () {
             }
           },
           orderable: false
-        },        
+        },
         { data: 'caleg_status', orderable: false }
       ],
       columnDefs: [
@@ -184,7 +184,7 @@ $(function () {
       typingTimer = setTimeout(function() {
         dt_ajax_table.DataTable().search($this.val()).draw();
       }, 1200);
-    });    
+    });
   }
 
   $(document).on('click', '.show-more', function(e) {
@@ -199,7 +199,7 @@ $(function () {
     row.expanded = true; // Menandai bahwa deskripsi telah di-expand
     dt_ajax.row($this.closest('tr')).data(row);
   });
-  
+
   $(document).on('click', '.show-less', function(e) {
     e.preventDefault();
     var $this = $(this);
@@ -212,7 +212,7 @@ $(function () {
     row.expanded = false; // Menandai bahwa deskripsi telah di-collapse
     dt_ajax.row($this.closest('tr')).data(row);
   });
-  
+
   // Add Form
   var add_caleg_form = document.getElementById('formAddCaleg');
 
@@ -278,7 +278,7 @@ $(function () {
                 message: 'Please choose the photo partai'
             }
         }
-     }    
+     }
     },
     plugins: {
       trigger: new FormValidation.plugins.Trigger(),
@@ -303,7 +303,7 @@ $(function () {
       var url = "";
     }
 
-    var form_data = new FormData(add_caleg_form); 
+    var form_data = new FormData(add_caleg_form);
     $.ajax({
       data: form_data,
       url: baseUrl + url,
@@ -416,7 +416,7 @@ $(function () {
         }
       },
       caleg_photo_partai: {
-     }   
+     }
     },
     plugins: {
       trigger: new FormValidation.plugins.Trigger(),
@@ -440,7 +440,7 @@ $(function () {
     } else {
       var url = "";
     }
-    var form_data = new FormData(editCalegForm); 
+    var form_data = new FormData(editCalegForm);
 
     $.ajax({
       data: form_data,
@@ -493,7 +493,7 @@ $(function () {
     });
   });
   // End Form
-  
+
   // Edit button handler
   $(document).on('click', '#dropdownMenuEdit', function () {
     var caleg_id = $(this).data('id');
@@ -603,10 +603,10 @@ $(function () {
 
         $('#detVisiMisi').text(response.data.caleg_visi_misi);
         $('#detNamaPartai').text(response.data.caleg_nama_partai);
-        
+
         var statusText = response.data.caleg_status === 1 ? '<span class="badge bg-danger">Deactive</span>' : '<span class="badge bg-success">Active</span>';
         $('#detStatus').html(statusText);
-                
+
         modal_class_loader.unblock();
       }
     });
@@ -616,7 +616,7 @@ $(function () {
     $('#formDetailCaleg').attr('data-id', caleg_id);
     modal_detail_caleg.modal('show');
   });
-  
+
   // Active / Deactive status button handler
   $(document).on('click', '.dropdownMenuStatusUpdate', function () {
     var caleg_id = $(this).data('id'),
@@ -719,7 +719,7 @@ $(function () {
       }
     });
   });
-  
+
   // Clearing form data when modal hidden
   modal_add_caleg.on('hidden.bs.modal', function () {
     $('#addFormLabel > p').html('Add new caleg.');
@@ -747,11 +747,11 @@ $(function () {
       {
           var files = !!this.files ? this.files : [];
           if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
-          
+
           if (/^image/.test( files[0].type)){ // only image file
               var reader = new FileReader(); // instance of the FileReader
               reader.readAsDataURL(files[0]); // read the local file
-              
+
               reader.onloadend = function(){ // set image data as background of div
                   $("#imagePreview").css("background-image", "url("+this.result+")");
               }
@@ -765,11 +765,11 @@ $(function () {
     {
         var files = !!this.files ? this.files : [];
         if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
-        
+
         if (/^image/.test( files[0].type)){ // only image file
             var reader = new FileReader(); // instance of the FileReader
             reader.readAsDataURL(files[0]); // read the local file
-            
+
             reader.onloadend = function(){ // set image data as background of div
                 $("#imagePreviewPartai").css("background-image", "url("+this.result+")");
             }
@@ -779,7 +779,7 @@ $(function () {
 
   // Get the checkbox
   var checkboxKecamatan = document.getElementById("checkbox");
-  
+
   // Get the close button
   var closeKec = document.getElementsByClassName("btn-close")[0];
 

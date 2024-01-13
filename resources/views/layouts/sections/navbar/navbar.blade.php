@@ -384,7 +384,8 @@ $navbarDetached = ($navbarDetached ?? '');
                   $defaultPhotoPath = asset('assets/upload/user/default.jpeg');
                 @endphp
               
-                <img id="userPhoto" src="{{ file_exists(public_path($userPhotoPath)) ? $userPhotoPath : $defaultPhotoPath }}" alt="user image" class="w-px-40 h-auto rounded-circle">
+                {{-- <img id="userPhoto" src="{{ file_exists(public_path($userPhotoPath)) ? $userPhotoPath : $defaultPhotoPath }}" alt="user image" class="w-px-40 h-auto rounded-circle"> --}}
+                <img src="{{ asset('pemilu/master-data/user/uploads/'.session('user_id')) }}" alt="user image" class="w-px-40 h-auto rounded-circle">
               </div>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
@@ -393,7 +394,9 @@ $navbarDetached = ($navbarDetached ?? '');
                   <div class="d-flex">
                     <div class="flex-shrink-0 me-3">
                       <div class="avatar avatar-online">
-                        <img id="userPhotoNav" src="{{ file_exists(public_path($userPhotoPath)) ? $userPhotoPath : $defaultPhotoPath }}" alt="user image" class="w-px-40 h-auto rounded-circle">
+                        {{-- <img id="userPhotoNav" src="{{ file_exists(public_path($userPhotoPath)) ? $userPhotoPath : $defaultPhotoPath }}" alt="user image" class="w-px-40 h-auto rounded-circle"> --}}
+
+                        <img id="userPhotoNav" src="{{ asset('pemilu/master-data/user/uploads/'.session('user_id')) }}" alt="user image" class="w-px-40 h-auto rounded-circle">
                       </div>
                     </div>
                     <div class="flex-grow-1">

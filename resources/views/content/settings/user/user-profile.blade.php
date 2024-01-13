@@ -60,7 +60,8 @@
             $defaultPhotoPath = asset('assets/upload/user/default.jpeg');
           @endphp
         
-          <img src="{{ file_exists(public_path($userPhotoPath)) ? $userPhotoPath : $defaultPhotoPath }}" alt="user image" class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img">
+          {{-- <img src="{{ file_exists(public_path($userPhotoPath)) ? $userPhotoPath : $defaultPhotoPath }}" alt="user image" class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img"> --}}
+          <img src="{{ asset('pemilu/master-data/user/uploads/'.session('user_id')) }}" alt="user image" class="d-block h-auto ms-0 ms-sm-4 rounded user-profile-img">
         </div>        
         <div class="flex-grow-1 mt-3 mt-sm-5">
           <div class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-4 flex-md-row flex-column gap-4">

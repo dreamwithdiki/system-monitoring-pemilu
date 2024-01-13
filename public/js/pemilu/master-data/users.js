@@ -329,19 +329,29 @@ $(function () {
                 avatarClass = 'avatar-offline';
               }
 
-              var http = new XMLHttpRequest();
-              http.open('HEAD', '/storage/users_uploads/' + row.user_photo, false);
-              http.send();
+              // var http = new XMLHttpRequest();
+              // http.open('HEAD', '/storage/users_uploads/' + row.user_photo, false);
+              // http.send();
 
-              var fileImageElement = document.createElement('img'); // Create the image element
+              // var fileImageElement = document.createElement('img'); // Create the image element
 
-              if (http.status === 200) {
-                fileImageElement.src = '/storage/users_uploads/' + row.user_photo;
-              } else {
-                fileImageElement.src = '/assets/upload/user/default.jpeg';
+              // if (http.status === 200) {
+              //   fileImageElement.src = '/storage/users_uploads/' + row.user_photo;
+              // } else {
+              //   fileImageElement.src = '/assets/upload/user/default.jpeg';
+              // }
+
+              // return '<div class="avatar avatar-md me-2 ' + avatarClass + '"><img src="' + fileImageElement.src + '" alt="Avatar" class="rounded-circle"></div>';
+
+              var images = '';
+              var tps_files = data.split(',');
+              for (var i = 0; i < tps_files.length; i++) {
+                var url = baseUrl + 'pemilu/master-data/user/uploads/' + row.user_id;
+                url = url.replace(':filename', tps_files[i]);
+                images += '<img src="' + url + '" width="50px" height="50px" class="rounded-circle" />';
               }
-
-              return '<div class="avatar avatar-md me-2 ' + avatarClass + '"><img src="' + fileImageElement.src + '" alt="Avatar" class="rounded-circle"></div>';
+              // return images;
+              return '<div class="avatar avatar-md me-2 ' + avatarClass + '">'+ images;
 
             } else {
               return '<span class="badge bg-label-warning me-1">No Photo</span>';

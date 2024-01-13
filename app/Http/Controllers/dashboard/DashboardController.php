@@ -46,7 +46,7 @@ class DashboardController extends Controller
         'total_users_is_active'     => $total_users_is_active,
         'total_caleg_is_active'     => $total_caleg_is_active,
         'data_chart_bar_tps'        => $data_chart_bar_tps,
-        'data_districts'            => $data_districts,  
+        'data_districts'            => $data_districts,
       ]);
     } else if (session('role_id') == 2) {
       $data_chart_bar_tps = DataTps::with('province', 'regency', 'district', 'village')->get();
@@ -78,7 +78,7 @@ class DashboardController extends Controller
         'total_users_is_active'     => $total_users_is_active,
         'total_caleg_is_active'     => $total_caleg_is_active,
         'data_chart_bar_tps'        => $data_chart_bar_tps,
-        'data_districts'            => $data_districts, 
+        'data_districts'            => $data_districts,
       ]);
     } else if (session('role_id') == 3) {
       $data_chart_bar_tps = DataTps::with('province', 'regency', 'district', 'village')->get();
@@ -110,7 +110,7 @@ class DashboardController extends Controller
         'total_users_is_active'     => $total_users_is_active,
         'total_caleg_is_active'     => $total_caleg_is_active,
         'data_chart_bar_tps'        => $data_chart_bar_tps,
-        'data_districts'            => $data_districts, 
+        'data_districts'            => $data_districts,
       ]);
     } else if (session('role_id') == 4) {
       $data_chart_bar_tps = DataTps::with('province', 'regency', 'district', 'village')->get();
@@ -142,7 +142,7 @@ class DashboardController extends Controller
         'total_users_is_active'     => $total_users_is_active,
         'total_caleg_is_active'     => $total_caleg_is_active,
         'data_chart_bar_tps'        => $data_chart_bar_tps,
-        'data_districts'            => $data_districts, 
+        'data_districts'            => $data_districts,
       ]);
     } else if (session('role_id') == 5) {
       $data_chart_bar_tps = DataTps::with('province', 'regency', 'district', 'village')->get();
@@ -174,7 +174,7 @@ class DashboardController extends Controller
         'total_users_is_active'     => $total_users_is_active,
         'total_caleg_is_active'     => $total_caleg_is_active,
         'data_chart_bar_tps'        => $data_chart_bar_tps,
-        'data_districts'            => $data_districts, 
+        'data_districts'            => $data_districts,
       ]);
     } else {
       return view('content.pages.pages-misc-not-authorized');
@@ -197,10 +197,9 @@ class DashboardController extends Controller
         abort(404);
       }
 
-      $dir = Carbon::parse($caleg->caleg_created_date)->format('Ymd');
-      $file_path = $dir.'/'.$caleg->caleg_photo;
-
-      $path = storage_path('app/public/caleg_uploads/'.$file_path);
+      $calegDate = !empty($caleg->caleg_updated_date) ? $caleg->caleg_updated_date : $caleg->caleg_created_date;
+      $timeNow = Carbon::parse($calegDate)->format('Ymd');
+      $path = public_path('assets/upload/caleg_uploads/'.$timeNow.'/'.$caleg->caleg_photo);
       if (!File::exists($path)) {
         $path = public_path('assets/upload/user/default.jpeg');
       }
@@ -220,13 +219,13 @@ class DashboardController extends Controller
         abort(404);
       }
 
-      $dir_file = Carbon::parse($caleg_partai->caleg_created_date)->format('Ymd');
-      $file_path_partai = $dir_file.'/'.$caleg_partai->caleg_photo_partai;
-
-      $path_partai = storage_path('app/public/caleg_partai_uploads/'.$file_path_partai);
+      $calegDate = !empty($caleg_partai->caleg_updated_date) ? $caleg_partai->caleg_updated_date : $caleg_partai->caleg_created_date;
+      $timeNow = Carbon::parse($calegDate)->format('Ymd');
+      $path_partai = public_path('assets/upload/caleg_partai_uploads/'.$timeNow.'/'.$caleg_partai->caleg_photo_partai);
       if (!File::exists($path_partai)) {
         $path_partai = public_path('assets/upload/user/default.jpeg');
       }
+
 
       $file = File::get($path_partai);
       $type = File::mimeType($path_partai);
