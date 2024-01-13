@@ -1,7 +1,7 @@
 @php
 $configData = Helper::appClasses();
 
-date_default_timezone_set("Asia/Jakarta");  
+date_default_timezone_set("Asia/Jakarta");
 
 $hour = date('H', time());
 
@@ -67,7 +67,7 @@ else {
                   }
 
                   latestCalegCard.html(`
-                    <div class="col-lg-6 col-md-12 col-6 mb-4">
+                    <div class="col-lg-6 col-md-12 col-xl-6 mb-4">
                       <div class="card">
                         <div class="card-body">
                           <div class="card-title d-flex align-items-start justify-content-between">
@@ -77,7 +77,7 @@ else {
                         </div>
                       </div>
                     </div>
-                    <div class="col-lg-6 col-md-12 col-6 mb-4">
+                    <div class="col-lg-6 col-md-12 col-xl-6 mb-4">
                       <div class="card">
                         <div class="card-body">
                           <div class="card-title d-flex align-items-start justify-content-between">
@@ -338,7 +338,7 @@ else {
           <div class="card-body">
             <div class="card-title d-flex align-items-start justify-content-between">
               <span class="badge bg-label-info rounded p-2">
-                <i class="fa fa-gift bx-sm"></i> 
+                <i class="fa fa-gift bx-sm"></i>
               </span>
             </div>
             <span class="fw-semibold d-block mb-1">Total Suara Partai</span>
@@ -352,7 +352,7 @@ else {
           <div class="card-body">
             <div class="card-title d-flex align-items-start justify-content-between">
               <span class="badge bg-label-primary rounded p-2">
-                <i class="fa fa-envelope bx-sm"></i> 
+                <i class="fa fa-envelope bx-sm"></i>
               </span>
             </div>
             <span class="fw-semibold d-block mb-1">Total Suara Caleg</span>
@@ -360,7 +360,7 @@ else {
           </div>
         </div>
       </div>
-      
+
 
       <div class="col-sm-4 mb-4">
         <div class="card">
@@ -395,7 +395,7 @@ else {
           <div class="card-body">
             <div class="card-title d-flex align-items-start justify-content-between">
               <span class="badge bg-label-success rounded p-2">
-                <i class="fa fa-person-dress bx-sm"></i> 
+                <i class="fa fa-person-dress bx-sm"></i>
               </span>
             </div>
             <span class="fw-semibold d-block mb-1">Jumlah Dukungan Perempuan</span>
