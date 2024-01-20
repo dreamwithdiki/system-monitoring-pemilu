@@ -62,16 +62,16 @@ class DataDptController extends Controller
         $totalFiltered = 0;
         $data_dpt = [];
 
-        
+
         if (!empty($request->input())) {
             $limit = $request->input('length');
             $start = $request->input('start');
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
-    
+
             if (empty($request->input('search.value'))) {
-              $order = 'dpt_id'; 
-              $dir = 'desc';
+              // $order = 'dpt_id';
+              // $dir = 'desc';
 
               // Logika berdasarkan role_id
               if ($role_id == 1 || $role_id == 5) {
@@ -103,7 +103,7 @@ class DataDptController extends Controller
 
             } else {
               $search = $request->input('search.value');
-          
+
               $data_dpt = DataDpt::with('province', 'regency', 'district', 'village', 'tps')
                   ->where(function ($query) use ($role_id) {
                       // Tambahkan kondisi role_id dalam pencarian
@@ -126,7 +126,7 @@ class DataDptController extends Controller
                   ->limit($limit)
                   ->orderBy($order, $dir)
                   ->get();
-          
+
               $totalFiltered = DataDpt::with('province', 'regency', 'district', 'village', 'tps')
                   ->where(function ($query) use ($role_id) {
                       // Tambahkan kondisi role_id dalam pencarian
@@ -148,7 +148,7 @@ class DataDptController extends Controller
                   ->count();
           }
         } else {
-          $start = 0;  
+          $start = 0;
           $data_dpt = DataDpt::with('province', 'regency', 'district', 'village', 'tps')->where('dpt_status', '!=', 5)->get();
         }
 
@@ -160,17 +160,16 @@ class DataDptController extends Controller
             $nestedData['no']               = ++$no;
             $nestedData['dpt_id']           = Crypt::encrypt($dpt->dpt_id);
             $nestedData['role_id']          = $role_id;
-            $nestedData['dpt_nik']          = $dpt->dpt_nik;
-            $nestedData['dpt_name']         = $dpt->dpt_name;
+            $nestedData['dpt_nik']          = $dpt->dpt_nik ?? '-';
+            $nestedData['dpt_name']         = $dpt->dpt_name ?? '-';
             $nestedData['dpt_jenkel']       = $dpt->dpt_jenkel;
-            $nestedData['dpt_address']      = $dpt->dpt_address;
-            $nestedData['dpt_rt']           = $dpt->dpt_rt;
-            $nestedData['dpt_rw']           = $dpt->dpt_rw;
-            $nestedData['dpt_province']     = $dpt->province->name;
-            $nestedData['dpt_regency']      = $dpt->regency->name;
-            $nestedData['dpt_district']     = $dpt->district->name;
-            $nestedData['dpt_village']      = $dpt->village->name;
-            // $nestedData['tps_name']         = $dpt->tps->tps_code .'-'. $dpt->tps->tps_name;
+            $nestedData['dpt_address']      = $dpt->dpt_address ?? '-';
+            $nestedData['dpt_rt']           = $dpt->dpt_rt ?? '-';
+            $nestedData['dpt_rw']           = $dpt->dpt_rw ?? '-';
+            $nestedData['dpt_province']     = $dpt->province->name ?? '-';
+            $nestedData['dpt_regency']      = $dpt->regency->name ?? '-';
+            $nestedData['dpt_district']     = $dpt->district->name ?? '-';
+            $nestedData['dpt_village']      = $dpt->village->name ?? '-';
             $tps_code = $dpt->tps->tps_code ?? '-';
             $tps_name = $dpt->tps->tps_name ?? '-';
             $nestedData['tps_name'] = $tps_code . '-' . $tps_name;
@@ -195,7 +194,7 @@ class DataDptController extends Controller
           ]);
         }
     }
-    
+
 
     /**
      * Store a newly created resource in storage.
@@ -216,14 +215,14 @@ class DataDptController extends Controller
             'dpt_regency'      => 'required',
             'tps_id'           => 'required'
         ]);
-  
+
         //  dd($validator->errors());
         // dd($request->all());
-  
+
         if ($validator->fails()) {
         return response()->json(['status' => false, 'message' => ['title' => 'Validation data required', 'text' => 'Please fill all the field']]);
         }
-        
+
         // dpt Status
         $status = !empty($request->dpt_status) && $request->dpt_status == 'on' ? 2 : 1;
 
@@ -308,7 +307,7 @@ class DataDptController extends Controller
             'dpt_regency'      => 'required',
             'tps_id'           => 'required'
           ]);
-  
+
           // dpt Status
           $status = !empty($request->dpt_status) && $request->dpt_status == 'on' ? 2 : 1;
 
@@ -317,9 +316,9 @@ class DataDptController extends Controller
          if ($nik_exist) {
            return response()->json(['status' => false, 'message' => ['title' => 'Duplicate Entry', 'text' => 'NIK already registered on another DPT!']]);
          }
-          
+
           $data_dpt = DataDpt::where('dpt_id', Crypt::decrypt($id))->first();
-          
+
           $data_dpt->dpt_status            = $status;
           $data_dpt->dpt_nik               = $request->dpt_nik;
           $data_dpt->dpt_name              = $request->dpt_name;
@@ -336,7 +335,7 @@ class DataDptController extends Controller
           $data_dpt->dpt_updated_by        = session('user_id');
           $data_dpt->dpt_updated_date      = Carbon::now()->format('Y-m-d H:i:s');
           $data_dpt->save();
-          
+
           return response()->json(['status' => true, 'message' => ['title' => 'Successfully Updated!', 'text' => 'DPT ' . $request->dpt_name . ' updated successfully!']]);
     }
 
@@ -419,7 +418,7 @@ class DataDptController extends Controller
     //  print excel
      public function printExcelDpt()
       {
-        $data_dpt = DataDpt::with('province', 'regency', 'district', 'village', 'tps', 'user', 'role')->where('dpt_status', '!=', 5)->get();
+        $data_dpt = DataDpt::with('province', 'regency', 'district', 'village', 'tps', 'user', 'role')->where('dpt_status', '!=', 5)->orderBy('dpt_id', 'desc')->get();
 
         // Generate HTML untuk file Excel
         $html = view('content.pendukung.excel.dpt-excel', compact('data_dpt'))->render();

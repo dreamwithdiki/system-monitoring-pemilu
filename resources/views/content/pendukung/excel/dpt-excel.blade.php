@@ -35,24 +35,24 @@
         <th>Status</th>
     </tr>
 
-    @php 
-    $i = 1; 
+    @php
+    $i = 1;
     @endphp
 
     @if (!empty($data_dpt))
         @foreach ($data_dpt as $dpt)
             <tr role="row">
                 <td height="80">{{ $i }}</td>
-                <td height="80" style="mso-number-format:\@">{{ $dpt->dpt_nik }}</td>
-                <td height="80">{{ $dpt->dpt_name }}</td>
+                <td height="80" style="mso-number-format:\@">{{ $dpt->dpt_nik ?? '-'}}</td>
+                <td height="80">{{ $dpt->dpt_name ?? '-'}}</td>
                 <td height="80">{{ $dpt->dpt_jenkel == 1 ? 'Laki-Laki' : 'Perempuan' }}</td>
-                <td height="80">{{ $dpt->dpt_address }}</td>
-                <td height="80" style="mso-number-format:\@">{{ $dpt->dpt_rt }}</td>
-                <td height="80" style="mso-number-format:\@">{{ $dpt->dpt_rw }}</td>
-                <td height="80">{{ $dpt->province->name }}</td>
-                <td height="80">{{ $dpt->regency->name }}</td>
-                <td height="80">{{ $dpt->district->name }}</td>
-                <td height="80">{{ $dpt->village->name }}</td>
+                <td height="80">{{ $dpt->dpt_address ?? '-'}}</td>
+                <td height="80" style="mso-number-format:\@">{{ $dpt->dpt_rt ?? '-'}}</td>
+                <td height="80" style="mso-number-format:\@">{{ $dpt->dpt_rw ?? '-'}}</td>
+                <td height="80">{{ $dpt->province->name ?? '-'}}</td>
+                <td height="80">{{ $dpt->regency->name ?? '-'}}</td>
+                <td height="80">{{ $dpt->district->name ?? '-'}}</td>
+                <td height="80">{{ $dpt->village->name ?? '-'}}</td>
 
                 @php
                 $tps_code = $dpt->tps->tps_code ?? '-';
@@ -63,7 +63,7 @@
                 <td height="80">{{ $dpt->role->role_name }}</td>
                 <td height="80">{{ $dpt->dpt_status == 2 ? 'Active' : 'Deactive' }}</td>
             </tr>
-            
+
             @php
             $i++;
             @endphp

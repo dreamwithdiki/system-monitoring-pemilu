@@ -15,7 +15,7 @@ $(function () {
   var ac_edit_tps        = $('.ac_edit_tps');
   var modal_class_loader = $('.modal-block-loader');
   var typingTimer;
-  
+
   $.ajaxSetup({
     headers: {
       'X-CSRF-TOKEN': CSRF_TOKEN
@@ -69,13 +69,13 @@ $(function () {
     success: function(response) {
       if (response.status) {
         $('#addProvince').append('<option value="">Choice</option>');
-        
+
         var provinces = response.data;
-  
+
         $.each(provinces, function(index, province) {
           $('#addProvince').append('<option value="' + province.id + '">' + province.name + '</option>');
         });
-  
+
         // Memperbarui tampilan Select2 pada dropdown Province
         $('#addProvince').select2({
             placeholder: 'Choice',
@@ -326,7 +326,7 @@ $(function () {
         { data: 'no', orderable: false },
         { data: 'dpt_nik' },
         { data: 'dpt_name' },
-        { data: 'dpt_jenkel', 
+        { data: 'dpt_jenkel',
           render: function (data, type, row, meta) {
               if (data == 1) {
                   return '<span class="badge bg-primary">Laki-Laki</span>';
@@ -401,7 +401,7 @@ $(function () {
 
           render: function (data, type, row, meta) {
             let dropdownMenu = '<div class="dropdown-menu">';
-            
+
             if (row.role_id === 5) {
               // Role_id is 5, only show the "Detail" option
               dropdownMenu += '<a id="dropdownMenuDetail" data-id="' + row.dpt_id + '" data-name="' + row.dpt_name + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-detail me-1"></i> Detail</a>';
@@ -416,19 +416,19 @@ $(function () {
                 '<div class="dropdown-divider"></div>' +
                 '<a id="dropdownMenuDelete" data-id="' + row.dpt_id + '" class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Delete</a>';
             }
-          
+
             dropdownMenu += '</div>';
-            
+
             return '' +
               '<div class="d-inline-block text-nowrap">' +
               '<button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>' +
               dropdownMenu +
               '</div>';
-          }          
-        
+          }
+
         }
       ],
-      order: [[0, 'asc']],
+      order: [[0, 'desc']],
       dom: '<"row"<"col-sm-12 col-md-6"l>><"table-responsive"t><"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
       drawCallback: function (settings) {
           // Cek jumlah data yang ditampilkan setelah DataTable digambar
@@ -453,7 +453,7 @@ $(function () {
       typingTimer = setTimeout(function() {
         dt_ajax_table.DataTable().search($this.val()).draw();
       }, 1200);
-    });    
+    });
   }
 
   $(document).on('click', '.show-more', function(e) {
@@ -468,7 +468,7 @@ $(function () {
     row.expanded = true; // Menandai bahwa deskripsi telah di-expand
     dt_ajax.row($this.closest('tr')).data(row);
   });
-  
+
   $(document).on('click', '.show-less', function(e) {
     e.preventDefault();
     var $this = $(this);
@@ -481,7 +481,7 @@ $(function () {
     row.expanded = false; // Menandai bahwa deskripsi telah di-collapse
     dt_ajax.row($this.closest('tr')).data(row);
   });
-  
+
   // Add Form
   var add_dpt_form = document.getElementById('formAddDpt');
 
@@ -782,7 +782,7 @@ $(function () {
     });
   });
   // End Form
-  
+
    // Function to set the selected dpt_jenkel value to localStorage
    function setSelectedClientParam(dpt_jenkel) {
     localStorage.setItem('selected_dpt_jenkel', dpt_jenkel);
@@ -813,7 +813,7 @@ $(function () {
 
         $('#editNik').val(response.data.dpt_nik);
         $('#editName').val(response.data.dpt_name);
-        
+
         if (response.data.dpt_jenkel == 1) {
           $('input[name="dpt_jenkel"][value="1"]').prop('checked', true);
           setSelectedClientParam(1); // Store selected value to localStorage
@@ -835,7 +835,7 @@ $(function () {
           var tpsLabel = response.data.tps.tps_code + " - " + response.data.tps.tps_name;
           var option = new Option(tpsLabel, response.data.tps.tps_id, true, true);
           $('#editTps').append(option).trigger('change');
-        }        
+        }
 
         // Kosongkan dropdown "Province" sebelum menambahkan opsi-opsi baru
         $('#editProvince').empty();
@@ -848,13 +848,13 @@ $(function () {
           success: function(provinceResponse) {
             if (provinceResponse.status) {
               var provinces = provinceResponse.data;
-              
+
               // Menambahkan opsi-opsi baru pada dropdown "Province"
               $.each(provinces, function(index, province) {
                 var option = new Option(province.name, province.id);
                 $('#editProvince').append(option);
               });
-              
+
               // Memperbarui tampilan Select2 pada dropdown "Province"
               $('#editProvince').select2({
                 placeholder: 'Choice',
@@ -873,13 +873,13 @@ $(function () {
               $('#editVillage').append('<option value="">' + provinceResponse.data + '</option>');
             }
           }
-        }); 
+        });
 
         if (response.data.regency) {
           var option = new Option(response.data.regency.name, response.data.regency.id, true, true);
           $('#editRegency').append(option).trigger('change');
         }
-        
+
         if (response.data.district) {
           var option = new Option(response.data.district.name, response.data.district.id, true, true);
           $('#editDistrict').append(option).trigger('change');
@@ -923,18 +923,18 @@ $(function () {
           window.Helpers.blockUIModalLoader(modal_class_loader);
         },
         success: function (response) {
-  
-          $('#detNik').text(response.data.dpt_nik);
-          $('#detNama').text(response.data.dpt_name);
+
+          $('#detNik').text(response.data?.dpt_nik ?? "-");
+          $('#detNama').text(response.data?.dpt_name ?? "-");
           $('#detJenkel').text(response.data.dpt_jenkel == 1 ? 'Laki-Laki' : 'Perempuan');
-          $('#detAddress').text(response.data.dpt_address);
-          $('#detRT').text(response.data.dpt_rt);
-          $('#detRW').text(response.data.dpt_rw);
-          $('#detProvince').text(response.data.province.name);
-          $('#detRegency').text(response.data.regency.name);
-          $('#detDistrict').text(response.data.district.name);
-          $('#detVillage').text(response.data.village.name);
-          
+          $('#detAddress').text(response.data?.dpt_address ?? "-");
+          $('#detRT').text(response.data?.dpt_rt ?? "-");
+          $('#detRW').text(response.data?.dpt_rw ?? "-");
+          $('#detProvince').text(response.data.province?.name ?? "-");
+          $('#detRegency').text(response.data.regency?.name ?? "-");
+          $('#detDistrict').text(response.data.district?.name ?? "-");
+          $('#detVillage').text(response.data.village?.name ?? "-");
+
           // $('#detTps').text(response.data.tps.tps_code + " - " + response.data.tps.tps_name);
 
           // mengunakan operator nullish coalescing (??) jika ada yang null
@@ -949,8 +949,8 @@ $(function () {
           var createdBy =response.data.user.user_uniq_name;
 
           if (response.data.role.role_id === 1) {
-              createdBy += ' <span class="badge bg-primary"><i class="bx bx-badge-check"></i></span>'; 
-          } 
+              createdBy += ' <span class="badge bg-primary"><i class="bx bx-badge-check"></i></span>';
+          }
 
           $('#detCreatedBy').html(createdBy);
 
@@ -963,7 +963,7 @@ $(function () {
       $('#formDetailDpt').attr('data-id', dpt_id);
       modal_detail_dpt.modal('show');
     });
-    
+
 
     // Import Form
   var import_dpt_form = document.getElementById('formImportDpt');
@@ -1008,7 +1008,7 @@ $(function () {
       var url = "";
     }
 
-    var form_data = new FormData(import_dpt_form); 
+    var form_data = new FormData(import_dpt_form);
       $.ajax({
         data: form_data,
         url: baseUrl + url,
@@ -1018,7 +1018,7 @@ $(function () {
         success: function success(response) {
             dt_ajax.draw();
             modal_import_dpt.modal('hide');
-    
+
             if (response.status) {
                 Swal.fire({
                     icon: 'success',
@@ -1075,11 +1075,11 @@ $(function () {
                   });
               }
           }
-      }      
-    });  
+      }
+    });
   });
   // End Import Form
-  
+
   // Active / Deactive status button handler
   $(document).on('click', '.dropdownMenuStatusUpdate', function () {
     var dpt_id = $(this).data('id'),
@@ -1182,7 +1182,7 @@ $(function () {
       }
     });
   });
-  
+
   // Clearing form data when modal hidden
   modal_add_dpt.on('hidden.bs.modal', function () {
     $('#addFormLabel > p').html('Add new DPT.');
@@ -1233,13 +1233,13 @@ $(function () {
     success: function(response) {
       if (response.status) {
         $('#editProvince').append('<option value="">Choice</option>');
-        
+
         var provinces = response.data;
-  
+
         $.each(provinces, function(index, province) {
           $('#editProvince').append('<option value="' + province.id + '">' + province.name + '</option>');
         });
-  
+
         // Memperbarui tampilan Select2 pada dropdown Province
         $('#editProvince').select2({
             placeholder: 'Choice',
