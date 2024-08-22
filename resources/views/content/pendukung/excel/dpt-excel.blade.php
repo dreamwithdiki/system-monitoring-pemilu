@@ -60,7 +60,7 @@
                 @endphp
 
                 <td height="80">{{ $tps_code .'-'. $tps_name; }}</td>
-                <td height="80">{{ $dpt->role->role_name }}</td>
+                <td height="80">{{ $dpt->role->role_name ?? '-'}}</td>
                 <td height="80">{{ $dpt->dpt_status == 2 ? 'Active' : 'Deactive' }}</td>
             </tr>
 
